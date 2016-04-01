@@ -10,11 +10,12 @@
   </head>
   <body>
     <a-scene>
-      <!-- <a-box position="-1 0.5 1" rotation="0 0 0" width="1" height="1" depth=".25" color="#4CC3D9"></a-box> -->
       <a-sky color="#FFEED0"></a-sky>
 
-      <a-entity id="happy-face" position="0 0 -10">
-        <a-entity line="path: -2 0 0, 0 0 0; color: blue"></a-entity>
+      <a-entity id="dia" position="-4 2 -5">
+        <a-entity id="c1" geometry="primitive: box; width: 2; height: 6; depth: 2" material="color: #4CC3D9" position="0 0 0"></a-entity>
+        <a-entity id="c2" geometry="primitive: box; width: 2; height: 6; depth: 2" material="color: #4CC3D9" position="6 0 0"></a-entity>
+        <a-entity line="path: 0 0 0, 6 0 0; color: blue"></a-entity>
       </a-entity>
     </a-scene>
   </body>

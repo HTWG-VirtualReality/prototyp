@@ -29,7 +29,8 @@ AFRAME.registerComponent('line', {
     update: function(oldData) {
         // Set color with material.
         var material = new THREE.LineBasicMaterial({
-            color: this.data.color
+            color: this.data.color,
+            linewidth: 2
         });
 
         // Add vertices to geometry.
