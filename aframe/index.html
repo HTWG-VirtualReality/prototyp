@@ -5,7 +5,8 @@
     <title>Hello, World! • A-Frame</title>
     <meta name="description" content="Hello, World! • A-Frame">
     <script src="https://aframe.io/releases/0.2.0/aframe.min.js"></script>
-
+    <script src="node_modules/aframe-draw-component/dist/aframe-draw-component.min.js"></script>
+    <script src="node_modules/aframe-textwrap-component/dist/aframe-textwrap-component.min.js"></script>
     <script src="components/line.js"></script>
   </head>
   <body>
@@ -13,7 +14,7 @@
       <a-sky color="#FFEED0"></a-sky>
 
       <a-entity position="-4 2 -5">
-        <a-entity id="c1" geometry="primitive: box; width: 2; height: 6; depth: 2" material="color: #4CC3D9" position="0 0 0"></a-entity>
+        <a-entity id="c1" geometry="primitive: box; width: 2; height: 6; depth: 2" material="color: #4CC3D9" position="0 0 0" draw="background: white" textwrap="textAlign: center; x: 128; y: 128; text: Hello world!"></a-entity>
         <a-entity id="c2" geometry="primitive: box; width: 2; height: 6; depth: 2" material="color: #4CC3D9" position="6 0 0"></a-entity>
         <a-entity line="from: #c1; to: #c2; color: blue"></a-entity>
       </a-entity>
