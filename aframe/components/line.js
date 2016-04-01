@@ -1,9 +1,9 @@
 // source: https://aframe.io/docs/core/component.html
-var coordinates = AFRAME.utils.coordinates;
-
 AFRAME.registerComponent('line', {
     schema: {
-        color: { default: '#333' },
+        color: {
+            default: '#333'
+        },
 
         from: {
             default: null
@@ -15,7 +15,7 @@ AFRAME.registerComponent('line', {
     },
 
     // Create or update the line geometry.
-    update: function(oldData) {
+    update: function() {
         if (!this.data.from || !this.data.to) {
             console.warn("properties 'from' and 'to' must be set.");
             return;
