@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Hello, World! • A-Frame</title>
+    <meta name="description" content="Hello, World! • A-Frame">
+    <script src="https://aframe.io/releases/0.2.0/aframe.min.js"></script>
+
+    <script src="components/line.js"></script>
+  </head>
+  <body>
+    <a-scene>
+      <!-- <a-box position="-1 0.5 1" rotation="0 0 0" width="1" height="1" depth=".25" color="#4CC3D9"></a-box> -->
+      <a-sky color="#FFEED0"></a-sky>
+
+      <a-entity id="happy-face" position="0 0 -10">
+        <a-entity line="path: -2 0 0, 0 0 0; color: blue"></a-entity>
+      </a-entity>
+    </a-scene>
+  </body>
+</html>
