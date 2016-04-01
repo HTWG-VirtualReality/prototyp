@@ -2,31 +2,28 @@
 var coordinates = AFRAME.utils.coordinates;
 
 AFRAME.registerComponent('line', {
-    // Allow line component to accept vertices and color.
     schema: {
         color: { default: '#333' },
 
-        path: {
-            default: [
-                { x: -0.5, y: 0, z: 0 },
-                { x: 0.5, y: 0, z: 0 }
-            ],
+        from: {
+            default: null
+        },
 
-            // Deserialize path in the form of comma-separated vec3s: `0 0 0, 1 1 1, 2 0 3`.
-            parse: function(value) {
-                return value.split(',').map(coordinates.parse);
-            },
-
-            // Serialize array of vec3s in case someone does
-            // setAttribute('line', 'path', [...]).
-            stringify: function(data) {
-                return data.map(coordinates.stringify).join(',');
-            }
+        to: {
+            default: null
         }
     },
 
     // Create or update the line geometry.
     update: function(oldData) {
+        if (!this.data.from || !this.data.to) {
+            console.warn("properties 'from' and 'to' must be set.");
+            return;
+        }
+
+        var fromTarget = this.el.sceneEl.querySelector(this.data.from);
+        var toTarget = this.el.sceneEl.querySelector(this.data.to);
+
         // Set color with material.
         var material = new THREE.LineBasicMaterial({
             color: this.data.color,
@@ -35,11 +32,8 @@ AFRAME.registerComponent('line', {
 
         // Add vertices to geometry.
         var geometry = new THREE.Geometry();
-        this.data.path.forEach(function(vec3) {
-            geometry.vertices.push(
-                new THREE.Vector3(vec3.x, vec3.y, vec3.z)
-            );
-        });
+        this._addVertices(geometry.vertices, fromTarget.components.position.data);
+        this._addVertices(geometry.vertices, toTarget.components.position.data);
 
         // Apply mesh.
         this.el.setObject3D('mesh', new THREE.Line(geometry, material));
@@ -47,6 +41,12 @@ AFRAME.registerComponent('line', {
 
     // Remove the line geometry.
     remove: function() {
-    	this.el.removeObject3D('mesh');
+        this.el.removeObject3D('mesh');
+    },
+
+    _addVertices: function(vertices, data) {
+        vertices.push(
+            new THREE.Vector3(data.x, data.y, data.z)
+        );
     }
 });
