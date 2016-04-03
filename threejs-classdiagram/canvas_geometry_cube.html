@@ -63,7 +63,7 @@
 				camera.position.y = 150;
 				camera.position.z = 500;
 
-				// TODO Was ist ne Scene genau?
+				// TODO Was genau ist ne Scene?
 				scene = new THREE.Scene();
 
 				// Cube
@@ -102,6 +102,9 @@
 				cube3 = new THREE.Mesh( geometry3, material );
 				cube3.position.y = 250;
 				
+				
+				// TEXT - Elemente
+				
 				var spritey = makeTextSprite( " Klasse ",  { fontsize: 48, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
 				spritey.position.set(20,220,80);
 				
@@ -125,15 +128,7 @@
 				
 				//when done, add the group to the scene
 				scene.add( group );
-
 				
-				//cube2.add(cube);
-				
-				//scene.add( cube );
-				scene.add( group );
-
-				// Plane
-
 				var geometry = new THREE.PlaneBufferGeometry( 200, 200 );
 				geometry.rotateX( - Math.PI / 2 );
 
@@ -152,11 +147,12 @@
 				document.addEventListener( 'touchstart', onDocumentTouchStart, false );
 				document.addEventListener( 'touchmove', onDocumentTouchMove, false );
 
-				//
-
 				window.addEventListener( 'resize', onWindowResize, false );
 
 			}
+			
+			
+			
 			function makeTextSprite( message, parameters )
 			{
 				if ( parameters === undefined ) parameters = {};
