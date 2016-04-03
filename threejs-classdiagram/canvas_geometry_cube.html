@@ -102,7 +102,15 @@
 				cube3 = new THREE.Mesh( geometry3, material );
 				cube3.position.y = 250;
 				
-			
+				var spritey = makeTextSprite( " Klasse ",  { fontsize: 48, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+				spritey.position.set(20,220,80);
+				
+				var spritey2 = makeTextSprite( " Variable : Typ ",  { fontsize: 32, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+				spritey2.position.set(-20,170,80);
+				
+				var spritey3 = makeTextSprite( " Funktion() : Typ ",  { fontsize: 32, borderColor: {r:255, g:0, b:0, a:1.0}, backgroundColor: {r:255, g:100, b:100, a:0.8} } );
+				spritey3.position.set(-20,110,80);
+				
 				
 				//create an empty container
 				group = new THREE.Object3D();
@@ -111,6 +119,10 @@
 				group.add( cube2);
 				group.add(cube3);
 
+				group.add(spritey);
+				group.add(spritey2);
+				group.add(spritey3);
+				
 				//when done, add the group to the scene
 				scene.add( group );
 
@@ -145,8 +157,6 @@
 				window.addEventListener( 'resize', onWindowResize, false );
 
 			}
-			
-			
 			function makeTextSprite( message, parameters )
 			{
 				if ( parameters === undefined ) parameters = {};
@@ -288,6 +298,5 @@
 			}
 
 		</script>
-
 	</body>
 </html>
