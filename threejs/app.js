@@ -11,13 +11,13 @@
   var scene = new THREE.Scene();
 
   var camera = new THREE.PerspectiveCamera( 50, window.innerWidth / window.innerHeight, 1, 1000 );
-  camera.position.set( 40, 40, 200 );
+  camera.position.set( 0, 40, 160 );
   scene.add( camera );
   var light = new THREE.PointLight( 0xffffff, 0.8 );
 	camera.add( light );
 
   var group = new THREE.Group();
-  group.rotation.x = Math.PI * 0.1;
+  group.rotation.x = 2 * Math.PI / 360 * 19;
 	scene.add( group );
 
   function createSquare(width, height) {
@@ -59,19 +59,19 @@
 	  group.add( mesh );
   }
   
-  addShape( createSquare(94, 80), 10, 0x4E33D4,  0, 0, 0, 0, 0, 0, 1);
-  addShape( createSquare(20, 90), 2, 0xFFAF22,  -5, 30, -5, Math.PI * 0.5, 0, 0, 1);
-  addShape( createSquare(20, 90), 2, 0xFFAF22,  -5, 80, -5, Math.PI * 0.5, 0, 0, 1);
+  addShape( createSquare(94, 80), 10, 0x4E33D4,  -40, 0, 0, 0, 0, 0, 1);
+  addShape( createSquare(20, 90), 2, 0xFFAF22,  -45, 30, -5, Math.PI * 0.5, 0, 0, 1);
+  addShape( createSquare(20, 90), 2, 0xFFAF22,  -45, 80, -5, Math.PI * 0.5, 0, 0, 1);
 
   var loader = new THREE.FontLoader();
   loader.load( 'helvetiker_regular.typeface.js', function ( font ) {
-    addText( createText('User', font), 0xffffff, 30, 85, 10, 0, 0, 0, 1);
-    addText( createText('-name : string', font), 0xffffff, 3, 68, 10, 0, 0, 0, 1);
-    addText( createText('-password : string', font), 0xffffff, 3, 58, 10, 0, 0, 0, 1);
-    addText( createText('-lastLogin : datetime', font), 0xffffff, 3, 48, 10, 0, 0, 0, 1);
-    addText( createText('-loginStatus : string', font), 0xffffff, 3, 38, 10, 0, 0, 0, 1);
-    addText( createText('+verifyLogin() : bool', font), 0xffffff, 3, 16, 10, 0, 0, 0, 1);
-    addText( createText('+logout() : bool', font), 0xffffff, 3, 6, 10, 0, 0, 0, 1);
+    addText( createText('User', font), 0xffffff, -10, 85, 10, 0, 0, 0, 1);
+    addText( createText('-name : string', font), 0xffffff, -37, 68, 10, 0, 0, 0, 1);
+    addText( createText('-password : string', font), 0xffffff, -37, 58, 10, 0, 0, 0, 1);
+    addText( createText('-lastLogin : datetime', font), 0xffffff, -37, 48, 10, 0, 0, 0, 1);
+    addText( createText('-loginStatus : string', font), 0xffffff, -37, 38, 10, 0, 0, 0, 1);
+    addText( createText('+verifyLogin() : bool', font), 0xffffff, -37, 16, 10, 0, 0, 0, 1);
+    addText( createText('+logout() : bool', font), 0xffffff, -37, 6, 10, 0, 0, 0, 1);
   });
 
   var targetRotation = 0;
@@ -83,7 +83,7 @@
 
   function render() {
     requestAnimationFrame( render );
-    group.rotation.y = ( targetRotation - group.rotation.y ) * 0.40;
+    group.rotation.y = ( targetRotation - group.rotation.y ) * 0.50;
     renderer.render( scene, camera );
   }
   render();
