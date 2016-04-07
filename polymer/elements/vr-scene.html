@@ -1,0 +1,42 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script src="http://threejs.org/build/three.min.js"></script>
+
+<dom-module id="vr-scene">
+    <template>
+        <content id="content"></content>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "vr-scene",
+
+        ready: function() {
+            this.renderer = new THREE.WebGLRenderer();
+            this.renderer.setSize(window.innerWidth, window.innerHeight);
+            this.renderer.setPixelRatio(window.devicePixelRatio);
+            this.renderer.setClearColor(0xf0f0f0);
+            Polymer.dom(this.root).appendChild(this.renderer.domElement);
+
+            this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            this.camera.position.z = 5;
+
+            this.scene = new THREE.Scene();
+
+            this._render();
+
+            this._observer = Polymer.dom(this.$.content).observeNodes(function(nodes) {
+                nodes.addedNodes.forEach(function(node) {
+                    this.scene.add(node.mesh);
+                }.bind(this));
+            }.bind(this));
+        },
+
+        _render: function() {
+            requestAnimationFrame(this._render.bind(this));
+            this.renderer.render(this.scene, this.camera);
+        }
+
+    });
+</script>

@@ -1,0 +1,13 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+    Polymer({
+        is: "vr-box",
+
+        ready: function() {
+            var geometry = new THREE.BoxGeometry(1, 1, 1);
+            var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
+            this.mesh = new THREE.Mesh(geometry, material);
+        }
+    });
+</script>
