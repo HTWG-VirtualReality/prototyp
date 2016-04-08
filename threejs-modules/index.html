@@ -15,5 +15,13 @@
 <body>
 
 <script src="http://threejs.org/build/three.min.js"></script>
+<script src="model.js"></script>
+<script>
+    var container = document.createElement( 'div' );
+    document.body.appendChild( container );
+
+    var example = new Model(container);
+    example.render();
+</script>
 </body>
 </html>
