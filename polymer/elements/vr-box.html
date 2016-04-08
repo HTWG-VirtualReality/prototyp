@@ -12,10 +12,19 @@
         },
 
         ready: function() {
-            var geometry = new THREE.BoxGeometry(1, 1, 1);
-            var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
-            this.mesh = new THREE.Mesh(geometry, material);
-            this.mesh.position.x = this.xPos;
+            var geometry = new THREE.BoxGeometry(50, 80, 50);
+            var material = new THREE.MeshPhongMaterial({color: 0x4E33D4});
+            var mesh = new THREE.Mesh(geometry, material);
+
+            var wireframe =  new THREE.BoxHelper(mesh);
+            wireframe.material.color.set(0xffffff);
+
+            this.obj = new THREE.Group();
+            this.obj.position.setX(this.xPos);
+            this.obj.rotateX(Math.PI / 180 * 10);
+            this.obj.rotateY(Math.PI / 180 * 20);
+            this.obj.add(mesh);
+            this.obj.add(wireframe);
         }
 
     });
