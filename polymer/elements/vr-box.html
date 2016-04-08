@@ -4,10 +4,19 @@
     Polymer({
         is: "vr-box",
 
+        properties: {
+            xPos: {
+                type: Number,
+                value: 0
+            }
+        },
+
         ready: function() {
             var geometry = new THREE.BoxGeometry(1, 1, 1);
             var material = new THREE.MeshBasicMaterial({color: 0x00ff00});
             this.mesh = new THREE.Mesh(geometry, material);
+            this.mesh.position.x = this.xPos;
         }
+
     });
 </script>
