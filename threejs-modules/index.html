@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Prototype</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+    <style>
+        body {
+            background-color: #f0f0f0;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+
+<script src="http://threejs.org/build/three.min.js"></script>
+<script src="model.js"></script>
+<script src="box.js"></script>
+<script>
+    var container = document.createElement( 'div' );
+    document.body.appendChild( container );
+
+    var example = new Model(container);
+    example.add(new Box(100, 60, 30));
+    example.add(new Box(110, 110, 30));
+    example.add(new Box(60, 100, 30));
+    example.add(new Box(40, 50, 30));
+    example.add(new Box(110, 110, 30));
+    example.render();
+</script>
+</body>
+</html>
