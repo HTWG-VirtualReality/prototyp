@@ -4,7 +4,7 @@
 
 <dom-module id="vr-scene">
     <template>
-        <content id="content"></content>
+        <content id="content" select="*"></content>
     </template>
 </dom-module>
 
@@ -24,13 +24,19 @@
 
             this.scene = new THREE.Scene();
 
-            this._render();
-
-            this._observer = Polymer.dom(this.$.content).observeNodes(function(nodes) {
+            // observe nodes that will added to this element
+            Polymer.dom(this.$.content).observeNodes(function(nodes) {
                 nodes.addedNodes.forEach(function(node) {
                     this.scene.add(node.mesh);
                 }.bind(this));
+
+                nodes.removedNodes.forEach(function(node) {
+                    this.scene.remove(node.mesh);
+                }.bind(this));
             }.bind(this));
+
+            // start rendering
+            this._render();
         },
 
         _render: function() {
