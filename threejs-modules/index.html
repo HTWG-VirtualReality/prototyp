@@ -17,17 +17,18 @@
 <script src="http://threejs.org/build/three.min.js"></script>
 <script src="model.js"></script>
 <script src="box.js"></script>
+<script src="text.js"></script>
 <script>
     var container = document.createElement( 'div' );
     document.body.appendChild( container );
 
-    var example = new Model(container);
-    example.add(new Box(100, 60, 30));
-    example.add(new Box(110, 110, 30));
-    example.add(new Box(60, 100, 30));
-    example.add(new Box(40, 50, 30));
-    example.add(new Box(110, 110, 30));
-    example.render();
+    new Model(container)
+        .add(new Box(100, 60, 30).add(new Text('Box 1')))
+        .add(new Box(110, 110, 30).add(new Text('Box 2')))
+        .add(new Box(60, 100, 30).add(new Text('Box 3')))
+        .add(new Box(40, 50, 30).add(new Text('Box 4')))
+        .add(new Box(110, 110, 30).add(new Text('Box 5')))
+        .render();
 </script>
 </body>
 </html>

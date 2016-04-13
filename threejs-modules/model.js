@@ -23,9 +23,9 @@ function Model(container) {
 
   function createGroup() {
     var group = new THREE.Group();
-    group.position.set(0, 0, -200);
+    group.position.set(-200, 0, -200);
     group.rotateX(Math.PI / 180 * 20);
-    group.rotateY(Math.PI / 180 * 20);
+    group.rotateY(Math.PI / 180 * 5);
     scene.add(group);
     return group;
   }
@@ -45,13 +45,19 @@ function Model(container) {
     elements.push(box);
   }
 
-  this.render = function() {
+  function render() {
+    requestAnimationFrame(render);
     renderer.render(scene, camera);
+  }
+
+  this.render = function() {
+    render();
   };
 
   this.add = function(element) {
     if (element instanceof Box) {
       addBox(element);
     }
+    return this;
   };
 }
