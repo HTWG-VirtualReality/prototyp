@@ -8,11 +8,27 @@
             xPos: {
                 type: Number,
                 value: 0
+            },
+            yPos: {
+                type: Number,
+                value: 0
+            },
+            width: {
+                type: Number,
+                value: 50
+            },
+            height: {
+                type: Number,
+                value: 50
             }
+
         },
 
         ready: function() {
-            var geometry = new THREE.BoxGeometry(50, 80, 50);
+            // Parameter 1: Width
+            // Parameter 2: Height
+            // Parameter 3: Depth
+            var geometry = new THREE.BoxGeometry(this.width, this.height, 50);
             var material = new THREE.MeshPhongMaterial({color: 0x4E33D4});
             var mesh = new THREE.Mesh(geometry, material);
 
