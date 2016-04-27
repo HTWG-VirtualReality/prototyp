@@ -12,25 +12,26 @@
         is: "vr-polygon",
 
         ready: function() {
-            this.obj = new THREE.Group();
+            var mod = this;
+            mod.obj = new THREE.Group();
 
-            function createMesh(shape, depth, color) {
+            function addMesh(shape, depth, color) {
                 var extrudeSettings = {amount: depth, bevelEnabled: false};
                 var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
                 var mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color: color}));
-                return mesh;
+                mod.obj.add(mesh);
             }
 
-            Polymer.dom(this.$.point).observeNodes(function(points) {
+            Polymer.dom(mod.$.point).observeNodes(function(points) {
                 var shape = new THREE.Shape();
                 shape.moveTo(0, 0);
 
                 points.addedNodes.forEach(function(point) {
                     shape.lineTo(point.x, point.y);
-                }.bind(this));
+                }.bind(mod));
 
-                this.obj.add(createMesh(shape, 20, 0x4E33D4));
-            }.bind(this));
+                addMesh(shape, 20, 0x4E33D4);
+            }.bind(mod));
         }
     });
 </script>
