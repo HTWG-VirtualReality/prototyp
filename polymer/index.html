@@ -5,6 +5,7 @@
     <link rel="import" href="elements/vr-scene.html">
     <link rel="import" href="elements/vr-box.html">
     <link rel="import" href="elements/vr-line.html">
+    <link rel="import" href="elements/vr-polygon.html">
 
     <style>
         body {
@@ -21,6 +22,13 @@
     <vr-box id="b3" x-pos="200"></vr-box>
 
     <vr-line from="#b1" to="#b2"></vr-line>
+
+    <vr-polygon>
+        <vr-point x="150" y="0"></vr-point>
+        <vr-point x="100" y="20"></vr-point>
+        <vr-point x="50" y="0"></vr-point>
+        <vr-point x="100" y="-20"></vr-point>
+    </vr-polygon>
 </vr-scene>
 </body>
 </html>
