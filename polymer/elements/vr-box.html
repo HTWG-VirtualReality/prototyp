@@ -8,11 +8,30 @@
             xPos: {
                 type: Number,
                 value: 0
+            },
+            yPos: {
+                type: Number,
+                value: 0
+            },
+            width: {
+                type: Number,
+                value: 50
+            },
+            height: {
+                type: Number,
+                value: 50
+            },
+            depth: {
+                type: Number,
+                value: 50
             }
         },
 
         ready: function() {
-            var geometry = new THREE.BoxGeometry(50, 80, 50);
+            // Parameter 1: Width
+            // Parameter 2: Height
+            // Parameter 3: Depth
+            var geometry = new THREE.BoxGeometry(this.width, this.height, this.depth);
             var material = new THREE.MeshPhongMaterial({color: 0x4E33D4});
             var mesh = new THREE.Mesh(geometry, material);
 
@@ -21,8 +40,11 @@
 
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
-            this.obj.rotateX(Math.PI / 180 * 10);
-            this.obj.rotateY(Math.PI / 180 * 20);
+            this.obj.position.setY(this.yPos);
+
+            this.obj.rotateX(Math.PI / 180 * 15);
+            this.obj.rotateY(Math.PI / 180 * 15);
+
             this.obj.add(mesh);
             this.obj.add(wireframe);
         }
