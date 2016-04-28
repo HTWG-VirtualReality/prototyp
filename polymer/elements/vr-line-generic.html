@@ -5,12 +5,12 @@
         is: "vr-line-generic",
 
         properties: {
-            fromX: String,
-            fromY: String,
-            fromZ: String,
-            toX: String,
-            toY: String,
-            toZ: String,
+            fromx: String,
+            fromy: String,
+            fromz: String,
+            tox: String,
+            toy: String,
+            toz: String,
             style: String
         },
 
@@ -21,9 +21,10 @@
                 linewidth: 2
             });
 
+
             var geometry = new THREE.Geometry();
-            geometry.vertices.push(this._createVector(this.fromX, this.fromY, this.fromZ));
-            geometry.vertices.push(this._createVector(this.toX, this.toY, this.toZ));
+            geometry.vertices.push(this._createVector(this.fromx, this.fromy, this.fromz));
+            geometry.vertices.push(this._createVector(this.tox, this.toy, this.toz));
 
             this.obj = new THREE.Line(geometry, material);
         },
