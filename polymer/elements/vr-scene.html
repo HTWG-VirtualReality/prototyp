@@ -13,32 +13,42 @@
         is: "vr-scene",
 
         ready: function() {
-            this.renderer = new THREE.WebGLRenderer({antialias: true});
-            this.renderer.setSize(window.innerWidth, window.innerHeight);
-            this.renderer.setPixelRatio(window.devicePixelRatio);
-            this.renderer.setClearColor(0xf0f0f0);
-            Polymer.dom(this.root).appendChild(this.renderer.domElement);
+            function renderer() {
+                var renderer = new THREE.WebGLRenderer({antialias: true});
+                renderer.setSize(window.innerWidth, window.innerHeight);
+                renderer.setPixelRatio(window.devicePixelRatio);
+                renderer.setClearColor(0xf0f0f0);
+                return renderer;
+            }
+            function camera() {
+                var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
+                camera.add(new THREE.PointLight(0xffffff));
+                camera.position.setZ(200);
+                return camera;
+            }
 
-            this.camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
-            this.camera.add(new THREE.PointLight(0xffffff));
-            this.camera.position.setZ(200);
-
-            this.scene = new THREE.Scene();
-            this.scene.add(this.camera);
+            var mod = this;
+            mod.renderer = renderer();
+            mod.camera = camera();
+            mod.scene = new THREE.Scene();
+            mod.group = new THREE.Group();
+            mod.scene.add(mod.camera);
+            mod.scene.add(mod.group);
+            Polymer.dom(mod.root).appendChild(mod.renderer.domElement);
 
             // observe nodes that will added to this element
-            Polymer.dom(this.$.content).observeNodes(function(nodes) {
+            Polymer.dom(mod.$.content).observeNodes(function(nodes) {
                 nodes.addedNodes.forEach(function(node) {
-                    this.scene.add(node.obj);
-                }.bind(this));
+                    mod.group.add(node.obj);
+                }.bind(mod));
 
                 nodes.removedNodes.forEach(function(node) {
-                    this.scene.remove(node.obj);
-                }.bind(this));
-            }.bind(this));
+                    mod.group.remove(node.obj);
+                }.bind(mod));
+            }.bind(mod));
 
             // start rendering
-            this._render();
+            mod._render();
         },
 
         _render: function() {
