@@ -19,13 +19,19 @@
 </head>
 <body>
 <vr-scene>
-    <vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="20"></vr-box>
+   <!-- <vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="20"></vr-box>
     <vr-box id="b2" x-pos="-150" depth="20"></vr-box>
 
-    <vr-line from="#b1" to="#b2"></vr-line>
+    <vr-line from="#b1" to="#b2"></vr-line>-->
 
-    <vr-line-generic fromX="150" fromY="100" fromZ="0" toX="-150" toY="0" toZ="0" style=""></vr-line-generic>
-
+    <vr-line-generic style="">
+        <vr-point x="150" y="100"></vr-point>
+        <vr-point x="-150" y="0"></vr-point>
+        <vr-point x="-150" y="100"></vr-point>
+        <vr-point x="150" y="0"></vr-point>
+        <vr-point x="150" y="100"></vr-point>
+    </vr-line-generic>
+<!--
     <vr-ellipse x="-50" y="100" width="50" height="100"></vr-ellipse>
 
     <vr-polygon id="poly">
@@ -35,7 +41,7 @@
         <vr-point x="100" y="-40"></vr-point>
     </vr-polygon>
 
-    <vr-line from="#b1" to="#poly"></vr-line>
+    <vr-line from="#b1" to="#poly"></vr-line>-->
 
 </vr-scene>
 </body>
