@@ -1,4 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="vr-point.html">
+
+<dom-module id="vr-polyline">
+    <template>
+        <content id="point" select="vr-point"></content>
+    </template>
+</dom-module>
 
 <script>
     Polymer({
@@ -10,32 +17,25 @@
         },
 
         ready: function() {
-            if (!this.from || !this.to) {
-                console.error('properties from and to must me set');
-                return;
-            }
+			var mod = this;
+			mod.obj = new THREE.Group();
 
-            var fromObj = document.querySelector(this.from);
-            var toObj = document.querySelector(this.to);
-            if (!fromObj || !toObj) {
-                console.error('could not find element');
-                return;
-            }
+			function addLine(geometry) {
+				var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+				mod.obj.add(new THREE.Line(geometry, material));
+			}
 
-            var material = new THREE.LineBasicMaterial({
-                color: 0x000000,
-                linewidth: 2
-            });
 
-            var geometry = new THREE.Geometry();
-            geometry.vertices.push(this._createVector(fromObj.obj.position));
-            geometry.vertices.push(this._createVector(toObj.obj.position));
+			Polymer.dom(mod.$.point).observeNodes(function(points) {
+				var geometry = new THREE.Geometry();
 
-            this.obj = new THREE.Line(geometry, material);
-        },
+                points.addedNodes.forEach(function(point) {
+					console.log(point)
+                    geometry.vertices.push(new THREE.Vector3(point.x, point.y, 10));
+                }.bind(mod));
 
-        _createVector: function(pos) {
-            return new THREE.Vector3(pos.x, pos.y, pos.z);
+                addLine(geometry);
+            }.bind(mod));
         }
 
     });
