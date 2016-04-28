@@ -1,4 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../bower_components/threex.dynamictexture/threex.dynamictexture.js"></script>
 
 <script>
     Polymer({
@@ -43,6 +44,11 @@
                     color: 0xffffff
                 }));
             }
+
+            var dynamicTexture = new THREEx.DynamicTexture(512,512);
+            dynamicTexture.context.font	= "bolder 90px Verdana";
+            dynamicTexture.clear('white').drawText('Hello', 32, 256, 'black');
+            materials[4].map = dynamicTexture.texture;
 
             // Parameter 1: Width
             // Parameter 2: Height
