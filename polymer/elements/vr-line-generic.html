@@ -1,16 +1,16 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<dom-module id="vr-line-generic">
+    <template>
+        <content id="point" select="vr-point"></content>
+    </template>
+</dom-module>
+
 <script>
     Polymer({
         is: "vr-line-generic",
 
         properties: {
-            fromx: String,
-            fromy: String,
-            fromz: String,
-            tox: String,
-            toy: String,
-            toz: String,
             style: String
         },
 
@@ -21,16 +21,16 @@
                 linewidth: 2
             });
 
-
             var geometry = new THREE.Geometry();
-            geometry.vertices.push(this._createVector(this.fromx, this.fromy, this.fromz));
-            geometry.vertices.push(this._createVector(this.tox, this.toy, this.toz));
+
+            Polymer.dom(this.$.point).observeNodes(function (points) {
+
+                points.addedNodes.forEach(function (point) {
+                    geometry.vertices.push(new THREE.Vector3(point.x, point.y, point.z || 0));
+                });
+            });
 
             this.obj = new THREE.Line(geometry, material);
-        },
-
-        _createVector: function (x, y, z) {
-            return new THREE.Vector3(x, y, z);
         }
 
     });
