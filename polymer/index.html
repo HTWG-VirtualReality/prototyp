@@ -4,6 +4,7 @@
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <link rel="import" href="elements/vr-scene.html">
     <link rel="import" href="elements/vr-box.html">
+    <link rel="import" href="elements/vr-polyline.html">
     <link rel="import" href="elements/vr-line.html">
     <link rel="import" href="elements/vr-polygon.html">
     <link rel="import" href="elements/vr-ellipse.html">
@@ -19,10 +20,10 @@
 </head>
 <body>
 <vr-scene>
-   <!-- <vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="20"></vr-box>
+    <vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="20"></vr-box>
     <vr-box id="b2" x-pos="-150" depth="20"></vr-box>
 
-    <vr-line from="#b1" to="#b2"></vr-line>-->
+    <vr-line from="#b1" to="#b2"></vr-line>
 
     <vr-line-generic style="">
         <vr-point x="150" y="100"></vr-point>
@@ -41,7 +42,12 @@
         <vr-point x="100" y="-40"></vr-point>
     </vr-polygon>
 
-    <vr-line from="#b1" to="#poly"></vr-line>-->
+	<vr-polyline>
+		<vr-point x="150" y="0"></vr-point>
+		<vr-point x="500" y="40"></vr-point>
+	</vr-polyline>
+
+    <vr-line from="#b1" to="#poly"></vr-line>
 
 </vr-scene>
 </body>
