@@ -28,21 +28,36 @@
         },
 
         ready: function() {
+
+            // 0=left
+            // 1=right
+            // 2=bottom
+            // 3=top
+            // 4=front
+            // 5=back
+            var sides = 6;
+            var materials = new Array();
+            // init all sides of cube
+            for (var i = 0; i < sides; i++) {
+                materials.push( new THREE.MeshBasicMaterial({
+                    color: 0xffffff
+                }));
+            }
+
             // Parameter 1: Width
             // Parameter 2: Height
             // Parameter 3: Depth
-            var geometry = new THREE.BoxGeometry(this.width, this.height, this.depth);
-            var material = new THREE.MeshPhongMaterial({color: 0x4E33D4});
-            var mesh = new THREE.Mesh(geometry, material);
+            var geometry = new THREE.BoxGeometry(this.width, this.height, this.depth),
+                    cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
 
-            var wireframe =  new THREE.BoxHelper(mesh);
-            wireframe.material.color.set(0xffffff);
+            var wireframe =  new THREE.BoxHelper(cube);
+            wireframe.material.color.set(0x00000);
 
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
 
-            this.obj.add(mesh);
+            this.obj.add(cube);
             this.obj.add(wireframe);
         }
 
