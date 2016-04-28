@@ -25,6 +25,10 @@
             depth: {
                 type: Number,
                 value: 50
+            },
+            text: {
+                type: String,
+                value: ''
             }
         },
 
@@ -46,8 +50,8 @@
             }
 
             var dynamicTexture = new THREEx.DynamicTexture(512,512);
-            dynamicTexture.context.font	= "bolder 90px Verdana";
-            dynamicTexture.clear('white').drawText('Hello', 32, 256, 'black');
+            dynamicTexture.context.font	= "bolder 64px Verdana";
+            dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
             materials[4].map = dynamicTexture.texture;
 
             // Parameter 1: Width
