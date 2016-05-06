@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <script src="http://threejs.org/build/three.min.js"></script>
+<script src="../bower_components/threex.domevents/threex.domevents.js"></script>
 
 <dom-module id="vr-scene">
     <template>
@@ -26,10 +27,20 @@
             this.scene = new THREE.Scene();
             this.scene.add(this.camera);
 
+            // domEvents to listen for dom events inside our 3d scene
+            var domEvents = new THREEx.DomEvents(this.camera, this.renderer.domElement);
+
             // observe nodes that will added to this element
             Polymer.dom(this.$.content).observeNodes(function(nodes) {
                 nodes.addedNodes.forEach(function(node) {
                     this.scene.add(node.obj);
+
+                    // register click listener
+                    domEvents.addEventListener(node.obj, 'click', function() {
+                        if (node.onClick) {
+                            node.onClick();
+                        }
+                    }, false);
                 }.bind(this));
 
                 nodes.removedNodes.forEach(function(node) {

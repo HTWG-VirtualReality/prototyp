@@ -12,6 +12,7 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#~1.4.0",
-    "threex.dynamictexture": "*"
+    "threex.dynamictexture": "*",
+    "threex.domevents": "*"
   }
 }
