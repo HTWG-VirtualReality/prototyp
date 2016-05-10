@@ -1,0 +1,76 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+    Polymer({
+        is: "vr-class-diagram",
+
+        properties: {
+            xPos: {
+                type: Number,
+                value: 0
+            },
+            yPos: {
+                type: Number,
+                value: 0
+            },
+            width: {
+                type: Number,
+                value: 50
+            },
+            height: {
+                type: Number,
+                value: 50
+            },
+            depth: {
+                type: Number,
+                value: 50
+            }
+        },
+
+        ready: function () {
+
+            var elements = 3;
+            var materials = [];
+            // init all sides of cube
+            for (var i = 0; i < elements; i++) {
+                materials.push([]);
+                for (var j = 0; j < sides; j++) {
+                    materials[i].push(new THREE.MeshBasicMaterial({
+                        color: 0xffffff
+                    }));
+                }
+            }
+
+
+            for(var n = 0; n < elements; n++){
+                var dynamicTexture = new THREEx.DynamicTexture(512, 512);
+                dynamicTexture.context.font = "bolder 64px Verdana";
+                dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
+                materials[n][4].map = dynamicTexture.texture;
+
+            }
+
+            // Parameter 1: Width
+            // Parameter 2: Height
+            // Parameter 3: Depth
+           /* var geometry = new THREE.BoxGeometry(this.width, this.height, this.depth),
+                    cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+
+            var wireframe = new THREE.BoxHelper(cube);
+            wireframe.material.color.set(0x00000);
+
+            this.obj = new THREE.Group();
+            this.obj.position.setX(this.xPos);
+            this.obj.position.setY(this.yPos);
+
+            this.obj.add(cube);
+            this.obj.add(wireframe);*/
+        }
+
+
+    });
+</script>
+
+
+<vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="10" text="Class Test"></vr-box>
+<vr-box id="b2" x-pos="-150" depth="10" text="test(): String"></vr-box>
