@@ -9,6 +9,7 @@
     <link rel="import" href="elements/vr-polygon.html">
     <link rel="import" href="elements/vr-ellipse.html">
     <link rel="import" href="elements/vr-line-generic.html">
+    <link rel="import" href="elements/vr-class-diagram.html">
 
     <style>
         body {
@@ -20,10 +21,12 @@
 </head>
 <body>
 <vr-scene>
-    <vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="10" text="Class Test"></vr-box>
-    <vr-box id="b2" x-pos="-150" depth="10" text="test(): String"></vr-box>
 
-    <vr-line from="#b1" to="#b2"></vr-line>
+    <vr-class-diagram id="c1" x-pos="-150" y-pos="100"></vr-class-diagram>
+    <!--<vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="10" text="Class Test"></vr-box>-->
+    <vr-box id="b2" x-pos="-150" y-pos="-100" depth="10" text="test(): String"></vr-box>
+
+    <vr-line from="#c1" to="#b2"></vr-line>
 
     <vr-line-generic style="">
         <vr-point x="150" y="100"></vr-point>
@@ -41,7 +44,7 @@
         <vr-point x="100" y="-40"></vr-point>
     </vr-polygon>
 
-    <vr-line from="#b1" to="#poly"></vr-line>
+    <!--<vr-line from="#c1" to="#poly"></vr-line>-->
 
 </vr-scene>
 </body>
