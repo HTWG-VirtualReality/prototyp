@@ -37,7 +37,10 @@
             'updateBox(xPos, yPos, width, height, depth, text)'
         ],
 
-        updateBox: function(xPos, yPos, width, height, depth, text) {
+        updateBox: function (xPos, yPos, width, height, depth, text) {
+            console.log('New text: ' + text);
+            console.log('New width: ' + parseInt(width));
+            console.log('New height: ' + parseInt(height));
             // 0=left
             // 1=right
             // 2=bottom
@@ -61,7 +64,7 @@
             // Parameter 1: Width
             // Parameter 2: Height
             // Parameter 3: Depth
-            var geometry = new THREE.BoxGeometry(width, height, depth),
+            var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth)),
                     cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
 
             this.wireframe = new THREE.BoxHelper(cube);
@@ -75,27 +78,39 @@
             this.obj.add(this.wireframe);
         },
 
-        ready: function() {
+        ready: function () {
             this.updateBox(this.xPos, this.yPos, this.width, this.height, this.depth, this.text)
         },
 
-        onClick: function() {
+        onClick: function () {
             var self = this;
 
             // TODO: auslagern in neues polymer element
             if (!this.gui) {
-                var FizzyText = function() {
-                    this.message = 'Box Control';
+                var FizzyText = function () {
+                    this.message = self.text;
                     this.width = self.width;
+                    this.height = self.height;
                 };
                 var text = new FizzyText();
                 this.gui = new dat.GUI();
-                this.gui.add(text, 'message');
-                var widthController = this.gui.add(text, 'width', 40, 60);
-                widthController.onFinishChange(function(value) {
-                    self.width = value;
+                var textController = this.gui.add(text, 'message');
+                var widthController = this.gui.add(text, 'width', 30, 70);
+                var heightController = this.gui.add(text, 'height', 30, 70);
+
+                widthController.onFinishChange(function (width) {
+                    self.width = width;
                 });
+
+                textController.onFinishChange(function (text) {
+                    self.text = text;
+                });
+
+                heightController.onFinishChange(function (height) {
+                    self.height = height;
+                })
             }
+
 
             if (this.wireframe.material.color.r == 0) {
                 this.wireframe.material.color.set(0xff0000);
