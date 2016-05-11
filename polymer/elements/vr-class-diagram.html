@@ -2,9 +2,9 @@
 
 <dom-module id="vr-class-diagram">
     <template>
-        <vr-box width="50" height="50" depth="10" text="Class Name"></vr-box>
-        <vr-box y-pos="-50" width="50" height="50" depth="10" text="Attributes"></vr-box>
-        <vr-box y-pos="-100" width="50" height="50" depth="10" text="Methods"></vr-box>
+        <vr-box x-pos="{{x1}}" y-pos="{{y1}}" width="{{w1}}" height="{{h1}}" depth="{{d1}}" text="{{text1}}"></vr-box>
+        <vr-box x-pos="{{x2}}" y-pos="{{y2}}" width="{{w2}}" height="{{h2}}" depth="{{d2}}" text="{{text2}}"></vr-box>
+        <vr-box x-pos="{{x3}}" y-pos="{{y3}}" width="{{w3}}" height="{{h3}}" depth="{{d3}}" text="{{text3}}"></vr-box>
     </template>
 </dom-module>
 
@@ -20,6 +20,18 @@
             yPos: {
                 type: Number,
                 value: 0
+            },
+            width: {
+                type: Number,
+                value: 50
+            },
+            height: {
+                type: Number,
+                value: 50
+            },
+            depth: {
+                type: Number,
+                value: 50
             }
         },
 
@@ -27,6 +39,25 @@
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
+
+            this.x1 = 0;
+            this.x2 = 0;
+            this.x3 = 0;
+            this.y1 = 0;
+            this.y2 = -50;
+            this.y3 = -100;
+            this.w1 = 50;
+            this.w2 = 50;
+            this.w3 = 50;
+            this.h1 = 50;
+            this.h2 = 50;
+            this.h3 = 50;
+            this.d1 = 20;
+            this.d2 = 20;
+            this.d3 = 20;
+            this.text1 = "Test";
+            this.text2 = "Test";
+            this.text3 = "Test";
 
             Polymer.dom(this.root).children.forEach(function(box) {
                 this.obj.add(box.obj);
