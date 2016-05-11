@@ -35,11 +35,11 @@
                 return;
             }
 
-			console.log(fromObj.obj.position)
-
             this.obj = new THREE.Group();
             this.obj.position.setX(fromObj.obj.position.x);
-            this.obj.position.setY(fromObj.obj.position.y - 125);
+			// TODO: -125 should be replaced
+			// this.obj has no size attribute. Need an alternative solution
+			this.obj.position.setY(fromObj.obj.position.y - 125);
 
             Polymer.dom(this.root).children.forEach(function(box) {
                 this.obj.add(box.obj);
