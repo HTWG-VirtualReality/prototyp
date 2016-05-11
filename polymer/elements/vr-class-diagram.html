@@ -40,6 +40,18 @@
             depth: {
                 type: Number,
                 value: 20
+            },
+            text1: {
+                type: String,
+                value: ''
+            },
+            text2: {
+                type: String,
+                value: ''
+            },
+            text3: {
+                type: String,
+                value: ''
             }
         },
 
@@ -55,7 +67,7 @@
                 width: this.width,
                 height: this.height/3,
                 depth: this.depth,
-                text: 'test'
+                text: this.text1
             };
             this.obj2 = {
                 x: 0,
@@ -63,7 +75,7 @@
                 width: this.width,
                 height: this.height/3,
                 depth: this.depth,
-                text: 'test2'
+                text: this.text2
             };
 
             this.obj3 = {
@@ -72,7 +84,7 @@
                 width: this.width,
                 height: this.height/3,
                 depth: this.depth,
-                text: 'test3'
+                text: this.text3
             };
 
             Polymer.dom(this.root).children.forEach(function(box) {
