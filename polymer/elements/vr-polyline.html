@@ -19,30 +19,25 @@
         },
 
         ready: function() {
-			var mod = this;
-			mod.obj = new THREE.Group();
+			var geometry = new THREE.Geometry();
 
-			function addLine(geometry) {
-				if(!mod.dashed) {
-					var material = new THREE.LineBasicMaterial( { color : 0x000000, linewidth: 2 } );
-				} else {
-					var material = new THREE.LineDashedMaterial( {color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 2});
-					geometry.computeLineDistances();
-				}
-
-				mod.obj.add(new THREE.Line(geometry, material));
+			if(!this.dashed) {
+				var material = new THREE.LineBasicMaterial( { color : 0x000000, linewidth: 2 } );
+			} else {
+				var material = new THREE.LineDashedMaterial( {color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 2});
 			}
 
+			this.obj = new THREE.Line(geometry, material);
 
-			Polymer.dom(mod.$.point).observeNodes(function(points) {
-				var geometry = new THREE.Geometry();
+			Polymer.dom(this.$.point).observeNodes(function(points) {
 
                 points.addedNodes.forEach(function(point) {
-                    geometry.vertices.push(new THREE.Vector3(point.x, point.y, 10));
-                }.bind(mod));
+                    geometry.vertices.push(new THREE.Vector3(point.x, point.y, point.z || 0));
+                }.bind(this));
 
-                addLine(geometry);
-            }.bind(mod));
+				// it's needed to create a dashed line
+				geometry.computeLineDistances();
+            }.bind(this));
         }
 
     });
