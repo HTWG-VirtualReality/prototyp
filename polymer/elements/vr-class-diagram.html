@@ -1,0 +1,45 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<dom-module id="vr-class-diagram">
+    <template>
+        <vr-box width="50" height="50" depth="10" text="Class Name"></vr-box>
+        <vr-box y-pos="-50" width="50" height="50" depth="10" text="Attributes"></vr-box>
+        <vr-box y-pos="-100" width="50" height="50" depth="10" text="Methods"></vr-box>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "vr-class-diagram",
+
+        properties: {
+            xPos: {
+                type: Number,
+                value: 0
+            },
+            yPos: {
+                type: Number,
+                value: 0
+            }
+        },
+
+        ready: function() {
+            this.obj = new THREE.Group();
+            this.obj.position.setX(this.xPos);
+            this.obj.position.setY(this.yPos);
+
+            Polymer.dom(this.root).children.forEach(function(box) {
+                this.obj.add(box.obj);
+            }.bind(this));
+        },
+
+        // simple on click
+        onClick: function() {
+            Polymer.dom(this.root).children.forEach(function(box) {
+                box.onClick();
+            }.bind(this));
+        }
+
+
+    });
+</script>

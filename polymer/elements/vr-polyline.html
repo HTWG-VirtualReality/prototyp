@@ -1,41 +1,41 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
+<dom-module id="vr-polyline">
+    <template>
+        <content id="point" select="vr-point"></content>
+    </template>
+</dom-module>
+
 <script>
     Polymer({
         is: "vr-polyline",
 
         properties: {
-            from: String,
-            to: String
+            dashed: {
+                type: Boolean,
+                value: false
+            }
         },
 
         ready: function() {
-            if (!this.from || !this.to) {
-                console.error('properties from and to must me set');
-                return;
-            }
-
-            var fromObj = document.querySelector(this.from);
-            var toObj = document.querySelector(this.to);
-            if (!fromObj || !toObj) {
-                console.error('could not find element');
-                return;
-            }
-
-            var material = new THREE.LineBasicMaterial({
-                color: 0x000000,
-                linewidth: 2
-            });
-
             var geometry = new THREE.Geometry();
-            geometry.vertices.push(this._createVector(fromObj.obj.position));
-            geometry.vertices.push(this._createVector(toObj.obj.position));
+
+            if (!this.dashed) {
+                var material = new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2});
+            } else {
+                var material = new THREE.LineDashedMaterial({color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 2});
+            }
 
             this.obj = new THREE.Line(geometry, material);
-        },
 
-        _createVector: function(pos) {
-            return new THREE.Vector3(pos.x, pos.y, pos.z);
+            Polymer.dom(this.$.point).observeNodes(function(points) {
+                points.addedNodes.forEach(function(point) {
+                    geometry.vertices.push(new THREE.Vector3(point.x, point.y, point.z || 0));
+                }.bind(this));
+
+                // it's needed to create a dashed line
+                geometry.computeLineDistances();
+            }.bind(this));
         }
 
     });

@@ -1,4 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../bower_components/threex.dynamictexture/threex.dynamictexture.js"></script>
+<script src="../bower_components/dat.gui/dat.gui.js"></script>
 
 <script>
     Polymer({
@@ -24,26 +26,86 @@
             depth: {
                 type: Number,
                 value: 50
+            },
+            text: {
+                type: String,
+                value: ''
             }
         },
 
+        observers: [
+            'updateBox(width, height, depth)'
+        ],
+
+        updateBox: function() {
+            console.log('TODO');
+            // TODO: box updaten oder neu erstellen....
+        },
+
         ready: function() {
+
+            // 0=left
+            // 1=right
+            // 2=bottom
+            // 3=top
+            // 4=front
+            // 5=back
+            var sides = 6;
+            var materials = [];
+            // init all sides of cube
+            for (var i = 0; i < sides; i++) {
+                materials.push(new THREE.MeshBasicMaterial({
+                    color: 0xffffff
+                }));
+            }
+
+            var dynamicTexture = new THREEx.DynamicTexture(512, 512);
+            dynamicTexture.context.font = "bolder 64px Verdana";
+            dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
+            materials[4].map = dynamicTexture.texture;
+
             // Parameter 1: Width
             // Parameter 2: Height
             // Parameter 3: Depth
-            var geometry = new THREE.BoxGeometry(this.width, this.height, this.depth);
-            var material = new THREE.MeshPhongMaterial({color: 0x4E33D4});
-            var mesh = new THREE.Mesh(geometry, material);
+            var geometry = new THREE.BoxGeometry(this.width, this.height, this.depth),
+                    cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
 
-            var wireframe =  new THREE.BoxHelper(mesh);
-            wireframe.material.color.set(0xffffff);
+            this.wireframe = new THREE.BoxHelper(cube);
+            this.wireframe.material.color.set(0x000000);
 
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
 
-            this.obj.add(mesh);
-            this.obj.add(wireframe);
+            this.obj.add(cube);
+            this.obj.add(this.wireframe);
+        },
+
+        onClick: function() {
+            var self = this;
+
+            // TODO: auslagern in neues polymer element
+            if (!this.gui) {
+                var FizzyText = function() {
+                    this.message = 'Box Control';
+                    this.width = self.width;
+                };
+                var text = new FizzyText();
+                this.gui = new dat.GUI();
+                this.gui.add(text, 'message');
+                var widthController = this.gui.add(text, 'width', 40, 60);
+                widthController.onFinishChange(function(value) {
+                    self.width = value;
+                });
+            }
+
+            if (this.wireframe.material.color.r == 0) {
+                this.wireframe.material.color.set(0xff0000);
+            } else {
+                this.wireframe.material.color.set(0x000000);
+                this.gui.destroy();
+                this.gui = null;
+            }
         }
 
     });
