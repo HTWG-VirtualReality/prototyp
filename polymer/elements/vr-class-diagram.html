@@ -39,7 +39,7 @@
             },
             depth: {
                 type: Number,
-                value: 50
+                value: 20
             }
         },
 
@@ -48,29 +48,30 @@
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
 
+
             this.obj1 = {
                 x: 0,
                 y: 0,
-                width: 50,
-                height: 50,
-                depth: 20,
+                width: this.width,
+                height: this.height/3,
+                depth: this.depth,
                 text: 'test'
             };
             this.obj2 = {
                 x: 0,
-                y: -50,
-                width: 50,
-                height: 50,
-                depth: 20,
+                y: -this.height/3,
+                width: this.width,
+                height: this.height/3,
+                depth: this.depth,
                 text: 'test2'
             };
 
             this.obj3 = {
                 x: 0,
-                y: -100,
-                width: 50,
-                height: 50,
-                depth: 20,
+                y: -this.height/3*2,
+                width: this.width,
+                height: this.height/3,
+                depth: this.depth,
                 text: 'test3'
             };
 
