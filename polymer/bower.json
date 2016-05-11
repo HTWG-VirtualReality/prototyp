@@ -13,6 +13,7 @@
   "dependencies": {
     "polymer": "Polymer/polymer#~1.4.0",
     "threex.dynamictexture": "*",
-    "threex.domevents": "*"
+    "threex.domevents": "*",
+    "dat.gui": "*"
   }
 }
