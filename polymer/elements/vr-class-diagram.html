@@ -2,10 +2,18 @@
 
 <dom-module id="vr-class-diagram">
     <template>
-        <vr-box width="50" height="50" depth="10" text="Class Name"></vr-box>
-        <vr-box y-pos="-50" width="50" height="50" depth="10" text="Attributes"></vr-box>
-        <vr-box y-pos="-100" width="50" height="50" depth="10" text="Methods"></vr-box>
+        <vr-box x-pos="{{obj1.x}}" y-pos="{{obj1.y}}" width="{{obj1.width}}" height="{{obj1.height}}" depth="{{obj1.depth}}" text="{{obj1.text}}"></vr-box>
+        <vr-box x-pos="{{obj2.x}}" y-pos="{{obj2.y}}" width="{{obj2.width}}" height="{{obj2.height}}" depth="{{obj2.depth}}" text="{{obj2.text}}"></vr-box>
+        <vr-box x-pos="{{obj3.x}}" y-pos="{{obj3.y}}" width="{{obj3.width}}" height="{{obj3.height}}" depth="{{obj3.depth}}" text="{{obj3.text}}"></vr-box>
     </template>
+
+    <!-- TODO -->
+    <!--<template is="dom-repeat" items="{{boxItems}}">-->
+    <!--<vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"-->
+    <!--height="{{item.height}}" depth="{{item.depth}}"-->
+    <!--text="{{item.text}}"></vr-box>-->
+    <!--</template>-->
+
 </dom-module>
 
 <script>
@@ -20,6 +28,30 @@
             yPos: {
                 type: Number,
                 value: 0
+            },
+            width: {
+                type: Number,
+                value: 50
+            },
+            height: {
+                type: Number,
+                value: 50
+            },
+            depth: {
+                type: Number,
+                value: 10
+            },
+            text1: {
+                type: String,
+                value: ''
+            },
+            text2: {
+                type: String,
+                value: ''
+            },
+            text3: {
+                type: String,
+                value: ''
             }
         },
 
@@ -27,6 +59,33 @@
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
+
+
+            this.obj1 = {
+                x: 0,
+                y: 0,
+                width: this.width,
+                height: this.height/3,
+                depth: this.depth,
+                text: this.text1
+            };
+            this.obj2 = {
+                x: 0,
+                y: -this.height/3,
+                width: this.width,
+                height: this.height/3,
+                depth: this.depth,
+                text: this.text2
+            };
+
+            this.obj3 = {
+                x: 0,
+                y: -this.height/3*2,
+                width: this.width,
+                height: this.height/3,
+                depth: this.depth,
+                text: this.text3
+            };
 
             Polymer.dom(this.root).children.forEach(function(box) {
                 this.obj.add(box.obj);
