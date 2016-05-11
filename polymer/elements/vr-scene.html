@@ -13,6 +13,14 @@
     Polymer({
         is: "vr-scene",
 
+        controls: {
+            positionX: 0,
+            positionY: 0,
+            mouseX: 0,
+            mouseY: 0,
+            speed: 0.5
+        },
+
         ready: function() {
             function renderer() {
                 var renderer = new THREE.WebGLRenderer({antialias: true});
@@ -43,7 +51,7 @@
             // observe nodes that will added to this element
             Polymer.dom(mod.$.content).observeNodes(function(nodes) {
                 nodes.addedNodes.forEach(function(node) {
-                    this.scene.add(node.obj);
+                    mod.group.add(node.obj);
 
                     // register click listener
                     domEvents.addEventListener(node.obj, 'click', function() {
@@ -60,6 +68,32 @@
 
             // start rendering
             mod._render();
+
+            document.addEventListener('mousedown', onMouseDown, false);
+            function onMouseDown(event) {
+                event.preventDefault();
+
+                document.addEventListener('mousemove', onMouseMove, false );
+                document.addEventListener('mouseup', resetMouse, false );
+                document.addEventListener('mouseout', resetMouse, false );
+
+                mod.controls.positionX = mod.group.position.x;
+                mod.controls.positionY = mod.group.position.y;
+                mod.controls.mouseX = event.clientX;
+                mod.controls.mouseY = event.clientY;
+            }
+            function onMouseMove(event) {
+                var moveX = event.clientX - mod.controls.mouseX;
+                var moveY = mod.controls.mouseY - event.clientY;
+
+                mod.group.position.x = mod.controls.positionX + moveX * mod.controls.speed;
+                mod.group.position.y = mod.controls.positionY + moveY * mod.controls.speed;
+            }
+            function resetMouse() {
+                document.removeEventListener('mousemove', onMouseMove, false );
+                document.removeEventListener('mouseup', resetMouse, false );
+                document.removeEventListener('mouseout', resetMouse, false );
+            }
         },
 
         _render: function() {
