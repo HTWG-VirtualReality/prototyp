@@ -12,8 +12,10 @@
         is: "vr-polyline",
 
         properties: {
-            from: String,
-            to: String
+			dashed: {
+				type: Boolean,
+				value: false
+			}
         },
 
         ready: function() {
@@ -21,7 +23,13 @@
 			mod.obj = new THREE.Group();
 
 			function addLine(geometry) {
-				var material = new THREE.LineBasicMaterial( { color : 0xff0000 } );
+				if(!mod.dashed) {
+					var material = new THREE.LineBasicMaterial( { color : 0x000000, linewidth: 2 } );
+				} else {
+					var material = new THREE.LineDashedMaterial( {color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 2});
+					geometry.computeLineDistances();
+				}
+
 				mod.obj.add(new THREE.Line(geometry, material));
 			}
 
@@ -30,7 +38,6 @@
 				var geometry = new THREE.Geometry();
 
                 points.addedNodes.forEach(function(point) {
-					console.log(point)
                     geometry.vertices.push(new THREE.Vector3(point.x, point.y, 10));
                 }.bind(mod));
 
