@@ -11,6 +11,7 @@
     <link rel="import" href="elements/vr-ellipse.html">
     <link rel="import" href="elements/vr-line-generic.html">
     <link rel="import" href="elements/vr-class-diagram.html">
+    <link rel="import" href="elements/vr-connection-extends.html">
 
     <style>
         body {
@@ -27,7 +28,8 @@
     <!--<vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="10" text="Class Test"></vr-box>-->
     <vr-box id="b2" x-pos="-150" y-pos="-100" depth="10" text="test(): String"></vr-box>
 
-    <vr-line from="#c1" to="#b2"></vr-line>
+    <!-- <vr-line from="#c1" to="#b2"></vr-line> -->
+	<vr-connection-extends from="#c1" to="#b2"></vr-connection-extends>
 
     <vr-polyline dashed>
         <vr-point x="150" y="100"></vr-point>
