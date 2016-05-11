@@ -1,5 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <script src="../bower_components/threex.dynamictexture/threex.dynamictexture.js"></script>
+<script src="../bower_components/dat.gui/dat.gui.js"></script>
 
 <script>
     Polymer({
@@ -81,10 +82,29 @@
         },
 
         onClick: function() {
+            var self = this;
+
+            // TODO: auslagern in neues polymer element
+            if (!this.gui) {
+                var FizzyText = function() {
+                    this.message = 'Box Control';
+                    this.width = self.width;
+                };
+                var text = new FizzyText();
+                this.gui = new dat.GUI();
+                this.gui.add(text, 'message');
+                var widthController = this.gui.add(text, 'width', 40, 60);
+                widthController.onFinishChange(function(value) {
+                    self.width = value;
+                });
+            }
+
             if (this.wireframe.material.color.r == 0) {
                 this.wireframe.material.color.set(0xff0000);
             } else {
                 this.wireframe.material.color.set(0x000000);
+                this.gui.destroy();
+                this.gui = null;
             }
         }
 
