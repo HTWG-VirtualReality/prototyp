@@ -1,5 +1,4 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="vr-point.html">
 
 <dom-module id="vr-polyline">
     <template>
@@ -12,31 +11,30 @@
         is: "vr-polyline",
 
         properties: {
-			dashed: {
-				type: Boolean,
-				value: false
-			}
+            dashed: {
+                type: Boolean,
+                value: false
+            }
         },
 
         ready: function() {
-			var geometry = new THREE.Geometry();
+            var geometry = new THREE.Geometry();
 
-			if(!this.dashed) {
-				var material = new THREE.LineBasicMaterial( { color : 0x000000, linewidth: 2 } );
-			} else {
-				var material = new THREE.LineDashedMaterial( {color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 2});
-			}
+            if (!this.dashed) {
+                var material = new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2});
+            } else {
+                var material = new THREE.LineDashedMaterial({color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 2});
+            }
 
-			this.obj = new THREE.Line(geometry, material);
+            this.obj = new THREE.Line(geometry, material);
 
-			Polymer.dom(this.$.point).observeNodes(function(points) {
-
+            Polymer.dom(this.$.point).observeNodes(function(points) {
                 points.addedNodes.forEach(function(point) {
                     geometry.vertices.push(new THREE.Vector3(point.x, point.y, point.z || 0));
                 }.bind(this));
 
-				// it's needed to create a dashed line
-				geometry.computeLineDistances();
+                // it's needed to create a dashed line
+                geometry.computeLineDistances();
             }.bind(this));
         }
 
