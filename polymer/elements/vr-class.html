@@ -49,6 +49,16 @@
             }
         },
 
+        observers: [
+            'updateClass(xPos, yPos, width, height, depth, text1, text2, text3)'
+        ],
+
+        updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
+            if (this.obj) {
+
+
+            }
+        },
         ready: function () {
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
