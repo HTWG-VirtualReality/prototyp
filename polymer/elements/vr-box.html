@@ -36,33 +36,33 @@
         observers: [
             'updateBox(xPos, yPos, width, height, depth, text)'
         ],
+
         updateBox: function (xPos, yPos, width, height, depth, text) {
-            if (this.cube) {
+            if (this.obj) {
                 this.obj.remove(this.cube);
                 this.obj.remove(this.wireframe);
 
-                this._createBox(this.xPos, this.yPos, this.width, this.height, this.depth, this.text);
+                this._createBox(width, height, depth, text);
+                this.wireframe.material.color.set(0xff0000);
 
                 this.obj.add(this.cube);
                 this.obj.add(this.wireframe);
             }
         },
+
         ready: function () {
-            // 0=left
-            // 1=right
-            // 2=bottom
-            // 3=top
-            // 4=front
-            // 5=back
             var sides = 6;
             this.materials = [];
+
             // init all sides of cube
             for (var i = 0; i < sides; i++) {
                 this.materials.push(new THREE.MeshBasicMaterial({
                     color: 0xffffff
                 }));
             }
-            this._createBox(this.xPos, this.yPos, this.width, this.height, this.depth, this.text);
+
+            // creating cube and wireframe
+            this._createBox(this.width, this.height, this.depth, this.text);
 
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
@@ -70,8 +70,10 @@
             this.obj.add(this.cube);
             this.obj.add(this.wireframe);
         },
+
         onClick: function () {
             var self = this;
+
             // TODO: auslagern in neues polymer element
             if (!this.gui) {
                 var FizzyText = function () {
@@ -94,6 +96,7 @@
                     self.height = height;
                 })
             }
+
             if (this.wireframe.material.color.r == 0) {
                 this.wireframe.material.color.set(0xff0000);
             } else {
@@ -102,14 +105,18 @@
                 this.gui = null;
             }
         },
-        _createBox: function (xPos, yPos, width, height, depth, text) {
+
+        _createBox: function (width, height, depth, text) {
+            // sides of the box
+            var left = 0, right = 1, bottom = 2, top = 3, front = 4, back = 5;
+
+            // create text
             var dynamicTexture = new THREEx.DynamicTexture(512, 512);
             dynamicTexture.context.font = "bolder 64px Verdana";
             dynamicTexture.clear('white').drawText(text, 20, 100, 'black');
-            this.materials[4].map = dynamicTexture.texture;
-            // Parameter 1: Width
-            // Parameter 2: Height
-            // Parameter 3: Depth
+            this.materials[front].map = dynamicTexture.texture;
+
+            // create box and wireframe
             var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth));
             this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
             this.wireframe = new THREE.BoxHelper(this.cube);
