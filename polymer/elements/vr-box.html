@@ -111,9 +111,9 @@
             // Parameter 2: Height
             // Parameter 3: Depth
             var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth));
-            self.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
-            self.wireframe = new THREE.BoxHelper(this.cube);
-            self.wireframe.material.color.set(0x000000);
+            this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
+            this.wireframe = new THREE.BoxHelper(this.cube);
+            this.wireframe.material.color.set(0x000000);
         }
 
     });
