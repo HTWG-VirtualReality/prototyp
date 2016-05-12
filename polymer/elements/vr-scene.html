@@ -19,7 +19,7 @@
             self.renderer = self._createRenderer();
             self.camera = self._createCamera();
             self.scene = new THREE.Scene();
-            self.group = self._createGroup();
+            self.group = self._createGroup(self.renderer.domElement);
             self.scene.add(self.camera);
             self.scene.add(self.group);
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
@@ -64,9 +64,9 @@
             return camera;
         },
 
-        _createGroup: function () {
+        _createGroup: function (dom) {
             var group = new THREE.Group();
-            new THREE.AxisControls(group);
+            new THREE.AxisControls(group, dom);
             return group;
         },
 

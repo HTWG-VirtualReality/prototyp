@@ -1,4 +1,4 @@
-THREE.AxisControls = function (element) {
+THREE.AxisControls = function (element, dom) {
 
   var positionX = 0;
   var positionY = 0;
@@ -6,14 +6,14 @@ THREE.AxisControls = function (element) {
   var mouseY = 0;
   var speed = 0.5;
 
-  document.addEventListener('mousedown', onMouseDown);
+  dom.addEventListener('mousedown', onMouseDown);
 
   function onMouseDown(event) {
     event.preventDefault();
 
-    document.addEventListener('mousemove', onMouseMove);
-    document.addEventListener('mouseup', resetMouse);
-    document.addEventListener('mouseout', resetMouse);
+    dom.addEventListener('mousemove', onMouseMove);
+    dom.addEventListener('mouseup', resetMouse);
+    dom.addEventListener('mouseout', resetMouse);
 
     positionX = element.position.x;
     positionY = element.position.y;
@@ -30,9 +30,9 @@ THREE.AxisControls = function (element) {
   }
 
   function resetMouse() {
-    document.removeEventListener('mousemove', onMouseMove);
-    document.removeEventListener('mouseup', resetMouse);
-    document.removeEventListener('mouseout', resetMouse);
+    dom.removeEventListener('mousemove', onMouseMove);
+    dom.removeEventListener('mouseup', resetMouse);
+    dom.removeEventListener('mouseout', resetMouse);
   }
 };
 
