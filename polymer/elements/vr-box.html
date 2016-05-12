@@ -72,37 +72,10 @@
         },
 
         onClick: function () {
-            var self = this;
-
-            // TODO: auslagern in neues polymer element
-            if (!this.gui) {
-                var FizzyText = function () {
-                    this.message = self.text;
-                    this.width = self.width;
-                    this.height = self.height;
-                };
-                var text = new FizzyText();
-                this.gui = new dat.GUI();
-                var textController = this.gui.add(text, 'message');
-                var widthController = this.gui.add(text, 'width', 30, 70);
-                var heightController = this.gui.add(text, 'height', 30, 70);
-                widthController.onFinishChange(function (width) {
-                    self.width = width;
-                });
-                textController.onFinishChange(function (text) {
-                    self.text = text;
-                });
-                heightController.onFinishChange(function (height) {
-                    self.height = height;
-                })
-            }
-
             if (this.wireframe.material.color.r == 0) {
                 this.wireframe.material.color.set(0xff0000);
             } else {
                 this.wireframe.material.color.set(0x000000);
-                this.gui.destroy();
-                this.gui = null;
             }
         },
 
