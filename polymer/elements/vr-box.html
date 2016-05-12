@@ -37,10 +37,27 @@
             'updateBox(xPos, yPos, width, height, depth, text)'
         ],
 
-        updateBox: function (xPos, yPos, width, height, depth, text) {
+        updateBox: function(xPos, yPos, width, height, depth, text) {
             console.log('New text: ' + text);
             console.log('New width: ' + parseInt(width));
             console.log('New height: ' + parseInt(height));
+
+            if (this.cube) {
+                this.obj.remove(this.cube);
+                this.obj.remove(this.wireframe);
+
+                var geometry = new THREE.BoxGeometry(parseInt(this.width), parseInt(this.height), parseInt(this.depth));
+                this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
+
+                this.wireframe = new THREE.BoxHelper(this.cube);
+                this.wireframe.material.color.set(0xff0000);
+
+                this.obj.add(this.cube);
+                this.obj.add(this.wireframe);
+            }
+        },
+
+        ready: function() {
             // 0=left
             // 1=right
             // 2=bottom
@@ -48,46 +65,42 @@
             // 4=front
             // 5=back
             var sides = 6;
-            var materials = [];
+            this.materials = [];
             // init all sides of cube
             for (var i = 0; i < sides; i++) {
-                materials.push(new THREE.MeshBasicMaterial({
+                this.materials.push(new THREE.MeshBasicMaterial({
                     color: 0xffffff
                 }));
             }
 
             var dynamicTexture = new THREEx.DynamicTexture(512, 512);
             dynamicTexture.context.font = "bolder 64px Verdana";
-            dynamicTexture.clear('white').drawText(text, 20, 100, 'black');
-            materials[4].map = dynamicTexture.texture;
+            dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
+            this.materials[4].map = dynamicTexture.texture;
 
             // Parameter 1: Width
             // Parameter 2: Height
             // Parameter 3: Depth
-            var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth)),
-                    cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+            var geometry = new THREE.BoxGeometry(parseInt(this.width), parseInt(this.height), parseInt(this.depth));
+            this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
 
-            this.wireframe = new THREE.BoxHelper(cube);
+            this.wireframe = new THREE.BoxHelper(this.cube);
             this.wireframe.material.color.set(0x000000);
 
             this.obj = new THREE.Group();
-            this.obj.position.setX(xPos);
-            this.obj.position.setY(yPos);
+            this.obj.position.setX(this.xPos);
+            this.obj.position.setY(this.yPos);
 
-            this.obj.add(cube);
+            this.obj.add(this.cube);
             this.obj.add(this.wireframe);
         },
 
-        ready: function () {
-            this.updateBox(this.xPos, this.yPos, this.width, this.height, this.depth, this.text)
-        },
-
-        onClick: function () {
+        onClick: function() {
             var self = this;
 
             // TODO: auslagern in neues polymer element
             if (!this.gui) {
-                var FizzyText = function () {
+                var FizzyText = function() {
                     this.message = self.text;
                     this.width = self.width;
                     this.height = self.height;
@@ -98,15 +111,15 @@
                 var widthController = this.gui.add(text, 'width', 30, 70);
                 var heightController = this.gui.add(text, 'height', 30, 70);
 
-                widthController.onFinishChange(function (width) {
+                widthController.onFinishChange(function(width) {
                     self.width = width;
                 });
 
-                textController.onFinishChange(function (text) {
+                textController.onFinishChange(function(text) {
                     self.text = text;
                 });
 
-                heightController.onFinishChange(function (height) {
+                heightController.onFinishChange(function(height) {
                     self.height = height;
                 })
             }
