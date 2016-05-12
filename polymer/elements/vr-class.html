@@ -141,9 +141,6 @@
                 var widthController = this.gui.add(text, 'width', 30, 70);
                 var heightController = this.gui.add(text, 'height', 60, 200);
 
-                widthController.onFinishChange(function (width) {
-                    self.width = width;
-                });
                 text1Controller.onFinishChange(function (text) {
                     self.text1 = text;
                 });
@@ -152,6 +149,9 @@
                 });
                 text3Controller.onFinishChange(function (text) {
                     self.text3 = text;
+                });
+                widthController.onFinishChange(function (width) {
+                    self.width = width;
                 });
                 heightController.onFinishChange(function (height) {
                     self.height = height;
