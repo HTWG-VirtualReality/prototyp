@@ -111,7 +111,7 @@
             var left = 0, right = 1, bottom = 2, top = 3, front = 4, back = 5;
 
             // create text
-            var dynamicTexture = new THREEx.DynamicTexture(512, 512);
+            var dynamicTexture = new THREEx.DynamicTexture(width * 10, height * 10);
             dynamicTexture.context.font = "bolder 64px Verdana";
             dynamicTexture.clear('white').drawText(text, 20, 100, 'black');
             this.materials[front].map = dynamicTexture.texture;
