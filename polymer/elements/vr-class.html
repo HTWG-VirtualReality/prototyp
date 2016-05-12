@@ -1,10 +1,13 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<dom-module id="vr-class-diagram">
+<dom-module id="vr-class">
     <template>
-        <vr-box x-pos="{{obj1.x}}" y-pos="{{obj1.y}}" width="{{obj1.width}}" height="{{obj1.height}}" depth="{{obj1.depth}}" text="{{obj1.text}}"></vr-box>
-        <vr-box x-pos="{{obj2.x}}" y-pos="{{obj2.y}}" width="{{obj2.width}}" height="{{obj2.height}}" depth="{{obj2.depth}}" text="{{obj2.text}}"></vr-box>
-        <vr-box x-pos="{{obj3.x}}" y-pos="{{obj3.y}}" width="{{obj3.width}}" height="{{obj3.height}}" depth="{{obj3.depth}}" text="{{obj3.text}}"></vr-box>
+        <vr-box x-pos="{{obj1.x}}" y-pos="{{obj1.y}}" width="{{obj1.width}}" height="{{obj1.height}}"
+                depth="{{obj1.depth}}" text="{{obj1.text}}"></vr-box>
+        <vr-box x-pos="{{obj2.x}}" y-pos="{{obj2.y}}" width="{{obj2.width}}" height="{{obj2.height}}"
+                depth="{{obj2.depth}}" text="{{obj2.text}}"></vr-box>
+        <vr-box x-pos="{{obj3.x}}" y-pos="{{obj3.y}}" width="{{obj3.width}}" height="{{obj3.height}}"
+                depth="{{obj3.depth}}" text="{{obj3.text}}"></vr-box>
     </template>
 
     <!-- TODO -->
@@ -18,7 +21,7 @@
 
 <script>
     Polymer({
-        is: "vr-class-diagram",
+        is: "vr-class",
 
         properties: {
             xPos: {
@@ -65,24 +68,24 @@
                 x: 0,
                 y: 0,
                 width: this.width,
-                height: this.height/3,
+                height: this.height / 3,
                 depth: this.depth,
                 text: this.text1
             };
             this.obj2 = {
                 x: 0,
-                y: -this.height/3,
+                y: -this.height / 3,
                 width: this.width,
-                height: this.height/3,
+                height: this.height / 3,
                 depth: this.depth,
                 text: this.text2
             };
 
             this.obj3 = {
                 x: 0,
-                y: -this.height/3*2,
+                y: -this.height / 3 * 2,
                 width: this.width,
-                height: this.height/3,
+                height: this.height / 3,
                 depth: this.depth,
                 text: this.text3
             };
@@ -98,7 +101,6 @@
                 box.onClick();
             }.bind(this));
         }
-
 
     });
 </script>
