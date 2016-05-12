@@ -59,12 +59,12 @@
                             node.onClick();
                         }
                     }, false);
-                }.bind(this));
+                });
 
                 nodes.removedNodes.forEach(function(node) {
                     mod.group.remove(node.obj);
-                }.bind(mod));
-            }.bind(mod));
+                });
+            });
 
             // start rendering
             mod._render();
