@@ -84,6 +84,7 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
         margin: options.margin !== undefined ? options.margin : 0.1,
         lineHeight: options.lineHeight !== undefined ? options.lineHeight : 0.1,
         align: options.align !== undefined ? options.align : 'left',
+        center: options.center !== undefined ? options.center : false,
         fillStyle: options.fillStyle !== undefined ? options.fillStyle : 'black',
         font: options.font !== undefined ? options.font : "bold " + (0.2 * 512) + "px Arial",
     };
@@ -95,6 +96,11 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     context.font = params.font;
 
     var y = (params.lineHeight + params.margin) * canvas.height;
+    if (params.center) {
+        params.align = 'center';
+        y = canvas.height - y * 2;
+    }
+
     var splittedText = text.split(linebreak);
     splittedText.forEach(function (text) {
         while (text.length > 0) {
@@ -102,7 +108,6 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
             var maxText = computeMaxTextLength(text);
             // update the remaining text
             text = text.substr(maxText.length);
-
 
             // compute x based on params.align
             var textSize = context.measureText(maxText);

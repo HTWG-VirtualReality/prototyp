@@ -5,7 +5,7 @@
         <template is="dom-repeat" items="{{boxItems}}">
             <vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"
                     height="{{item.height}}" depth="{{item.depth}}"
-                    text="{{item.text}}"></vr-box>
+                    text="{{item.text}}" text-center="{{item.textCenter}}"></vr-box>
         </template>
     </template>
 </dom-module>
@@ -96,7 +96,8 @@
                     width: width,
                     height: heightValueElement1,
                     depth: depth,
-                    text: text1
+                    text: text1,
+                    textCenter: true
                 },
                 {
                     x: 0,
@@ -104,7 +105,8 @@
                     width: width,
                     height: elementHigh,
                     depth: depth,
-                    text: text2
+                    text: text2,
+                    textCenter: false
                 },
                 {
                     x: 0,
@@ -112,7 +114,8 @@
                     width: width,
                     height: elementHigh,
                     depth: depth,
-                    text: text3
+                    text: text3,
+                    textCenter: false
                 }];
 
             return properties;

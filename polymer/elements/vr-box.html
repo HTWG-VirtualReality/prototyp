@@ -30,6 +30,10 @@
             text: {
                 type: String,
                 value: ''
+            },
+            textCenter: {
+                type: Boolean,
+                value: false
             }
         },
 
@@ -88,7 +92,11 @@
 
             // create text
             var dynamicTexture = new THREEx.DynamicTexture(width * 10, height * 10);
-            dynamicTexture.clear('white').drawTextCooked({text: text, font: "bold 64px Verdana"});
+            dynamicTexture.clear('white').drawTextCooked({
+                text: text,
+                font: "bold 64px Verdana",
+                center: this.textCenter
+            });
             this.materials[front].map = dynamicTexture.texture;
 
             // create box and wireframe
