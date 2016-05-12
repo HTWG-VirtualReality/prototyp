@@ -36,23 +36,12 @@
         observers: [
             'updateBox(xPos, yPos, width, height, depth, text)'
         ],
-
         updateBox: function (xPos, yPos, width, height, depth, text) {
             if (this.cube) {
                 this.obj.remove(this.cube);
                 this.obj.remove(this.wireframe);
 
-                var dynamicTexture = new THREEx.DynamicTexture(512, 512);
-                dynamicTexture.context.font = "bolder 64px Verdana";
-                dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
-                this.materials[4].map = dynamicTexture.texture;
-                // Parameter 1: Width
-                // Parameter 2: Height
-                // Parameter 3: Depth
-                var geometry = new THREE.BoxGeometry(parseInt(this.width), parseInt(this.height), parseInt(this.depth));
-                this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
-                this.wireframe = new THREE.BoxHelper(this.cube);
-                this.wireframe.material.color.set(0x000000);
+                this._createBox(this.xPos, this.yPos, this.width, this.height, this.depth, this.text);
 
                 this.obj.add(this.cube);
                 this.obj.add(this.wireframe);
@@ -73,17 +62,8 @@
                     color: 0xffffff
                 }));
             }
-            var dynamicTexture = new THREEx.DynamicTexture(512, 512);
-            dynamicTexture.context.font = "bolder 64px Verdana";
-            dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
-            this.materials[4].map = dynamicTexture.texture;
-            // Parameter 1: Width
-            // Parameter 2: Height
-            // Parameter 3: Depth
-            var geometry = new THREE.BoxGeometry(parseInt(this.width), parseInt(this.height), parseInt(this.depth));
-            this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
-            this.wireframe = new THREE.BoxHelper(this.cube);
-            this.wireframe.material.color.set(0x000000);
+            this._createBox(this.xPos, this.yPos, this.width, this.height, this.depth, this.text);
+
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
@@ -121,6 +101,21 @@
                 this.gui.destroy();
                 this.gui = null;
             }
+        },
+        _createBox: function (xPos, yPos, width, height, depth, text) {
+            var self = this;
+            var dynamicTexture = new THREEx.DynamicTexture(512, 512);
+            dynamicTexture.context.font = "bolder 64px Verdana";
+            dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
+            self.materials[4].map = dynamicTexture.texture;
+            // Parameter 1: Width
+            // Parameter 2: Height
+            // Parameter 3: Depth
+            var geometry = new THREE.BoxGeometry(parseInt(this.width), parseInt(this.height), parseInt(this.depth));
+            self.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(self.materials));
+            self.wireframe = new THREE.BoxHelper(this.cube);
+            self.wireframe.material.color.set(0x000000);
         }
+
     });
 </script>
