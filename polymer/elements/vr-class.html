@@ -49,7 +49,7 @@
             }
         },
 
-        ready: function() {
+        ready: function () {
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
@@ -82,22 +82,22 @@
             ];
         },
 
-        attached: function() {
-            this._getChildren().forEach(function(box) {
+        attached: function () {
+            this._getChildren().forEach(function (box) {
                 this.obj.add(box.obj);
             }.bind(this));
         },
 
-        _getChildren: function() {
+        _getChildren: function () {
             // return all children except template element
-            return Polymer.dom(this.root).children.filter(function(node) {
+            return Polymer.dom(this.root).children.filter(function (node) {
                 return node.localName != 'template';
             });
         },
 
         // simple on click
-        onClick: function() {
-            this._getChildren().forEach(function(box) {
+        onClick: function () {
+            this._getChildren().forEach(function (box) {
                 box.onClick();
             }.bind(this));
         }

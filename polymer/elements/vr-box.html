@@ -103,16 +103,15 @@
             }
         },
         _createBox: function (xPos, yPos, width, height, depth, text) {
-            var self = this;
             var dynamicTexture = new THREEx.DynamicTexture(512, 512);
             dynamicTexture.context.font = "bolder 64px Verdana";
-            dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
-            self.materials[4].map = dynamicTexture.texture;
+            dynamicTexture.clear('white').drawText(text, 20, 100, 'black');
+            this.materials[4].map = dynamicTexture.texture;
             // Parameter 1: Width
             // Parameter 2: Height
             // Parameter 3: Depth
-            var geometry = new THREE.BoxGeometry(parseInt(this.width), parseInt(this.height), parseInt(this.depth));
-            self.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(self.materials));
+            var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth));
+            self.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
             self.wireframe = new THREE.BoxHelper(this.cube);
             self.wireframe.material.color.set(0x000000);
         }
