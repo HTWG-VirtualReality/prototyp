@@ -2,6 +2,7 @@
 
 <script src="../bower_components/threejs/build/three.min.js"></script>
 <script src="../bower_components/threex.domevents/threex.domevents.js"></script>
+<script src="../js/axis-controls.js"></script>
 
 <dom-module id="vr-scene">
     <template>
@@ -13,20 +14,12 @@
     Polymer({
         is: "vr-scene",
 
-        controls: {
-            positionX: 0,
-            positionY: 0,
-            mouseX: 0,
-            mouseY: 0,
-            speed: 0.5
-        },
-
-        ready: function() {
+        ready: function () {
             var self = this;
             self.renderer = self._createRenderer();
             self.camera = self._createCamera();
             self.scene = new THREE.Scene();
-            self.group = new THREE.Group();
+            self.group = self._createGroup();
             self.scene.add(self.camera);
             self.scene.add(self.group);
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
@@ -35,31 +28,28 @@
             var domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
 
             // observe nodes that will added to this element
-            Polymer.dom(self.$.content).observeNodes(function(nodes) {
-                nodes.addedNodes.forEach(function(node) {
+            Polymer.dom(self.$.content).observeNodes(function (nodes) {
+                nodes.addedNodes.forEach(function (node) {
                     self.group.add(node.obj);
 
                     // register click listener
-                    domEvents.addEventListener(node.obj, 'click', function() {
+                    domEvents.addEventListener(node.obj, 'click', function () {
                         if (node.onClick) {
                             node.onClick();
                         }
                     }, false);
                 });
 
-                nodes.removedNodes.forEach(function(node) {
+                nodes.removedNodes.forEach(function (node) {
                     self.group.remove(node.obj);
                 });
             });
-
-            // register mouse listener to move content on x and y axis
-            this.listen(this, 'mousedown', '_onMouseDown');
 
             // start rendering
             self._render();
         },
 
-        _createRenderer: function() {
+        _createRenderer: function () {
             var renderer = new THREE.WebGLRenderer({antialias: true});
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
@@ -67,41 +57,20 @@
             return renderer;
         },
 
-        _createCamera: function() {
+        _createCamera: function () {
             var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
             camera.add(new THREE.PointLight(0xffffff));
             camera.position.setZ(200);
             return camera;
         },
 
-        _onMouseDown: function(event) {
-            event.preventDefault();
-
-            this.listen(this, 'mousemove', '_onMouseMove');
-            this.listen(this, 'mouseup', '_resetMouse');
-            this.listen(this, 'mouseout', '_resetMouse');
-
-            this.controls.positionX = this.group.position.x;
-            this.controls.positionY = this.group.position.y;
-            this.controls.mouseX = event.clientX;
-            this.controls.mouseY = event.clientY;
+        _createGroup: function () {
+            var group = new THREE.Group();
+            new THREE.AxisControls(group);
+            return group;
         },
 
-        _onMouseMove: function(event) {
-            var moveX = event.clientX - this.controls.mouseX;
-            var moveY = this.controls.mouseY - event.clientY;
-
-            this.group.position.x = this.controls.positionX + moveX * this.controls.speed;
-            this.group.position.y = this.controls.positionY + moveY * this.controls.speed;
-        },
-
-        _resetMouse: function() {
-            this.unlisten(this, 'mousemove', '_onMouseMove');
-            this.unlisten(this, 'mouseup', '_resetMouse');
-            this.unlisten(this, 'mouseout', '_resetMouse');
-        },
-
-        _render: function() {
+        _render: function () {
             requestAnimationFrame(this._render.bind(this));
             this.renderer.render(this.scene, this.camera);
         }
