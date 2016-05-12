@@ -42,7 +42,10 @@
                 this.obj.remove(this.cube);
                 this.obj.remove(this.wireframe);
 
-
+                var dynamicTexture = new THREEx.DynamicTexture(512, 512);
+                dynamicTexture.context.font = "bolder 64px Verdana";
+                dynamicTexture.clear('white').drawText(this.text, 20, 100, 'black');
+                this.materials[4].map = dynamicTexture.texture;
                 // Parameter 1: Width
                 // Parameter 2: Height
                 // Parameter 3: Depth
