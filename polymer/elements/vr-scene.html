@@ -22,23 +22,9 @@
         },
 
         ready: function() {
-            function renderer() {
-                var renderer = new THREE.WebGLRenderer({antialias: true});
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                renderer.setPixelRatio(window.devicePixelRatio);
-                renderer.setClearColor(0xf0f0f0);
-                return renderer;
-            }
-            function camera() {
-                var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
-                camera.add(new THREE.PointLight(0xffffff));
-                camera.position.setZ(200);
-                return camera;
-            }
-
             var self = this;
-            self.renderer = renderer();
-            self.camera = camera();
+            self.renderer = self._createRenderer();
+            self.camera = self._createCamera();
             self.scene = new THREE.Scene();
             self.group = new THREE.Group();
             self.scene.add(self.camera);
@@ -46,7 +32,7 @@
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
             // domEvents to listen for dom events inside our 3d scene
-            var domEvents = new THREEx.DomEvents(this.camera, this.renderer.domElement);
+            var domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
 
             // observe nodes that will added to this element
             Polymer.dom(self.$.content).observeNodes(function(nodes) {
@@ -66,34 +52,53 @@
                 });
             });
 
+            // register mouse listener to move content on x and y axis
+            document.addEventListener('mousedown', self._onMouseDown.bind(self), false);
+
             // start rendering
             self._render();
+        },
 
-            document.addEventListener('mousedown', onMouseDown, false);
-            function onMouseDown(event) {
-                event.preventDefault();
+        _createRenderer: function() {
+            var renderer = new THREE.WebGLRenderer({antialias: true});
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.setPixelRatio(window.devicePixelRatio);
+            renderer.setClearColor(0xf0f0f0);
+            return renderer;
+        },
 
-                document.addEventListener('mousemove', onMouseMove, false );
-                document.addEventListener('mouseup', resetMouse, false );
-                document.addEventListener('mouseout', resetMouse, false );
+        _createCamera: function() {
+            var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.add(new THREE.PointLight(0xffffff));
+            camera.position.setZ(200);
+            return camera;
+        },
 
-                self.controls.positionX = self.group.position.x;
-                self.controls.positionY = self.group.position.y;
-                self.controls.mouseX = event.clientX;
-                self.controls.mouseY = event.clientY;
-            }
-            function onMouseMove(event) {
-                var moveX = event.clientX - self.controls.mouseX;
-                var moveY = self.controls.mouseY - event.clientY;
+        _onMouseDown: function(event) {
+            event.preventDefault();
 
-                self.group.position.x = self.controls.positionX + moveX * self.controls.speed;
-                self.group.position.y = self.controls.positionY + moveY * self.controls.speed;
-            }
-            function resetMouse() {
-                document.removeEventListener('mousemove', onMouseMove, false );
-                document.removeEventListener('mouseup', resetMouse, false );
-                document.removeEventListener('mouseout', resetMouse, false );
-            }
+            document.addEventListener('mousemove', this._onMouseMove.bind(this), false);
+            document.addEventListener('mouseup', this._resetMouse.bind(this), false);
+            document.addEventListener('mouseout', this._resetMouse.bind(this), false);
+
+            this.controls.positionX = this.group.position.x;
+            this.controls.positionY = this.group.position.y;
+            this.controls.mouseX = event.clientX;
+            this.controls.mouseY = event.clientY;
+        },
+
+        _onMouseMove: function(event) {
+            var moveX = event.clientX - this.controls.mouseX;
+            var moveY = this.controls.mouseY - event.clientY;
+
+            this.group.position.x = this.controls.positionX + moveX * this.controls.speed;
+            this.group.position.y = this.controls.positionY + moveY * this.controls.speed;
+        },
+
+        _resetMouse: function() {
+            document.removeEventListener('mousemove', this.onMouseMove, false);
+            document.removeEventListener('mouseup', this._resetMouse, false);
+            document.removeEventListener('mouseout', this._resetMouse, false);
         },
 
         _render: function() {
