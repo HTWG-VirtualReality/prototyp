@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
-<dom-module id="vr-class-diagram">
+<dom-module id="vr-class">
     <template>
         <vr-box x-pos="{{obj1.x}}" y-pos="{{obj1.y}}" width="{{obj1.width}}" height="{{obj1.height}}" depth="{{obj1.depth}}" text="{{obj1.text}}"></vr-box>
         <vr-box x-pos="{{obj2.x}}" y-pos="{{obj2.y}}" width="{{obj2.width}}" height="{{obj2.height}}" depth="{{obj2.depth}}" text="{{obj2.text}}"></vr-box>
@@ -18,7 +18,7 @@
 
 <script>
     Polymer({
-        is: "vr-class-diagram",
+        is: "vr-class",
 
         properties: {
             xPos: {
