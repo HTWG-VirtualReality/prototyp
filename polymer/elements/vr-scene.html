@@ -14,7 +14,7 @@
     Polymer({
         is: "vr-scene",
 
-        ready: function() {
+        ready: function () {
             var self = this;
             self.renderer = self._createRenderer();
             self.camera = self._createCamera();
@@ -28,19 +28,19 @@
             var domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
 
             // observe nodes that will added to this element
-            Polymer.dom(self.$.content).observeNodes(function(nodes) {
-                nodes.addedNodes.forEach(function(node) {
+            Polymer.dom(self.$.content).observeNodes(function (nodes) {
+                nodes.addedNodes.forEach(function (node) {
                     self.group.add(node.obj);
 
                     // register click listener
-                    domEvents.addEventListener(node.obj, 'click', function() {
+                    domEvents.addEventListener(node.obj, 'click', function () {
                         if (node.onClick) {
                             node.onClick();
                         }
                     }, false);
                 });
 
-                nodes.removedNodes.forEach(function(node) {
+                nodes.removedNodes.forEach(function (node) {
                     self.group.remove(node.obj);
                 });
             });
@@ -49,7 +49,7 @@
             self._render();
         },
 
-        _createRenderer: function() {
+        _createRenderer: function () {
             var renderer = new THREE.WebGLRenderer({antialias: true});
             renderer.setSize(window.innerWidth, window.innerHeight);
             renderer.setPixelRatio(window.devicePixelRatio);
@@ -57,20 +57,20 @@
             return renderer;
         },
 
-        _createCamera: function() {
+        _createCamera: function () {
             var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
             camera.add(new THREE.PointLight(0xffffff));
             camera.position.setZ(200);
             return camera;
         },
-        
+
         _createGroup: function () {
             var group = new THREE.Group();
-            new THREE.AxisControls(self.group);
+            new THREE.AxisControls(group);
             return group;
         },
 
-        _render: function() {
+        _render: function () {
             requestAnimationFrame(this._render.bind(this));
             this.renderer.render(this.scene, this.camera);
         }
