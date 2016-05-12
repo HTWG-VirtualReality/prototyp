@@ -2,21 +2,12 @@
 
 <dom-module id="vr-class">
     <template>
-        <vr-box x-pos="{{obj1.x}}" y-pos="{{obj1.y}}" width="{{obj1.width}}" height="{{obj1.height}}"
-                depth="{{obj1.depth}}" text="{{obj1.text}}"></vr-box>
-        <vr-box x-pos="{{obj2.x}}" y-pos="{{obj2.y}}" width="{{obj2.width}}" height="{{obj2.height}}"
-                depth="{{obj2.depth}}" text="{{obj2.text}}"></vr-box>
-        <vr-box x-pos="{{obj3.x}}" y-pos="{{obj3.y}}" width="{{obj3.width}}" height="{{obj3.height}}"
-                depth="{{obj3.depth}}" text="{{obj3.text}}"></vr-box>
+        <template is="dom-repeat" items="{{boxItems}}">
+            <vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"
+                    height="{{item.height}}" depth="{{item.depth}}"
+                    text="{{item.text}}"></vr-box>
+        </template>
     </template>
-
-    <!-- TODO -->
-    <!--<template is="dom-repeat" items="{{boxItems}}">-->
-    <!--<vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"-->
-    <!--height="{{item.height}}" depth="{{item.depth}}"-->
-    <!--text="{{item.text}}"></vr-box>-->
-    <!--</template>-->
-
 </dom-module>
 
 <script>
@@ -63,41 +54,50 @@
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
 
+            this.boxItems = [
+                {
+                    x: 0,
+                    y: 0,
+                    width: this.width,
+                    height: this.height / 3,
+                    depth: this.depth,
+                    text: this.text1
+                },
+                {
+                    x: 0,
+                    y: -this.height / 3,
+                    width: this.width,
+                    height: this.height / 3,
+                    depth: this.depth,
+                    text: this.text2
+                },
+                {
+                    x: 0,
+                    y: -this.height / 3 * 2,
+                    width: this.width,
+                    height: this.height / 3,
+                    depth: this.depth,
+                    text: this.text3
+                }
+            ];
+        },
 
-            this.obj1 = {
-                x: 0,
-                y: 0,
-                width: this.width,
-                height: this.height / 3,
-                depth: this.depth,
-                text: this.text1
-            };
-            this.obj2 = {
-                x: 0,
-                y: -this.height / 3,
-                width: this.width,
-                height: this.height / 3,
-                depth: this.depth,
-                text: this.text2
-            };
-
-            this.obj3 = {
-                x: 0,
-                y: -this.height / 3 * 2,
-                width: this.width,
-                height: this.height / 3,
-                depth: this.depth,
-                text: this.text3
-            };
-
-            Polymer.dom(this.root).children.forEach(function(box) {
+        attached: function() {
+            this._getChildren().forEach(function(box) {
                 this.obj.add(box.obj);
             }.bind(this));
         },
 
+        _getChildren: function() {
+            // return all children except template element
+            return Polymer.dom(this.root).children.filter(function(node) {
+                return node.localName != 'template';
+            });
+        },
+
         // simple on click
         onClick: function() {
-            Polymer.dom(this.root).children.forEach(function(box) {
+            this._getChildren().forEach(function(box) {
                 box.onClick();
             }.bind(this));
         }
