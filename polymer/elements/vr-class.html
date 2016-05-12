@@ -82,16 +82,17 @@
         },
 
         _getBoxItemProperties: function (width, height, depth, text1, text2, text3) {
-                var elementHigh = height / 3;
-                var yElement1 = -elementHigh / 2;
-                var yElement2 = yElement1 - elementHigh;
-                var yElement3 = yElement2 - elementHigh;
+            var firstElementHigh = 20;
+            var elementHigh = (height-firstElementHigh/2) / 2;
+            var yElement1 = -firstElementHigh / 2;
+            var yElement2 =  -firstElementHigh - elementHigh/2 + .25;
+            var yElement3 = yElement2 - elementHigh + .25;
             var properties = [
                 {
                     x: 0,
                     y: yElement1,
                     width: width,
-                    height: elementHigh,
+                    height: firstElementHigh,
                     depth: depth,
                     text: text1
                 },
