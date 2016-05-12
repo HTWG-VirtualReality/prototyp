@@ -45,6 +45,9 @@
                 this._createBox(width, height, depth, text);
                 this.wireframe.material.color.set(0xff0000);
 
+                this.obj.position.setX(xPos);
+                this.obj.position.setY(yPos);
+
                 this.obj.add(this.cube);
                 this.obj.add(this.wireframe);
             }
