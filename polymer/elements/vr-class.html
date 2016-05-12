@@ -55,35 +55,9 @@
 
         updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
             if (this.obj) {
-
-                var hoeheProElement = height / 3;
-                var yElement1 = hoeheProElement;
-                var yElement2 = hoeheProElement;
-                var yElement3 = hoeheProElement;
-                this.splice('boxItems',0, 3, {
-                            x: 0,
-                            y: 0-(yElement1/2),
-                            width: width,
-                            height: hoeheProElement,
-                            depth: depth,
-                            text: text1
-                        },
-                        {
-                            x: 0,
-                            y: 0-(yElement1/2)-(yElement2),
-                            width: width,
-                            height: hoeheProElement,
-                            depth: depth,
-                            text: text2
-                        },
-                        {
-                            x: 0,
-                            y: -(yElement1/2)-(yElement2)-(yElement3),
-                            width: width,
-                            height: hoeheProElement,
-                            depth: depth,
-                            text: text3
-                        })
+                // TODO const numberOfElements = 3;
+                var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3);
+                this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
             }
         },
         ready: function () {
@@ -91,32 +65,7 @@
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
 
-            this.boxItems = [
-                {
-                    x: 0,
-                    y: 0,
-                    width: this.width,
-                    height: this.height / 3,
-                    depth: this.depth,
-                    text: this.text1
-                },
-                {
-                    x: 0,
-                    y: -this.height / 3,
-                    width: this.width,
-                    height: this.height / 3,
-                    depth: this.depth,
-                    text: this.text2
-                },
-                {
-                    x: 0,
-                    y: -this.height / 3 * 2,
-                    width: this.width,
-                    height: this.height / 3,
-                    depth: this.depth,
-                    text: this.text3
-                }
-            ];
+            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3);
         },
 
         attached: function () {
@@ -132,6 +81,40 @@
             });
         },
 
+        _getBoxItemProperties: function (width, height, depth, text1, text2, text3) {
+                var elementHigh = height / 3;
+                var yElement1 = -elementHigh / 2;
+                var yElement2 = yElement1 - elementHigh;
+                var yElement3 = yElement2 - elementHigh;
+            var properties = [
+                {
+                    x: 0,
+                    y: yElement1,
+                    width: width,
+                    height: elementHigh,
+                    depth: depth,
+                    text: text1
+                },
+                {
+                    x: 0,
+                    y: yElement2,
+                    width: width,
+                    height: elementHigh,
+                    depth: depth,
+                    text: text2
+                },
+                {
+                    x: 0,
+                    y: yElement3,
+                    width: width,
+                    height: elementHigh,
+                    depth: depth,
+                    text: text3
+                }];
+
+            return properties;
+
+        },
         // simple on click
         onClick: function () {
             var self = this;
