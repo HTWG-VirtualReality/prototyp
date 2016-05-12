@@ -2,6 +2,7 @@
 
 <script src="../bower_components/threejs/build/three.min.js"></script>
 <script src="../bower_components/threex.domevents/threex.domevents.js"></script>
+<script src="../js/axis-controls.js"></script>
 
 <dom-module id="vr-scene">
     <template>
@@ -13,20 +14,12 @@
     Polymer({
         is: "vr-scene",
 
-        controls: {
-            positionX: 0,
-            positionY: 0,
-            mouseX: 0,
-            mouseY: 0,
-            speed: 0.5
-        },
-
         ready: function() {
             var self = this;
             self.renderer = self._createRenderer();
             self.camera = self._createCamera();
             self.scene = new THREE.Scene();
-            self.group = new THREE.Group();
+            self.group = self._createGroup();
             self.scene.add(self.camera);
             self.scene.add(self.group);
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
@@ -52,9 +45,6 @@
                 });
             });
 
-            // register mouse listener to move content on x and y axis
-            this.listen(this, 'mousedown', '_onMouseDown');
-
             // start rendering
             self._render();
         },
@@ -73,32 +63,11 @@
             camera.position.setZ(200);
             return camera;
         },
-
-        _onMouseDown: function(event) {
-            event.preventDefault();
-
-            this.listen(this, 'mousemove', '_onMouseMove');
-            this.listen(this, 'mouseup', '_resetMouse');
-            this.listen(this, 'mouseout', '_resetMouse');
-
-            this.controls.positionX = this.group.position.x;
-            this.controls.positionY = this.group.position.y;
-            this.controls.mouseX = event.clientX;
-            this.controls.mouseY = event.clientY;
-        },
-
-        _onMouseMove: function(event) {
-            var moveX = event.clientX - this.controls.mouseX;
-            var moveY = this.controls.mouseY - event.clientY;
-
-            this.group.position.x = this.controls.positionX + moveX * this.controls.speed;
-            this.group.position.y = this.controls.positionY + moveY * this.controls.speed;
-        },
-
-        _resetMouse: function() {
-            this.unlisten(this, 'mousemove', '_onMouseMove');
-            this.unlisten(this, 'mouseup', '_resetMouse');
-            this.unlisten(this, 'mouseout', '_resetMouse');
+        
+        _createGroup: function () {
+            var group = new THREE.Group();
+            new THREE.AxisControls(self.group);
+            return group;
         },
 
         _render: function() {
