@@ -36,22 +36,22 @@
                 return camera;
             }
 
-            var mod = this;
-            mod.renderer = renderer();
-            mod.camera = camera();
-            mod.scene = new THREE.Scene();
-            mod.group = new THREE.Group();
-            mod.scene.add(mod.camera);
-            mod.scene.add(mod.group);
-            Polymer.dom(mod.root).appendChild(mod.renderer.domElement);
+            var self = this;
+            self.renderer = renderer();
+            self.camera = camera();
+            self.scene = new THREE.Scene();
+            self.group = new THREE.Group();
+            self.scene.add(self.camera);
+            self.scene.add(self.group);
+            Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
             // domEvents to listen for dom events inside our 3d scene
             var domEvents = new THREEx.DomEvents(this.camera, this.renderer.domElement);
 
             // observe nodes that will added to this element
-            Polymer.dom(mod.$.content).observeNodes(function(nodes) {
+            Polymer.dom(self.$.content).observeNodes(function(nodes) {
                 nodes.addedNodes.forEach(function(node) {
-                    mod.group.add(node.obj);
+                    self.group.add(node.obj);
 
                     // register click listener
                     domEvents.addEventListener(node.obj, 'click', function() {
@@ -62,12 +62,12 @@
                 });
 
                 nodes.removedNodes.forEach(function(node) {
-                    mod.group.remove(node.obj);
+                    self.group.remove(node.obj);
                 });
             });
 
             // start rendering
-            mod._render();
+            self._render();
 
             document.addEventListener('mousedown', onMouseDown, false);
             function onMouseDown(event) {
@@ -77,17 +77,17 @@
                 document.addEventListener('mouseup', resetMouse, false );
                 document.addEventListener('mouseout', resetMouse, false );
 
-                mod.controls.positionX = mod.group.position.x;
-                mod.controls.positionY = mod.group.position.y;
-                mod.controls.mouseX = event.clientX;
-                mod.controls.mouseY = event.clientY;
+                self.controls.positionX = self.group.position.x;
+                self.controls.positionY = self.group.position.y;
+                self.controls.mouseX = event.clientX;
+                self.controls.mouseY = event.clientY;
             }
             function onMouseMove(event) {
-                var moveX = event.clientX - mod.controls.mouseX;
-                var moveY = mod.controls.mouseY - event.clientY;
+                var moveX = event.clientX - self.controls.mouseX;
+                var moveY = self.controls.mouseY - event.clientY;
 
-                mod.group.position.x = mod.controls.positionX + moveX * mod.controls.speed;
-                mod.group.position.y = mod.controls.positionY + moveY * mod.controls.speed;
+                self.group.position.x = self.controls.positionX + moveX * self.controls.speed;
+                self.group.position.y = self.controls.positionY + moveY * self.controls.speed;
             }
             function resetMouse() {
                 document.removeEventListener('mousemove', onMouseMove, false );
