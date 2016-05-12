@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<script src="../bower_components/threex.dynamictexture/threex.dynamictexture.js"></script>
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
+<script src="../js/threex.dynamic-texture.js"></script>
 
 <script>
     Polymer({
@@ -88,8 +88,7 @@
 
             // create text
             var dynamicTexture = new THREEx.DynamicTexture(width * 10, height * 10);
-            dynamicTexture.context.font = "bolder 64px Verdana";
-            dynamicTexture.clear('white').drawText(text, 20, 100, 'black');
+            dynamicTexture.clear('white').drawTextCooked({text: text, font: "bold 64px Verdana"});
             this.materials[front].map = dynamicTexture.texture;
 
             // create box and wireframe
