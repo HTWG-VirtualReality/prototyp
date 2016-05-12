@@ -56,7 +56,34 @@
         updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
             if (this.obj) {
 
-
+                var hoeheProElement = height / 3;
+                var yElement1 = hoeheProElement;
+                var yElement2 = hoeheProElement;
+                var yElement3 = hoeheProElement;
+                this.splice('boxItems',0, 3, {
+                            x: 0,
+                            y: 0-(yElement1/2),
+                            width: width,
+                            height: hoeheProElement,
+                            depth: depth,
+                            text: text1
+                        },
+                        {
+                            x: 0,
+                            y: 0-(yElement1/2)-(yElement2),
+                            width: width,
+                            height: hoeheProElement,
+                            depth: depth,
+                            text: text2
+                        },
+                        {
+                            x: 0,
+                            y: -(yElement1/2)-(yElement2)-(yElement3),
+                            width: width,
+                            height: hoeheProElement,
+                            depth: depth,
+                            text: text3
+                        })
             }
         },
         ready: function () {
@@ -127,7 +154,7 @@
                 var text2Controller = this.gui.add(text, 'variables');
                 var text3Controller = this.gui.add(text, 'functions');
                 var widthController = this.gui.add(text, 'width', 30, 70);
-                var heightController = this.gui.add(text, 'height', 80, 200);
+                var heightController = this.gui.add(text, 'height', 60, 200);
 
                 widthController.onFinishChange(function (width) {
                     self.width = width;
