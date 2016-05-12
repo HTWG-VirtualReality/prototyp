@@ -53,7 +53,7 @@
             });
 
             // register mouse listener to move content on x and y axis
-            document.addEventListener('mousedown', self._onMouseDown.bind(self), false);
+            this.listen(this, 'mousedown', '_onMouseDown');
 
             // start rendering
             self._render();
@@ -77,9 +77,9 @@
         _onMouseDown: function(event) {
             event.preventDefault();
 
-            document.addEventListener('mousemove', this._onMouseMove.bind(this), false);
-            document.addEventListener('mouseup', this._resetMouse.bind(this), false);
-            document.addEventListener('mouseout', this._resetMouse.bind(this), false);
+            this.listen(this, 'mousemove', '_onMouseMove');
+            this.listen(this, 'mouseup', '_resetMouse');
+            this.listen(this, 'mouseout', '_resetMouse');
 
             this.controls.positionX = this.group.position.x;
             this.controls.positionY = this.group.position.y;
@@ -96,9 +96,9 @@
         },
 
         _resetMouse: function() {
-            document.removeEventListener('mousemove', this.onMouseMove, false);
-            document.removeEventListener('mouseup', this._resetMouse, false);
-            document.removeEventListener('mouseout', this._resetMouse, false);
+            this.unlisten(this, 'mousemove', '_onMouseMove');
+            this.unlisten(this, 'mouseup', '_resetMouse');
+            this.unlisten(this, 'mouseout', '_resetMouse');
         },
 
         _render: function() {
