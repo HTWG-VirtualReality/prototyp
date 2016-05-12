@@ -97,9 +97,38 @@
 
         // simple on click
         onClick: function () {
+            var self = this;
+
             this._getChildren().forEach(function (box) {
                 box.onClick();
             }.bind(this));
+
+            if (!this.gui) {
+                var FizzyText = function () {
+                    this.name = self.text1;
+                    this.functions = self.text;
+                    this.width = self.width;
+                    this.height = self.height;
+                };
+                var text = new FizzyText();
+                this.gui = new dat.GUI();
+                this.guiOpen = true;
+                var textController = this.gui.add(text, 'name');
+                var widthController = this.gui.add(text, 'width', 30, 70);
+                var heightController = this.gui.add(text, 'height', 30, 70);
+                widthController.onFinishChange(function (width) {
+                    self.width = width;
+                });
+                textController.onFinishChange(function (text) {
+                    self.text = text;
+                });
+                heightController.onFinishChange(function (height) {
+                    self.height = height;
+                })
+            } else {
+                this.gui.destroy();
+                this.gui = null;
+            }
         }
 
     });
