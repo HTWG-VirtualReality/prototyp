@@ -104,23 +104,32 @@
             }.bind(this));
 
             if (!this.gui) {
-                var FizzyText = function () {
+                var Menu = function () {
                     this.name = self.text1;
-                    this.functions = self.text;
+                    this.variables = self.text2;
+                    this.functions = self.text3;
                     this.width = self.width;
                     this.height = self.height;
                 };
-                var text = new FizzyText();
+                var text = new Menu();
                 this.gui = new dat.GUI();
-                this.guiOpen = true;
-                var textController = this.gui.add(text, 'name');
+                var text1Controller = this.gui.add(text, 'name');
+                var text2Controller = this.gui.add(text, 'variables');
+                var text3Controller = this.gui.add(text, 'functions');
                 var widthController = this.gui.add(text, 'width', 30, 70);
-                var heightController = this.gui.add(text, 'height', 30, 70);
+                var heightController = this.gui.add(text, 'height', 80, 200);
+
                 widthController.onFinishChange(function (width) {
                     self.width = width;
                 });
-                textController.onFinishChange(function (text) {
-                    self.text = text;
+                text1Controller.onFinishChange(function (text) {
+                    self.text1 = text;
+                });
+                text2Controller.onFinishChange(function (text) {
+                    self.text2 = text;
+                });
+                text3Controller.onFinishChange(function (text) {
+                    self.text3 = text;
                 });
                 heightController.onFinishChange(function (height) {
                     self.height = height;
