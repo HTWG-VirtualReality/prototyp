@@ -72,6 +72,8 @@
             this._getChildren().forEach(function (box) {
                 this.obj.add(box.obj);
             }.bind(this));
+
+			this.fire('vr-connection-ready', {})
         },
 
         _getChildren: function () {

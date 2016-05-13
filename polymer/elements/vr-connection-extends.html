@@ -36,26 +36,33 @@
             }
 
 			this.obj = new THREE.Group();
-            this.obj.position.setX(fromObj.obj.position.x);
 
+			document.querySelector(this.from).addEventListener('vr-connection-ready', this._createConnection.bind(this))
+        },
+
+		_createConnection: function(e) {
+			// Get objects
+			var fromObj = document.querySelector(this.from);
+            var toObj = document.querySelector(this.to);
+
+			// Get bounding box
+			var bbox = new THREE.Box3().setFromObject(fromObj.obj);
+			var size = bbox.size().y;
+
+			// set position for group
+			this.obj.position.setX(fromObj.obj.position.x);
+			this.obj.position.setY(fromObj.obj.position.y - size);
+
+			// create and add <vr-point> to polyline
 			var vrPointBottom = document.createElement('vr-point');
 			Polymer.dom(vrPointBottom).setAttribute('x', (fromObj.obj.position.x - toObj.obj.position.x) * -1);
+			Polymer.dom(vrPointBottom).setAttribute('y', (fromObj.obj.position.y - toObj.obj.position.y - size) * -1);
+			Polymer.dom(this.$.polyline).appendChild(vrPointBottom);
 
-			// TODO: very ugly but needed to get the right value for bboxFromObj.size()
-			setTimeout( function() {
-				// creates bounding-box
-				var bboxFromObj = new THREE.Box3().setFromObject(fromObj.obj)
-				var size = bboxFromObj.size().y
-
-				this.obj.position.setY(fromObj.obj.position.y - size);
-				Polymer.dom(vrPointBottom).setAttribute('y', (fromObj.obj.position.y - toObj.obj.position.y - size) * -1);
-				Polymer.dom(this.$.polyline).appendChild(vrPointBottom);
-
-				Polymer.dom(this.root).children.forEach(function(box) {
-	                this.obj.add(box.obj);
-	            }.bind(this));
-			}.bind(this), 1000)
-
-        }
+			// add everything to Group
+			Polymer.dom(this.root).children.forEach(function(box) {
+				this.obj.add(box.obj);
+			}.bind(this));
+		}
     });
 </script>
