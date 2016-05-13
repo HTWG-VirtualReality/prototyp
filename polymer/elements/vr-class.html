@@ -72,8 +72,6 @@
             this._getChildren().forEach(function (box) {
                 this.obj.add(box.obj);
             }.bind(this));
-
-			this.fire('vr-connection-ready', {})
         },
 
         _getChildren: function () {
@@ -84,19 +82,23 @@
         },
 
         _getBoxItemProperties: function (width, height, depth, text1, text2, text3) {
-            /* Magic Calculation */
-            var heightValueElement1 = 20;
-            var elementHigh = (height - heightValueElement1 / 2) / 2;
-            var yValueElement1 = -heightValueElement1 / 2;
-            var yValueElement2 = -heightValueElement1 - elementHigh / 2;
-            var yValueElement3 = yValueElement2 - elementHigh;
+            /* Hopefully not so Magic Calculation */
+            // fix default value for first box
+            var firstBoxHeight = 10;
+            // calculate the heights for the 2 remaining boxes
+            var elementHeight = (height - firstBoxHeight) / 2;
+
+            // calculate y positions
+            var yValueElement1 = -(firstBoxHeight / 2);
+            var yValueElement2 = -(firstBoxHeight + elementHeight / 2);
+            var yValueElement3 = (yValueElement2 - elementHeight);
 
             var properties = [
                 {
                     x: 0,
                     y: yValueElement1,
                     width: width,
-                    height: heightValueElement1,
+                    height: firstBoxHeight,
                     depth: depth,
                     text: text1,
                     textCenter: true
@@ -105,7 +107,7 @@
                     x: 0,
                     y: yValueElement2,
                     width: width,
-                    height: elementHigh,
+                    height: elementHeight,
                     depth: depth,
                     text: text2,
                     textCenter: false
@@ -114,7 +116,7 @@
                     x: 0,
                     y: yValueElement3,
                     width: width,
-                    height: elementHigh,
+                    height: elementHeight,
                     depth: depth,
                     text: text3,
                     textCenter: false

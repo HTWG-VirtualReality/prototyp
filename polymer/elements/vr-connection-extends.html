@@ -1,23 +1,15 @@
-<!--
-	Caution: This element works only in connection with <vr-class>.
-	To make this element compatible wih other elements they need to fire the
-	event: 'vr-connection-ready'. The recommend point to fire this event
-	is in the polymer 'attached' method.
-	e.g. last line in method 'attached' in vr-class.html
--->
-
 <link rel="import" href="../bower_components/polymer/polymer.html">
 
 <dom-module id="vr-connection-extends">
     <template>
         <vr-polygon>
-        	<vr-point x="0" y="0"></vr-point>
-			<vr-point x="-10" y="-10"></vr-point>
-			<vr-point x="10" y="-10"></vr-point>
+            <vr-point x="0" y="0"></vr-point>
+            <vr-point x="-10" y="-10"></vr-point>
+            <vr-point x="10" y="-10"></vr-point>
         </vr-polygon>
-		<vr-polyline id="polyline">
-			<vr-point x="0" y="-10"></vr-point>
-		</vr-polyline>
+        <vr-polyline id="polyline">
+            <vr-point x="0" y="-10"></vr-point>
+        </vr-polyline>
     </template>
 </dom-module>
 
@@ -31,46 +23,44 @@
         },
 
         ready: function() {
-			if(!this.from || !this.to) {
-				console.error('properties from and to must me set');
+            if(!this.from || !this.to) {
+                console.error('properties from and to must me set');
                 return;
-			}
+            }
 
-			var fromObj = document.querySelector(this.from);
+            var fromObj = document.querySelector(this.from);
             var toObj = document.querySelector(this.to);
             if (!fromObj || !toObj) {
                 console.error('could not find element');
                 return;
             }
 
-			this.obj = new THREE.Group();
-
-			document.querySelector(this.from).addEventListener('vr-connection-ready', this._createConnection.bind(this))
+            this.obj = new THREE.Group();
+            this._createConnection();
         },
 
-		_createConnection: function(e) {
-			// Get objects
-			var fromObj = document.querySelector(this.from);
+        _createConnection: function() {
+            // Get objects
+            var fromObj = document.querySelector(this.from);
             var toObj = document.querySelector(this.to);
 
-			// Get bounding box
-			var bbox = new THREE.Box3().setFromObject(fromObj.obj);
-			var size = bbox.size().y;
+            // Get bounding box
+            var size = fromObj.height;
 
-			// set position for group
-			this.obj.position.setX(fromObj.obj.position.x);
-			this.obj.position.setY(fromObj.obj.position.y - size);
+            // set position for group
+            this.obj.position.setX(fromObj.obj.position.x);
+            this.obj.position.setY(fromObj.obj.position.y - size);
 
-			// create and add <vr-point> to polyline
-			var vrPointBottom = document.createElement('vr-point');
-			Polymer.dom(vrPointBottom).setAttribute('x', (fromObj.obj.position.x - toObj.obj.position.x) * -1);
-			Polymer.dom(vrPointBottom).setAttribute('y', (fromObj.obj.position.y - toObj.obj.position.y - size) * -1);
-			Polymer.dom(this.$.polyline).appendChild(vrPointBottom);
+            // create and add <vr-point> to polyline
+            var vrPointBottom = document.createElement('vr-point');
+            Polymer.dom(vrPointBottom).setAttribute('x', (fromObj.obj.position.x - toObj.obj.position.x) * -1);
+            Polymer.dom(vrPointBottom).setAttribute('y', (fromObj.obj.position.y - toObj.obj.position.y - size) * -1);
+            Polymer.dom(this.$.polyline).appendChild(vrPointBottom);
 
-			// add everything to Group
-			Polymer.dom(this.root).children.forEach(function(box) {
-				this.obj.add(box.obj);
-			}.bind(this));
-		}
+            // add everything to Group
+            Polymer.dom(this.root).children.forEach(function(box) {
+                this.obj.add(box.obj);
+            }.bind(this));
+        }
     });
 </script>
