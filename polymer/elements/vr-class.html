@@ -160,9 +160,11 @@
                 });
                 widthController.onFinishChange(function (width) {
                     self.width = width;
+                    self.fire('vr-resize', {});
                 });
                 heightController.onFinishChange(function (height) {
                     self.height = height;
+                    self.fire('vr-resize', {});
                 })
             } else {
                 this.gui.destroy();

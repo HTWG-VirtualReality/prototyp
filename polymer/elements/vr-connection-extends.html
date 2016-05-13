@@ -37,6 +37,9 @@
 
             this.obj = new THREE.Group();
             this._createConnection();
+
+            // Add Eventlistener
+            fromObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
         },
 
         _createConnection: function() {
@@ -61,6 +64,11 @@
             Polymer.dom(this.root).children.forEach(function(box) {
                 this.obj.add(box.obj);
             }.bind(this));
+        },
+
+        _resizeConnection: function(e) {
+            var element = e.srcElement;
+            this.obj.position.setY(element.obj.position.y - element.height);
         }
     });
 </script>
