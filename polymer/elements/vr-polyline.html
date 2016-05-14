@@ -18,15 +18,17 @@
         },
 
         ready: function() {
-            var geometry = new THREE.Geometry();
-
             if (!this.dashed) {
                 var material = new THREE.LineBasicMaterial({color: 0x000000, linewidth: 2});
             } else {
                 var material = new THREE.LineDashedMaterial({color: 0x000000, dashSize: 3, gapSize: 1, linewidth: 2});
             }
 
-            this.obj = new THREE.Line(geometry, material);
+            this.obj = new THREE.Line(this._createGeometry(), material);
+        },
+
+        _createGeometry: function() {
+            var geometry = new THREE.Geometry();
 
             Polymer.dom(this.$.point).observeNodes(function(points) {
                 points.addedNodes.forEach(function(point) {
@@ -36,6 +38,12 @@
                 // it's needed to create a dashed line
                 geometry.computeLineDistances();
             }.bind(this));
+
+            return geometry;
+        },
+
+        updateLine: function() {
+            this.obj.geometry = this._createGeometry();
         }
 
     });

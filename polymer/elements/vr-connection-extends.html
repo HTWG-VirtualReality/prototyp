@@ -47,7 +47,6 @@
         attached: function () {
             this._getChildren().forEach(function (box) {
                 this.obj.add(box.obj);
-                console.log(box)
             }.bind(this));
         },
 
@@ -75,16 +74,28 @@
         },
 
         _createPoints: function() {
+            // Get objects
+            var fromObj = document.querySelector(this.from);
+            var toObj = document.querySelector(this.to);
+
+            // create points array
             var result = [];
             result.push({x:0, y:-10})
-            result.push({x:0, y:-100})
-            console.log(result)
+            result.push({x:0, y:(fromObj.obj.position.y - toObj.obj.position.y - fromObj.height) * -1})
             return result;
         },
 
         _resizeConnection: function(e) {
             var element = e.srcElement;
+            // set new start point
             this.obj.position.setY(element.obj.position.y - element.height);
+
+            // calculate new points
+            var toObj = document.querySelector(this.to);
+            var points = this._createPoints()
+            points[1].y = (element.obj.position.y - toObj.obj.position.y - element.height) * -1;
+            this.splice('linePoints', 0, 2, points[0], points[1]);
+            this.querySelector('#polyline').updateLine()
         }
     });
 </script>
