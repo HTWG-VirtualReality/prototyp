@@ -8,9 +8,7 @@
             <vr-point x="10" y="-10"></vr-point>
         </vr-polygon>
         <vr-polyline id="polyline">
-            <template is="dom-repeat" items="{{linePoints}}">
-                <vr-point x="{{item.x}}" y="{{item.y}}"></vr-point>
-            </template>
+            <vr-point x="0" y="-10"></vr-point>
         </vr-polyline>
     </template>
 </dom-module>
@@ -21,11 +19,11 @@
 
         properties: {
             from: String,
-			to: String
+            to: String
         },
 
-        ready: function() {
-            if(!this.from || !this.to) {
+        ready: function () {
+            if (!this.from || !this.to) {
                 console.error('properties from and to must me set');
                 return;
             }
@@ -37,65 +35,41 @@
                 return;
             }
 
+            // create group and set position
             this.obj = new THREE.Group();
-            this._createConnection();
+            this.obj.position.setX(fromObj.obj.position.x);
+            this.obj.position.setY(fromObj.obj.position.y - fromObj.height);
 
-            // Add Eventlistener
+            // create and add <vr-point> to polyline
+            this._createPointBottom(fromObj, toObj);
+
+            // add event listener for resizing
             fromObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
-        },
+            toObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
 
-        attached: function () {
-            this._getChildren().forEach(function (box) {
+            Polymer.dom(this.root).children.forEach(function (box) {
                 this.obj.add(box.obj);
             }.bind(this));
         },
 
-        _getChildren: function () {
-            // return all children except template element
-            return Polymer.dom(this.root).children.filter(function (node) {
-                return node.localName != 'template';
-            });
+        _createPointBottom: function (fromObj, toObj) {
+            this.vrPointBottom = document.createElement('vr-point');
+            this.vrPointBottom.x = 0;
+            this.vrPointBottom.y = (fromObj.obj.position.y - toObj.obj.position.y - fromObj.height) * -1;
+            Polymer.dom(this.$.polyline).appendChild(this.vrPointBottom);
         },
 
-        _createConnection: function() {
-            // Get objects
+        _resizeConnection: function () {
             var fromObj = document.querySelector(this.from);
             var toObj = document.querySelector(this.to);
 
-            // Get bounding box
-            var size = fromObj.height;
-
-            // set position for group
-            this.obj.position.setX(fromObj.obj.position.x);
-            this.obj.position.setY(fromObj.obj.position.y - size);
-
-            // create and add <vr-point> to polyline
-            this.linePoints = this._createPoints();
-        },
-
-        _createPoints: function() {
-            // Get objects
-            var fromObj = document.querySelector(this.from);
-            var toObj = document.querySelector(this.to);
-
-            // create points array
-            var result = [];
-            result.push({x:0, y:-10})
-            result.push({x:0, y:(fromObj.obj.position.y - toObj.obj.position.y - fromObj.height) * -1})
-            return result;
-        },
-
-        _resizeConnection: function(e) {
-            var element = e.srcElement;
             // set new start point
-            this.obj.position.setY(element.obj.position.y - element.height);
-
-            // calculate new points
-            var toObj = document.querySelector(this.to);
-            var points = this._createPoints()
-            points[1].y = (element.obj.position.y - toObj.obj.position.y - element.height) * -1;
-            this.splice('linePoints', 0, 2, points[0], points[1]);
-            this.querySelector('#polyline').updateLine()
+            this.obj.position.setY(fromObj.obj.position.y - fromObj.height);
+            // remove old bottom point
+            Polymer.dom(this.$.polyline).removeChild(this.vrPointBottom);
+            // create and add new bottom point
+            this._createPointBottom(fromObj, toObj);
         }
+
     });
 </script>
