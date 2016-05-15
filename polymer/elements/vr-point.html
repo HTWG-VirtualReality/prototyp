@@ -12,7 +12,25 @@
             y: {
                 type: Number,
                 value: 0
+            },
+            z: {
+                type: Number,
+                value: 0
             }
+        },
+
+        observers: [
+            '_updateVector(x, y, z)'
+        ],
+
+        _updateVector(x, y, z) {
+            if (this.vector) {
+                this.vector.set(x, y, z);
+            }
+        },
+
+        ready: function () {
+            this.vector = new THREE.Vector3(this.x, this.y, this.z);
         }
     });
 </script>
