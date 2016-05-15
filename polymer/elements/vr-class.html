@@ -50,13 +50,16 @@
         },
 
         observers: [
-            'updateClass(xPos, yPos, width, height, depth, text1, text2, text3)'
+            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3)'
         ],
 
-        updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
+        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
             if (this.obj) {
+                this.obj.position.setX(xPos);
+                this.obj.position.setY(yPos);
                 var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3);
                 this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
+                this.fire('vr-resize', {});
             }
         },
 
@@ -64,7 +67,6 @@
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
-
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3);
         },
 
@@ -140,12 +142,14 @@
                     this.functions = self.text3;
                     this.width = self.width;
                     this.height = self.height;
+                    this.yPos = self.yPos;
                 };
                 var text = new Menu();
                 this.gui = new dat.GUI();
                 var text1Controller = this.gui.add(text, 'name');
                 var text2Controller = this.gui.add(text, 'variables');
                 var text3Controller = this.gui.add(text, 'functions');
+                var yPosController = this.gui.add(text, 'yPos', -200, 200);
                 var widthController = this.gui.add(text, 'width', 30, 70);
                 var heightController = this.gui.add(text, 'height', 60, 200);
 
@@ -158,14 +162,15 @@
                 text3Controller.onFinishChange(function (text) {
                     self.text3 = text;
                 });
+                yPosController.onFinishChange(function (yPos) {
+                    self.yPos = yPos;
+                });
                 widthController.onFinishChange(function (width) {
                     self.width = width;
-                    self.fire('vr-resize', {});
                 });
                 heightController.onFinishChange(function (height) {
                     self.height = height;
-                    self.fire('vr-resize', {});
-                })
+                });
             } else {
                 this.gui.destroy();
                 this.gui = null;
