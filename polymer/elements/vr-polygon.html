@@ -18,8 +18,10 @@
             function addMesh(shape, depth, color) {
                 var extrudeSettings = {amount: depth, bevelEnabled: false};
                 var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-                var mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color: color}));
+                var mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: color}));
+                var wireframe = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true}));
                 mod.obj.add(mesh);
+                mod.obj.add(wireframe);
             }
 
             Polymer.dom(mod.$.point).observeNodes(function(points) {
@@ -30,7 +32,7 @@
                     shape.lineTo(point.x, point.y);
                 }.bind(mod));
 
-                addMesh(shape, 2, 0x4E33D4);
+                addMesh(shape, 2, 0xFFFFFF);
             }.bind(mod));
         }
     });
