@@ -24,12 +24,21 @@
 <body>
 <vr-scene>
 
-    <vr-class id="c1" x-pos="150" y-pos="150" height="75" width="120" text1="Customer"
+    <vr-class id="customer" x-pos="150" y-pos="150" height="75" width="120" text1="Customer"
               text2="-name:String; -address:String"
               text3="+getCreditRating():String"></vr-class>
-    <vr-class id="c2" x-pos="150" y-pos="0" height="80" width="120" text1="CorporateCustomer"
+
+    <vr-class id="corporatecustomer" x-pos="60" y-pos="0" height="80" width="120" text1="CorporateCustomer"
               text2="-contactName:String; -creditRaiting:String; -creaditLimit:Decimal"
               text3="+billForMonth(int amount); +remind()"></vr-class>
+
+    <vr-class id="personalcustomer" x-pos="250" y-pos="0" height="70" width="175" text1="PersonalCustomer"
+              text2="-creaditCardNumber:String"
+              text3="+getCreditRaiting(creditRaiting:String)"
+    ></vr-class>
+
+    <vr-class id="employee" x-pos="60" y-Pos="-100" text1="Employee" width="50" height="30"
+              text2="" text3=""></vr-class>
 
     <vr-class id="orderline" x-pos="-150" y-Pos="0" text1="OrderLine" width="80" height="70"
               text2="-quantity:Integer; -price:Decimal" text3=""></vr-class>
@@ -40,11 +49,14 @@
     <vr-class id="order" x-pos="-150" y-Pos="150" text1="Order" width="90" height="70"
               text2="-dateRecieved:Date; -isPrePaid:Boolean; -lineItems[]" text3="+dispatch(); +close()"></vr-class>
 
+    <vr-class id="corporate" x-pos="-150" y-Pos="150" text1="Order" width="90" height="70"
+              text2="-dateRecieved:Date; -isPrePaid:Boolean; -lineItems[]" text3="+dispatch(); +close()"></vr-class>
+
     <!--<vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="10" text="Class Test"></vr-box>-->
     <!--<vr-box id="b2" x-pos="-150" y-pos="-100" depth="10" text="test(): String; hallo(): int"></vr-box>-->
 
     <!-- <vr-line from="#c1" to="#b2"></vr-line> -->
-    <vr-connection-extends from="#c1" to="#c2"></vr-connection-extends>
+    <vr-connection-extends from="#customer" to="#corporatecustomer"></vr-connection-extends>
 
     <!-- <vr-polyline dashed>
         <vr-point x="150" y="100"></vr-point>
