@@ -24,11 +24,12 @@
 <body>
 <vr-scene>
 
-    <vr-class id="c1" x-pos="-150" y-pos="100" height="75" width="120" text1="Customer" text2="-name:String; -address:String"
+    <vr-class id="c1" x-pos="150" y-pos="150" height="75" width="120" text1="Customer" text2="-name:String; -address:String"
               text3="+getCreditRating():String"></vr-class>
-    <vr-class id="c2" x-pos="-150" y-pos="-50" height="80" width="120" text1="CorporateCustomer" text2="-contactName:String; -creditRaiting:String; -creaditLimit:Decimal"
+    <vr-class id="c2" x-pos="150" y-pos="0" height="80" width="120" text1="CorporateCustomer" text2="-contactName:String; -creditRaiting:String; -creaditLimit:Decimal"
               text3="+billForMonth(int amount); +remind()"></vr-class>
 
+    <vr-class id="order" x-pos="-150" y-Pos="150" text1="Order" width="90" height="70" text2="-dateRecieved:Date; -isPrePaid:Boolean; -lineItems[]" text3="+dispatch(); +close()"></vr-class>
 
     <!--<vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="10" text="Class Test"></vr-box>-->
     <!--<vr-box id="b2" x-pos="-150" y-pos="-100" depth="10" text="test(): String; hallo(): int"></vr-box>-->
