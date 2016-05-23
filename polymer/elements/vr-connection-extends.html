@@ -54,7 +54,7 @@
 
         _createPointBottom: function (fromObj, toObj) {
             this.vrPointBottom = document.createElement('vr-point');
-            this.vrPointBottom.x = 0;
+            this.vrPointBottom.x = toObj.obj.position.y + (toObj.width / 2);
             this.vrPointBottom.y = (fromObj.obj.position.y - toObj.obj.position.y - fromObj.height) * -1;
             Polymer.dom(this.$.polyline).appendChild(this.vrPointBottom);
         },
