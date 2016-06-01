@@ -2,11 +2,7 @@
 
 <dom-module id="vr-connection-extends">
     <template>
-        <vr-polygon>
-            <vr-point x="0" y="0"></vr-point>
-            <vr-point x="-10" y="-10"></vr-point>
-            <vr-point x="10" y="-10"></vr-point>
-        </vr-polygon>
+        <vr-polygon id="polygon"></vr-polygon>
         <vr-polyline id="polyline">
             <vr-point x="0" y="-10"></vr-point>
         </vr-polyline>
@@ -39,9 +35,10 @@
             this.obj = new THREE.Group();
             this.obj.position.setX(fromObj.obj.position.x);
             this.obj.position.setY(fromObj.obj.position.y - fromObj.height);
+            this._createArrowHead(fromObj, toObj);
 
             // create and add <vr-point> to polyline
-            this._createPointBottom(fromObj, toObj);
+            this._createLinePointBottom(fromObj, toObj);
 
             // add event listener for resizing
             fromObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
@@ -52,10 +49,14 @@
             }.bind(this));
         },
 
-        _createPointBottom: function (fromObj, toObj) {
+        _createLinePointBottom: function (fromObj, toObj) {
             this.vrPointBottom = document.createElement('vr-point');
-            this.vrPointBottom.x = toObj.obj.position.y + (toObj.width / 2);
-            this.vrPointBottom.y = (fromObj.obj.position.y - toObj.obj.position.y - fromObj.height) * -1;
+            var fromX = fromObj.obj.position.x;
+            var toX = toObj.obj.position.x;
+
+            this.vrPointBottom.x =  fromX < toX ? (toObj.width / 2) : -(toObj.width / 2);
+            //TODO: improve calculation
+            this.vrPointBottom.y = ((fromObj.obj.position.y - toObj.obj.position.y - (fromObj.height/2)-(toObj.height/2)) * -1);
             Polymer.dom(this.$.polyline).appendChild(this.vrPointBottom);
         },
 
@@ -68,7 +69,20 @@
             // remove old bottom point
             Polymer.dom(this.$.polyline).removeChild(this.vrPointBottom);
             // create and add new bottom point
-            this._createPointBottom(fromObj, toObj);
+            this._createLinePointBottom(fromObj, toObj);
+        },
+
+        _createArrowHead: function (fromObj, toObj) {
+            this._createPolygonPoint(0, 0);
+            this._createPolygonPoint(-10, -10);
+            this._createPolygonPoint(10, -10);
+        },
+
+        _createPolygonPoint: function (x, y) {
+            var point = document.createElement('vr-point');
+            point.x = x;
+            point.y = y;
+            Polymer.dom(this.$.polygon).appendChild(point);
         }
 
     });
