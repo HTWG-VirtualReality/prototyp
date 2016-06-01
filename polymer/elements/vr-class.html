@@ -48,18 +48,30 @@
             text3: {
                 type: String,
                 value: ''
+            },
+            classType: {
+                type: String,
+                default: 'class',
+                observer: '_enumClassType'
             }
         },
 
         observers: [
-            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3)'
+            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3, classType)'
         ],
 
-        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
+        _enumClassType: function (newValue) {
+            var validTypes = ['class', 'abstract', 'interface'];
+            if (validTypes.indexOf(newValue) === -1) {
+                // set default value
+                this.classType = 'class';
+            }
+        },
+        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3, classType) {
             if (this.obj) {
                 this.obj.position.setX(xPos);
                 this.obj.position.setY(yPos);
-                var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3);
+                var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3, classType);
                 this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
                 this.fire('vr-resize', {});
             }
@@ -69,7 +81,7 @@
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
-            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3);
+            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
         },
 
         attached: function () {
@@ -85,10 +97,10 @@
             });
         },
 
-        _getBoxItemProperties: function (width, height, depth, text1, text2, text3) {
+        _getBoxItemProperties: function (width, height, depth, text1, text2, text3, classType) {
             /* Hopefully not so Magic Calculation */
             // fix default value for first box
-            var firstBoxHeight = 10;
+            var firstBoxHeight = 25;
             // calculate the heights for the 2 remaining boxes
             var elementHeight = (height - firstBoxHeight) / 2;
 
@@ -96,6 +108,12 @@
             var yValueElement1 = -(firstBoxHeight / 2);
             var yValueElement2 = -(firstBoxHeight + elementHeight / 2);
             var yValueElement3 = (yValueElement2 - elementHeight);
+
+            if (classType === 'abstract') {
+                text1 = '<<abstract>>; ' + text1
+            } else if (classType === 'interface') {
+                text1 = '<<interface>>; ' + text1
+            }
 
             var properties = [
                 {
