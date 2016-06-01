@@ -43,10 +43,18 @@
             this.obj.position.setY((toPos.x < fromPos.x) ? toPos.y - toObj.height/2 : fromPos.y - fromObj.height/2);
 
             if(fromPos.x == toPos.x) {
-                //simple calculation
+                // polyline start and endpoint
                 var y = absoluteSubtraction(fromPos.y, toPos.y);
                 this._createLinePoint(0, toIsGreater() ? -(fromObj.height/2) : 0 + fromObj.height/2);
                 this._createLinePoint(0, toIsGreater() ? -(y-toObj.height/2) : y - toObj.height/2);
+
+                // polygon points
+                var height1 = toIsGreater() ? -(fromObj.height/2) : (fromObj.height/2);
+                var height2 = toIsGreater() ? height1 - 10 : height1 + 10;
+                this._createPolygonPoint(0, height1);
+                this._createPolygonPoint(10, height2);
+                this._createPolygonPoint(-10, height2);
+
             } else if (fromPos.y == toPos.y) {
                 //not really tested yet
                 this._createLinePoint(fromObj.width/2, 0);
@@ -85,6 +93,13 @@
             point.x = x;
             point.y = y;
             Polymer.dom(this.$.polyline).appendChild(point);
+        },
+
+        _createPolygonPoint: function(x, y) {
+            var point = document.createElement('vr-point');
+            point.x = x;
+            point.y = y;
+            Polymer.dom(this.$.polygon).appendChild(point);
         },
 
         _resizeConnection: function () {
