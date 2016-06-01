@@ -54,11 +54,17 @@
                 this._createPolygonPoint(0, height1);
                 this._createPolygonPoint(10, height2);
                 this._createPolygonPoint(-10, height2);
-
             } else if (fromPos.y == toPos.y) {
                 //not really tested yet
                 this._createLinePoint(fromObj.width/2, 0);
-                this._createLinePoint(absoluteSubtraction(fromPos.x, toPos.x) - toObj.width/2, 0);
+                this._createLinePoint(absoluteSubtraction(fromPos.x, toPos.x) - fromObj.width/2, 0);
+
+                // polygon points
+                var width1 = (toPos.x > fromPos.x) ? fromObj.width/2 : absoluteSubtraction(fromPos.x, toPos.x) - fromObj.width/2;
+                var width2 = (toPos.x > fromPos.x) ? width1 + 10 : width1 - 10;
+                this._createPolygonPoint(width1, 0);
+                this._createPolygonPoint(width2, 10);
+                this._createPolygonPoint(width2, -10);
             } else {
                 var a = absoluteSubtraction(fromPos.x, toPos.x);
                 var tmp = absoluteSubtraction(fromObj.height/2, toObj.height/2);
