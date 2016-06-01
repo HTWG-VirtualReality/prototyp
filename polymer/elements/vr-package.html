@@ -1,8 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="./vr-box.html">
 
-
-<dom-module id="vr-class">
+<dom-module id="vr-package">
     <template>
         <template is="dom-repeat" items="{{boxItems}}">
             <vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"
@@ -14,7 +13,7 @@
 
 <script>
     Polymer({
-        is: "vr-class",
+        is: "vr-package",
 
         properties: {
             xPos: {
@@ -22,6 +21,10 @@
                 value: 0
             },
             yPos: {
+                type: Number,
+                value: 0
+            },
+            zPos: {
                 type: Number,
                 value: 0
             },
@@ -44,34 +47,18 @@
             text2: {
                 type: String,
                 value: ''
-            },
-            text3: {
-                type: String,
-                value: ''
-            },
-            classType: {
-                type: String,
-                default: 'class',
-                observer: '_enumClassType'
             }
         },
 
         observers: [
-            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3, classType)'
+            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3)'
         ],
 
-        _enumClassType: function (newValue) {
-            var validTypes = ['class', 'abstract', 'interface'];
-            if (validTypes.indexOf(newValue) === -1) {
-                // set default value
-                this.classType = 'class';
-            }
-        },
-        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3, classType) {
+        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
             if (this.obj) {
                 this.obj.position.setX(xPos);
                 this.obj.position.setY(yPos);
-                var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3, classType);
+                var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3);
                 this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
                 this.fire('vr-resize', {});
             }
@@ -81,7 +68,8 @@
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
-            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
+            this.obj.position.setZ(-(this.depth - 2)); // TODO: discuss z axis
+            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2);
         },
 
         attached: function () {
@@ -97,29 +85,24 @@
             });
         },
 
-        _getBoxItemProperties: function (width, height, depth, text1, text2, text3, classType) {
-            /* Hopefully not so Magic Calculation */
-            // fix default value for first box
-            var firstBoxHeight = 25;
-            // calculate the heights for the 2 remaining boxes
-            var elementHeight = (height - firstBoxHeight) / 2;
+        _getBoxItemProperties: function (width, height, depth, text1, text2) {
+            // Set default height of first box
+            var firstBoxHeight = 20;
 
-            // calculate y positions
-            var yValueElement1 = -(firstBoxHeight / 2);
-            var yValueElement2 = -(firstBoxHeight + elementHeight / 2);
-            var yValueElement3 = (yValueElement2 - elementHeight);
+            // calculate positions of first "Box"
+            var widthBox1 = width / 5;
+            var yBox1 = -(firstBoxHeight / 2);
+            var xBox1 = -(widthBox1 / 0.5);
 
-            if (classType === 'abstract') {
-                text1 = '<<abstract>>; ' + text1
-            } else if (classType === 'interface') {
-                text1 = '<<interface>>; ' + text1
-            }
+            // second (main) "Box"
+            var heightBox2 = (height - firstBoxHeight) / 2;
+            var yBox2 = -(firstBoxHeight + heightBox2 / 2);
 
             var properties = [
                 {
-                    x: 0,
-                    y: yValueElement1,
-                    width: width,
+                    x: xBox1,
+                    y: yBox1,
+                    width: widthBox1,
                     height: firstBoxHeight,
                     depth: depth,
                     text: text1,
@@ -127,21 +110,12 @@
                 },
                 {
                     x: 0,
-                    y: yValueElement2,
+                    y: yBox2,
                     width: width,
-                    height: elementHeight,
+                    height: heightBox2,
                     depth: depth,
                     text: text2,
-                    textCenter: false
-                },
-                {
-                    x: 0,
-                    y: yValueElement3,
-                    width: width,
-                    height: elementHeight,
-                    depth: depth,
-                    text: text3,
-                    textCenter: false
+                    textCenter: true
                 }];
 
             return properties;
