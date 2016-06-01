@@ -33,18 +33,35 @@
                 return;
             }
 
-            var fromY = fromObj.obj.position.y;
-            var toY = toObj.obj.position.y;
-
-            // create group and set position
+            // create group
             this.obj = new THREE.Group();
-            this.obj.position.setX((toY < fromY) ? fromObj.obj.position.x : toObj.obj.position.x);
-            this.obj.position.setY((toY < fromY) ? fromY - fromObj.height : toY - toObj.height);
-            this._createArrowHead(fromObj, toObj);
 
-            // create and add <vr-point> to polyline
-            this._createLinePointTop(fromObj, toObj);
-            this._createLinePointBottom(fromObj, toObj);
+            var fromPos = fromObj.obj.position;
+            var toPos = toObj.obj.position;
+
+            this.obj.position.setX((toPos.x < fromPos.x) ? toPos.x : fromPos.x);
+            this.obj.position.setY((toPos.x < fromPos.x) ? toPos.y - toObj.height/2 : fromPos.y - fromObj.height/2);
+
+            if(fromPos.x == toPos.x) {
+                //simple calculation
+                var y = absoluteSubtraction(fromPos.y, toPos.y);
+                this._createLinePoint(0, toIsGreater() ? -(fromObj.height/2) : 0 + fromObj.height/2);
+                this._createLinePoint(0, toIsGreater() ? -(y-toObj.height/2) : y - toObj.height/2);
+            } else if (fromPos.y == toPos.y) {
+                //not really tested yet
+                this._createLinePoint(fromObj.width/2, 0);
+                this._createLinePoint(absoluteSubtraction(fromPos.x, toPos.x) - toObj.width/2, 0);
+            } else {
+                var a = absoluteSubtraction(fromPos.x, toPos.x);
+                var tmp = absoluteSubtraction(fromObj.height/2, toObj.height/2);
+                tmp = absoluteSubtraction(toPos.y, tmp);
+                var b = absoluteSubtraction(fromPos.y, tmp);
+                // var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+
+                this._createLinePoint(0, 0);
+                console.log(toIsGreater())
+                this._createLinePoint(a, toIsGreater() ? b : -b);
+            }
 
             // add event listener for resizing
             fromObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
@@ -53,63 +70,25 @@
             Polymer.dom(this.root).children.forEach(function (box) {
                 this.obj.add(box.obj);
             }.bind(this));
+
+            function absoluteSubtraction(num1, num2) {
+                return Math.abs(Math.abs(num1) - Math.abs(num2));
+            }
+
+            function toIsGreater() {
+                return (toPos.x > fromPos.x) ? toPos.y > fromPos.y : toPos.y < fromPos.y;
+            }
         },
 
-        _createLinePointTop: function (fromObj, toObj) {
-            var point = document.createElement('vr-point');
-            point.x = 0;
-            point.y = fromObj.obj.position.y < toObj.obj.position.y ? 0 : -10;
-            Polymer.dom(this.$.polyline).appendChild(point);
-        },
-
-        _createLinePointBottom: function (fromObj, toObj) {
-            this.vrPointBottom = document.createElement('vr-point');
-            var fromPos = fromObj.obj.position;
-            var toPos = toObj.obj.position;
-
-            this.vrPointBottom.x =  this._getDifferenceX(fromObj, toObj) * ((fromPos.x < toPos.x) ? 1 : -1);
-            //TODO: improve calculation
-            this.vrPointBottom.y = this._getDifferenceY(fromObj, toObj);
-            Polymer.dom(this.$.polyline).appendChild(this.vrPointBottom);
-        },
-
-        _resizeConnection: function () {
-            var fromObj = document.querySelector(this.from);
-            var toObj = document.querySelector(this.to);
-
-            // set new start point
-            this.obj.position.setY(fromObj.obj.position.y - fromObj.height);
-            // remove old bottom point
-            Polymer.dom(this.$.polyline).removeChild(this.vrPointBottom);
-            // create and add new bottom point
-            this._createLinePointBottom(fromObj, toObj);
-        },
-
-        _createArrowHead: function (fromObj, toObj) {
-            var fromY = fromObj.obj.position.y;
-            var toY = toObj.obj.position.y;
-
-            this._createPolygonPoint(0, (fromY > toY) ? 0 : this._getDifferenceY(fromObj, toObj) - 10);
-            this._createPolygonPoint(-10, (fromY > toY) ? -10 : this._getDifferenceY(fromObj, toObj));
-            this._createPolygonPoint(10, (fromY > toY) ? -10 : this._getDifferenceY(fromObj, toObj));
-        },
-
-        _createPolygonPoint: function (x, y) {
+        _createLinePoint: function(x, y) {
             var point = document.createElement('vr-point');
             point.x = x;
             point.y = y;
-            Polymer.dom(this.$.polygon).appendChild(point);
+            Polymer.dom(this.$.polyline).appendChild(point);
         },
 
-        _getDifferenceY: function(fromObj, toObj) {
-            var difference = Math.abs(fromObj.obj.position.y - toObj.obj.position.y);
-            difference -= (fromObj.height/2 + toObj.height/2);
-            difference -= (fromObj.obj.position.y > toObj.obj.position.y ? 0 : 10)
-            return difference * -1;
-        },
-
-        _getDifferenceX: function(fromObj, toObj) {
-            return Math.abs(fromObj.obj.position.x - toObj.obj.position.x)
+        _resizeConnection: function () {
+            console.log('resize');
         }
 
 
