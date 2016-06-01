@@ -1,0 +1,175 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="./vr-box.html">
+
+<dom-module id="vr-package">
+    <template>
+        <template is="dom-repeat" items="{{boxItems}}">
+            <vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"
+                    height="{{item.height}}" depth="{{item.depth}}"
+                    text="{{item.text}}" text-center="{{item.textCenter}}"></vr-box>
+        </template>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "vr-package",
+
+        properties: {
+            xPos: {
+                type: Number,
+                value: 0
+            },
+            yPos: {
+                type: Number,
+                value: 0
+            },
+            zPos: {
+                type: Number,
+                value: 0
+            },
+            width: {
+                type: Number,
+                value: 50
+            },
+            height: {
+                type: Number,
+                value: 50
+            },
+            depth: {
+                type: Number,
+                value: 10
+            },
+            text1: {
+                type: String,
+                value: ''
+            },
+            text2: {
+                type: String,
+                value: ''
+            }
+        },
+
+        observers: [
+            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3)'
+        ],
+
+        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
+            if (this.obj) {
+                this.obj.position.setX(xPos);
+                this.obj.position.setY(yPos);
+                var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3);
+                this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
+                this.fire('vr-resize', {});
+            }
+        },
+
+        ready: function () {
+            this.obj = new THREE.Group();
+            this.obj.position.setX(this.xPos);
+            this.obj.position.setY(this.yPos);
+            this.obj.position.setZ(-(this.depth - 2)); // TODO: discuss z axis
+            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2);
+        },
+
+        attached: function () {
+            this._getChildren().forEach(function (box) {
+                this.obj.add(box.obj);
+            }.bind(this));
+        },
+
+        _getChildren: function () {
+            // return all children except template element
+            return Polymer.dom(this.root).children.filter(function (node) {
+                return node.localName != 'template';
+            });
+        },
+
+        _getBoxItemProperties: function (width, height, depth, text1, text2) {
+            // Set default height of first box
+            var firstBoxHeight = 20;
+
+            // calculate positions of first "Box"
+            var widthBox1 = width / 5;
+            var yBox1 = -(firstBoxHeight / 2);
+            var xBox1 = -(widthBox1 / 0.5);
+
+            // second (main) "Box"
+            var heightBox2 = (height - firstBoxHeight) / 2;
+            var yBox2 = -(firstBoxHeight + heightBox2 / 2);
+
+            var properties = [
+                {
+                    x: xBox1,
+                    y: yBox1,
+                    width: widthBox1,
+                    height: firstBoxHeight,
+                    depth: depth,
+                    text: text1,
+                    textCenter: true
+                },
+                {
+                    x: 0,
+                    y: yBox2,
+                    width: width,
+                    height: heightBox2,
+                    depth: depth,
+                    text: text2,
+                    textCenter: true
+                }];
+
+            return properties;
+        },
+
+        // simple on click
+        onClick: function () {
+            var self = this;
+
+            this._getChildren().forEach(function (box) {
+                box.onClick();
+            }.bind(this));
+
+            if (!this.gui) {
+                var Menu = function () {
+                    this.name = self.text1;
+                    this.variables = self.text2;
+                    this.functions = self.text3;
+                    this.width = self.width;
+                    this.height = self.height;
+                    this.yPos = self.yPos;
+                };
+                var text = new Menu();
+                this.gui = new dat.GUI();
+                var text1Controller = this.gui.add(text, 'name');
+                var text2Controller = this.gui.add(text, 'variables');
+                var text3Controller = this.gui.add(text, 'functions');
+                var yPosController = this.gui.add(text, 'yPos', -200, 200);
+                var widthController = this.gui.add(text, 'width', 30, 200);
+                var heightController = this.gui.add(text, 'height', 30, 200);
+
+                text1Controller.onFinishChange(function (text) {
+                    self.text1 = text;
+                });
+                text2Controller.onFinishChange(function (text) {
+                    self.text2 = text;
+                });
+                text3Controller.onFinishChange(function (text) {
+                    self.text3 = text;
+                });
+                yPosController.onFinishChange(function (yPos) {
+                    self.yPos = yPos;
+                });
+                widthController.onFinishChange(function (width) {
+                    self.width = width;
+                });
+                heightController.onFinishChange(function (height) {
+                    self.height = height;
+                });
+            } else {
+                this.gui.destroy();
+                this.gui = null;
+            }
+        }
+
+    });
+</script>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+
+    <meta charset="UTF-8">
+    <title>Package Diagram</title>
+
+    <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+
+    <!-- main scene -->
+    <link rel="import" href="elements/vr-scene.html">
+
+
+    <!-- own modules -->
+    <link rel="import" href="elements/vr-package.html">
+    <link rel="import" href="elements/vr-class.html">
+    <link rel="import" href="elements/vr-connection-extends.html">
+
+
+
+    <style>
+        body {
+            background-color: #f0f0f0;
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+<body>
+<vr-scene>
+
+    <vr-package id="package" x-pos="0" y-pos="150" height="600" width="500" text1="Package Name"
+                text2=""></vr-package>
+
+    <vr-class id="customer" x-pos="0" y-pos="100" height="75" width="120" text1="Customer"
+              text2="-name:String; -address:String"
+              text3="+getCreditRating():String"></vr-class>
+
+    <vr-class id="corporatecustomer" x-pos="-100" y-pos="-50" height="80" width="120" text1="CorporateCustomer"
+              text2="-contactName:String; -creditRaiting:String; -creaditLimit:Decimal"
+              text3="+billForMonth(int amount); +remind()"></vr-class>
+
+    <vr-class id="personalcustomer" x-pos="100" y-pos="-50" height="70" width="175" text1="PersonalCustomer"
+              text2="-creaditCardNumber:String"
+              text3="+getCreditRaiting(creditRaiting:String)"></vr-class>
+
+    <vr-connection-extends from="#customer" to="#corporatecustomer"></vr-connection-extends>
+    <vr-connection-extends from="#customer" to="#personalcustomer"></vr-connection-extends>
+
+</vr-scene>
+</body>
+</html>
