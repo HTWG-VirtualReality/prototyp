@@ -64,7 +64,6 @@
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
-            console.log(this.xPos)
 
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2);
         },
@@ -83,11 +82,8 @@
         },
 
         _getBoxItemProperties: function (width, height, depth, text1, text2) {
-            /* Hopefully not so Magic Calculation */
-            // fix default value for first box
+            // Set default height of first box
             var firstBoxHeight = 20;
-            // calculate the heights for the 2 remaining boxes
-            var elementHeight = (height - firstBoxHeight) / 2;
 
             // calculate positions of first "Box"
             var widthBox1 = width / 5;
@@ -95,7 +91,8 @@
             var xBox1 = -(widthBox1 / 0.5);
 
             // second (main) "Box"
-            var yValueElement2 = -(firstBoxHeight + elementHeight / 2);
+            var heightBox2 = (height - firstBoxHeight) / 2;
+            var yBox2 = -(firstBoxHeight + heightBox2 / 2);
 
             var properties = [
                 {
@@ -109,12 +106,12 @@
                 },
                 {
                     x: 0,
-                    y: yValueElement2,
+                    y: yBox2,
                     width: width,
-                    height: elementHeight,
+                    height: heightBox2,
                     depth: depth,
                     text: text2,
-                    textCenter: false
+                    textCenter: true
                 }];
 
             return properties;
