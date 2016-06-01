@@ -24,6 +24,10 @@
                 type: Number,
                 value: 0
             },
+            zPos: {
+                type: Number,
+                value: 0
+            },
             width: {
                 type: Number,
                 value: 50
@@ -64,7 +68,7 @@
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
-
+            this.obj.position.setZ(-(this.depth - 2)); // TODO: discuss z axis
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2);
         },
 
