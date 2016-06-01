@@ -14,6 +14,15 @@
         ready: function() {
             var mod = this;
             mod.obj = new THREE.Group();
+            var shape = new THREE.Shape();
+
+            function addCorner(point, index) {
+                if (index === 0) {
+                    shape.moveTo(point.x, point.y);
+                } else {
+                    shape.lineTo(point.x, point.y);
+                }
+            }
 
             function addMesh(shape, depth, color) {
                 var extrudeSettings = {amount: depth, bevelEnabled: false};
@@ -25,15 +34,9 @@
             }
 
             Polymer.dom(mod.$.point).observeNodes(function(points) {
-                var shape = new THREE.Shape();
-                shape.moveTo(0, 0);
-
-                points.addedNodes.forEach(function(point) {
-                    shape.lineTo(point.x, point.y);
-                }.bind(mod));
-
+                points.addedNodes.forEach(addCorner);
                 addMesh(shape, 2, 0xFFFFFF);
-            }.bind(mod));
+            });
         }
     });
 </script>
