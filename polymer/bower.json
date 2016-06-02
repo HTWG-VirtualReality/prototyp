@@ -14,6 +14,7 @@
     "polymer": "Polymer/polymer#~1.4.0",
     "threejs": "*",
     "threex.domevents": "*",
-    "dat.gui": "*"
+    "dat.gui": "*",
+    "webvr-polyfill": "~1.0.0"
   }
 }

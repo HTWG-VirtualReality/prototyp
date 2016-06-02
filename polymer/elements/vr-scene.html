@@ -5,8 +5,23 @@
 <script src="../js/axis-controls.js"></script>
 <script src="../js/zoom-control.js"></script>
 
+<!-- WebVR -->
+<script src="../bower_components/webvr-polyfill/build/webvr-polyfill.js"></script>
+<script src="../bower_components/threejs/examples/js/controls/VRControls.js"></script>
+<script src="../bower_components/threejs/examples/js/effects/VREffect.js"></script>
+
 <dom-module id="vr-scene">
     <template>
+        <style>
+            #vr {
+                position: fixed;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                background: white;
+            }
+        </style>
+        <button id="vr" on-click="_enterVR">VR (WebVR/Mobile only)</button>
         <content id="content" select="*"></content>
     </template>
 </dom-module>
@@ -46,6 +61,16 @@
                 });
             });
 
+            self.controls = new THREE.VRControls(self.camera);
+            self.effect = new THREE.VREffect(self.renderer);
+            self.effect.setSize(window.innerWidth, window.innerHeight);
+
+            navigator.getVRDisplays().then(function (displays) {
+                if (displays.length > 0) {
+                    self.vrDisplay = displays[0];
+                }
+            });
+
             // start rendering
             self._render();
         },
@@ -74,7 +99,15 @@
 
         _render: function () {
             requestAnimationFrame(this._render.bind(this));
-            this.renderer.render(this.scene, this.camera);
+            // TODO: remove if
+            if(this.vrDispay && this.vrDisplay.displayId != 1001) {
+                this.controls.update();
+            }
+            this.effect.render(this.scene, this.camera);
+        },
+
+        _enterVR: function () {
+            this.vrDisplay.requestPresent([{source: this.renderer.domElement}]);
         }
 
     });
