@@ -70,7 +70,6 @@
                 var tmp = absoluteSubtraction(fromObj.height/2, toObj.height/2);
                 tmp = absoluteSubtraction(toPos.y, tmp);
                 var b = absoluteSubtraction(fromPos.y, tmp);
-                // var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 
                 this._createLinePoint(0, 0);
                 this._createLinePoint(a, toIsGreater() ? b : -b);
@@ -86,9 +85,9 @@
                 // console.log((x-10) + " " + (-(y-10)))
                 // console.log((x+10) + " " + (-(y-10)))
 
-                this._createPolygonPoint(x, -y)
-                this._createPolygonPoint(x - 10, -(y - 10))
-                this._createPolygonPoint(x + 10, -(y - 10))
+                this._createPolygonPoint(x, toIsGreater() ? y : -y)
+                this._createPolygonPoint(x - 10, (y - 10) * (toIsGreater() ? 1 : -1))
+                this._createPolygonPoint(x + 10, (y - 10) * (toIsGreater() ? 1 : -1))
             }
 
             // add event listener for resizing
