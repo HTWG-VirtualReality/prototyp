@@ -15,6 +15,6 @@
     "threejs": "*",
     "threex.domevents": "*",
     "dat.gui": "*",
-    "webvr-polyfill": "~1.0.0"
+    "webvr-polyfill": "v0.9.12"
   }
 }
