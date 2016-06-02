@@ -43,7 +43,7 @@
             this.obj.position.setY((toPos.x < fromPos.x) ? toPos.y - toObj.height/2 : fromPos.y - fromObj.height/2);
 
             if(fromPos.x == toPos.x) {
-                // polyline start and endpoint
+                // vertical
                 var y = absoluteSubtraction(fromPos.y, toPos.y);
                 this._createLinePoint(0, toIsGreater() ? -(fromObj.height/2) : 0 + fromObj.height/2);
                 this._createLinePoint(0, toIsGreater() ? -(y-toObj.height/2) : y - toObj.height/2);
@@ -55,9 +55,11 @@
                 this._createPolygonPoint(10, height2);
                 this._createPolygonPoint(-10, height2);
             } else if (fromPos.y == toPos.y) {
-                //not really tested yet
-                this._createLinePoint(fromObj.width/2, 0);
-                this._createLinePoint(absoluteSubtraction(fromPos.x, toPos.x) - fromObj.width/2, 0);
+                // horizontal
+                var widthLeft = (toPos.x > fromPos.x) ? fromObj.width/2 : toObj.width/2;
+                var widthRight = (toPos.x < fromPos.x) ? fromObj.width/2 : toObj.width/2;
+                this._createLinePoint(widthLeft, 0);
+                this._createLinePoint(absoluteSubtraction(fromPos.x, toPos.x) - widthRight, 0);
 
                 // polygon points
                 var width1 = (toPos.x > fromPos.x) ? fromObj.width/2 : absoluteSubtraction(fromPos.x, toPos.x) - fromObj.width/2;
@@ -66,13 +68,13 @@
                 this._createPolygonPoint(width2, 10);
                 this._createPolygonPoint(width2, -10);
             } else {
+                // diagonal
                 var a = absoluteSubtraction(fromPos.x, toPos.x);
                 var tmp = absoluteSubtraction(fromObj.height/2, toObj.height/2);
                 tmp = absoluteSubtraction(toPos.y, tmp);
                 var b = absoluteSubtraction(fromPos.y, tmp);
 
                 var alpha = Math.atan((a / b))
-                console.log(toIsGreater())
                 var h1 = (fromPos.x < toPos.x) ? toObj.height/2 : fromObj.height/2;
                 var h2 = Math.tan(alpha) * h1;
                 var x2 = absoluteSubtraction(a, h2);
