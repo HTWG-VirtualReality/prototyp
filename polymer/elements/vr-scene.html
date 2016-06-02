@@ -74,8 +74,8 @@
             });
 
             // Resize the WebGL canvas when we resize and also when we change modes.
-            window.addEventListener('resize', self._onResize);
-            window.addEventListener('vrdisplaypresentchange', self._onResize);
+            this.listen(window, 'resize', '_onResize');
+            this.listen(window, 'vrdisplaypresentchange', '_onResize');
 
             // start rendering
             self._render();
