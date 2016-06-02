@@ -2,8 +2,6 @@
 <link rel="import" href="./vr-polygon.html">
 <link rel="import" href="./vr-polyline.html">
 
-
-
 <dom-module id="vr-connection-extends">
     <template>
         <vr-polygon id="polygon"></vr-polygon>
@@ -35,6 +33,23 @@
 
             // create group
             this.obj = new THREE.Group();
+
+            // calculate and render connection
+            this._render();
+
+            // add event listener for resizing
+            this._registerListener();
+
+            // add Polymer children to three js group
+            Polymer.dom(this.root).children.forEach(function (box) {
+                this.obj.add(box.obj);
+            }.bind(this));
+        },
+
+        _render: function() {
+            var obj = this._getMarkup();
+            var fromObj = obj.from;
+            var toObj = obj.to;
 
             var fromPos = fromObj.obj.position;
             var toPos = toObj.obj.position;
@@ -69,43 +84,45 @@
                 this._createPolygonPoint(width2, -10);
             } else {
                 // diagonal
+                // get length of a and b
                 var a = absoluteSubtraction(fromPos.x, toPos.x);
                 var tmp = absoluteSubtraction(fromObj.height/2, toObj.height/2);
                 tmp = absoluteSubtraction(toPos.y, tmp);
                 var b = absoluteSubtraction(fromPos.y, tmp);
 
+                // calculate difference from center to element edge
                 var alpha = Math.atan((a / b))
-                var h1 = (fromPos.x < toPos.x) ? toObj.height/2 : fromObj.height/2;
-                var h2 = Math.tan(alpha) * h1;
-                var x2 = absoluteSubtraction(a, h2);
-                var y2 = absoluteSubtraction(b, h1);
+                var values = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
+                var x2 = absoluteSubtraction(a, values.h2);
+                var y2 = absoluteSubtraction(b, values.h1);
 
-                h1 = (fromPos.x < toPos.x) ? fromObj.height/2 : toObj.height/2;
-                h2 = Math.tan(alpha) * h1;
-                var x1 = h2;
-                var y1 = h1;
+                values = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
 
-                this._createLinePoint(x1, toIsGreater() ? y1 : -y1);
+                // create points for polyline
+                this._createLinePoint(values.h2, toIsGreater() ? values.h1 : -values.h1);
                 this._createLinePoint(x2, toIsGreater() ? y2 : -y2);
 
+                // checks on which side the arrow should be printed.
                 if(toPos.x < fromPos.x) {
-                    this._createPolygonPoint(x2, toIsGreater() ? y2 : -y2)
-                    this._createPolygonPoint(x2 - 10, (y2 - 10) * (toIsGreater() ? 1 : -1))
-                    this._createPolygonPoint(x2 + 10, (y2 - 10) * (toIsGreater() ? 1 : -1))
+                    createDiagonalPolygonPoint(x2, y2, -10, this);
                 } else {
-                    this._createPolygonPoint(x1, toIsGreater() ? y1 : -y1)
-                    this._createPolygonPoint(x1 - 10, (y1 + 10) * (toIsGreater() ? 1 : -1))
-                    this._createPolygonPoint(x1 + 10, (y1 + 10) * (toIsGreater() ? 1 : -1))
+                    createDiagonalPolygonPoint(values.h2, values.h1, 10, this);
                 }
             }
 
-            // add event listener for resizing
-            fromObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
-            toObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
+            function createDiagonalPolygonPoint(x, y, summand, context) {
+                context._createPolygonPoint(x, toIsGreater() ? y : -y);
+                context._createPolygonPoint(x - 10, (y + summand) * (toIsGreater() ? 1 : -1));
+                context._createPolygonPoint(x + 10, (y + summand) * (toIsGreater() ? 1 : -1));
+            }
 
-            Polymer.dom(this.root).children.forEach(function (box) {
-                this.obj.add(box.obj);
-            }.bind(this));
+            function calculateDiagonalPoints(alpha, height1, height2) {
+                var h = (fromPos.x < toPos.x) ? height1 : height2;
+                return {
+                    h1: h,
+                    h2: Math.tan(alpha) * h
+                };
+            }
 
             function absoluteSubtraction(num1, num2) {
                 return Math.abs(Math.abs(num1) - Math.abs(num2));
@@ -116,24 +133,37 @@
             }
         },
 
+        _registerListener: function() {
+            var obj = this._getMarkup();
+            obj.from.addEventListener('vr-resize', this._resizeConnection.bind(this));
+            obj.to.addEventListener('vr-resize', this._resizeConnection.bind(this));
+        },
+
+        _getMarkup: function(obj) {
+            return {
+                from: document.querySelector(this.from),
+                to: document.querySelector(this.to)
+            };
+        },
+
         _createLinePoint: function(x, y) {
-            var point = document.createElement('vr-point');
-            point.x = x;
-            point.y = y;
-            Polymer.dom(this.$.polyline).appendChild(point);
+            this._createPoint(x, y, this.$.polyline);
         },
 
         _createPolygonPoint: function(x, y) {
+            this._createPoint(x, y, this.$.polygon);
+        },
+
+        _createPoint: function(x, y, element) {
             var point = document.createElement('vr-point');
             point.x = x;
             point.y = y;
-            Polymer.dom(this.$.polygon).appendChild(point);
+            Polymer.dom(element).appendChild(point);
         },
 
         _resizeConnection: function () {
             console.log('resize');
         }
-
 
     });
 </script>
