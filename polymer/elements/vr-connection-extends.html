@@ -73,8 +73,22 @@
                 // var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 
                 this._createLinePoint(0, 0);
-                console.log(toIsGreater())
                 this._createLinePoint(a, toIsGreater() ? b : -b);
+
+                // create polygon
+                var alpha = Math.atan((a / b))
+                var h1 = toObj.height/2;
+                var h2 = Math.tan(alpha) * h1;
+                var x = absoluteSubtraction(a, h2);
+                var y = absoluteSubtraction(b, h1);
+
+                // console.log(x + " " + -y)
+                // console.log((x-10) + " " + (-(y-10)))
+                // console.log((x+10) + " " + (-(y-10)))
+
+                this._createPolygonPoint(x, -y)
+                this._createPolygonPoint(x - 10, -(y - 10))
+                this._createPolygonPoint(x + 10, -(y - 10))
             }
 
             // add event listener for resizing
