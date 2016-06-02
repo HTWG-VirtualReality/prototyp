@@ -61,15 +61,19 @@
                 });
             });
 
+            // WebVR
             self.controls = new THREE.VRControls(self.camera);
             self.effect = new THREE.VREffect(self.renderer);
             self.effect.setSize(window.innerWidth, window.innerHeight);
-
             navigator.getVRDisplays().then(function (displays) {
                 if (displays.length > 0) {
                     self.vrDisplay = displays[0];
                 }
             });
+
+            // Resize the WebGL canvas when we resize and also when we change modes.
+            window.addEventListener('resize', self._onResize);
+            window.addEventListener('vrdisplaypresentchange', self._onResize);
 
             // start rendering
             self._render();
@@ -105,6 +109,13 @@
 
         _enterVR: function () {
             this.vrDisplay.requestPresent([{source: this.renderer.domElement}]);
+        },
+
+        _onResize: function () {
+            console.log('Resizing to %s x %s.', window.innerWidth, window.innerHeight);
+            this.effect.setSize(window.innerWidth, window.innerHeight);
+            this.camera.aspect = window.innerWidth / window.innerHeight;
+            this.camera.updateProjectionMatrix();
         }
 
     });
