@@ -71,23 +71,30 @@
                 tmp = absoluteSubtraction(toPos.y, tmp);
                 var b = absoluteSubtraction(fromPos.y, tmp);
 
-                this._createLinePoint(0, 0);
-                this._createLinePoint(a, toIsGreater() ? b : -b);
-
-                // create polygon
                 var alpha = Math.atan((a / b))
-                var h1 = toObj.height/2;
+                console.log(toIsGreater())
+                var h1 = (fromPos.x < toPos.x) ? toObj.height/2 : fromObj.height/2;
                 var h2 = Math.tan(alpha) * h1;
-                var x = absoluteSubtraction(a, h2);
-                var y = absoluteSubtraction(b, h1);
+                var x2 = absoluteSubtraction(a, h2);
+                var y2 = absoluteSubtraction(b, h1);
 
-                // console.log(x + " " + -y)
-                // console.log((x-10) + " " + (-(y-10)))
-                // console.log((x+10) + " " + (-(y-10)))
+                h1 = (fromPos.x < toPos.x) ? fromObj.height/2 : toObj.height/2;
+                h2 = Math.tan(alpha) * h1;
+                var x1 = h2;
+                var y1 = h1;
 
-                this._createPolygonPoint(x, toIsGreater() ? y : -y)
-                this._createPolygonPoint(x - 10, (y - 10) * (toIsGreater() ? 1 : -1))
-                this._createPolygonPoint(x + 10, (y - 10) * (toIsGreater() ? 1 : -1))
+                this._createLinePoint(x1, toIsGreater() ? y1 : -y1);
+                this._createLinePoint(x2, toIsGreater() ? y2 : -y2);
+
+                if(toPos.x < fromPos.x) {
+                    this._createPolygonPoint(x2, toIsGreater() ? y2 : -y2)
+                    this._createPolygonPoint(x2 - 10, (y2 - 10) * (toIsGreater() ? 1 : -1))
+                    this._createPolygonPoint(x2 + 10, (y2 - 10) * (toIsGreater() ? 1 : -1))
+                } else {
+                    this._createPolygonPoint(x1, toIsGreater() ? y1 : -y1)
+                    this._createPolygonPoint(x1 - 10, (y1 + 10) * (toIsGreater() ? 1 : -1))
+                    this._createPolygonPoint(x1 + 10, (y1 + 10) * (toIsGreater() ? 1 : -1))
+                }
             }
 
             // add event listener for resizing
