@@ -47,9 +47,8 @@
         },
 
         _render: function() {
-            var obj = this._getMarkup();
-            var fromObj = obj.from;
-            var toObj = obj.to;
+            var fromObj = document.querySelector(this.from);
+            var toObj = document.querySelector(this.to);
 
             var fromPos = fromObj.obj.position;
             var toPos = toObj.obj.position;
@@ -70,6 +69,7 @@
                 this._createPolygonPoint(10, height2);
                 this._createPolygonPoint(-10, height2);
             } else if (fromPos.y == toPos.y) {
+                // TODO: change condition a little bit
                 // horizontal
                 var widthLeft = (toPos.x > fromPos.x) ? fromObj.width/2 : toObj.width/2;
                 var widthRight = (toPos.x < fromPos.x) ? fromObj.width/2 : toObj.width/2;
@@ -134,16 +134,10 @@
         },
 
         _registerListener: function() {
-            var obj = this._getMarkup();
-            obj.from.addEventListener('vr-resize', this._resizeConnection.bind(this));
-            obj.to.addEventListener('vr-resize', this._resizeConnection.bind(this));
-        },
-
-        _getMarkup: function(obj) {
-            return {
-                from: document.querySelector(this.from),
-                to: document.querySelector(this.to)
-            };
+            var fromObj = document.querySelector(this.from);
+            var toObj = document.querySelector(this.to);
+            fromObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
+            toObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
         },
 
         _createLinePoint: function(x, y) {
@@ -162,7 +156,14 @@
         },
 
         _resizeConnection: function () {
-            console.log('resize');
+            // remove all children from polyline and polygon
+            removeAllChildren(this.$.polygon);
+            removeAllChildren(this.$.polyline);
+
+            function removeAllChildren(parent) {
+                while(parent.children.length != 0)
+                    parent.children[0].remove();
+            }
         }
 
     });
