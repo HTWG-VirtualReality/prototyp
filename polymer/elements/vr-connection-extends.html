@@ -86,28 +86,32 @@
                 // diagonal
                 // get length of a and b
                 var a = absoluteSubtraction(fromPos.x, toPos.x);
-                var tmp = absoluteSubtraction(fromObj.height/2, toObj.height/2);
-                tmp = absoluteSubtraction(toPos.y, tmp);
-                var b = absoluteSubtraction(fromPos.y, tmp);
-
-                // calculate difference from center to element edge
+                var b = absoluteSubtraction(fromObj.height/2, toObj.height/2);
+                b = absoluteSubtraction(toPos.y, b);
+                b = absoluteSubtraction(fromPos.y, b);
+                var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
                 var alpha = Math.atan((a / b))
-                var values = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
-                var x2 = absoluteSubtraction(a, values.h2);
-                var y2 = absoluteSubtraction(b, values.h1);
-
-                values = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
+                var smallTriangleEnd = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
+                var smallTriangleStart = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
+                var yStart = pythagorasTheorem(smallTriangleStart.h, smallTriangleStart.d);
+                var yEnd = absoluteSubtraction(c, pythagorasTheorem(smallTriangleEnd.h, smallTriangleEnd.d));
 
                 // create points for polyline
-                this._createLinePoint(values.h2, toIsGreater() ? values.h1 : -values.h1);
-                this._createLinePoint(x2, toIsGreater() ? y2 : -y2);
+                this._createLinePoint(0, toIsGreater() ? yStart : -yStart);
+                this._createLinePoint(0, toIsGreater() ? yEnd : -yEnd);
 
                 // checks on which side the arrow should be printed.
                 if(toPos.x < fromPos.x) {
-                    createDiagonalPolygonPoint(x2, y2, -10, this);
+                    // end
+                    createDiagonalPolygonPoint(0, yEnd, -10, this)
                 } else {
-                    createDiagonalPolygonPoint(values.h2, values.h1, 10, this);
+                    // start
+                    createDiagonalPolygonPoint(0, yStart, 10, this);
                 }
+
+                // change group angle from polyline and polygon
+                this.$.polyline.obj.rotation.z = toIsGreater() ? -alpha : alpha;
+                this.$.polygon.obj.rotation.z = toIsGreater() ? -alpha : alpha;
             }
 
             function createDiagonalPolygonPoint(x, y, summand, context) {
@@ -116,11 +120,15 @@
                 context._createPolygonPoint(x + 10, (y + summand) * (toIsGreater() ? 1 : -1));
             }
 
+            function pythagorasTheorem(a, b) {
+                return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+            }
+
             function calculateDiagonalPoints(alpha, height1, height2) {
                 var h = (fromPos.x < toPos.x) ? height1 : height2;
                 return {
-                    h1: h,
-                    h2: Math.tan(alpha) * h
+                    h: h,
+                    d: Math.tan(alpha) * h
                 };
             }
 
