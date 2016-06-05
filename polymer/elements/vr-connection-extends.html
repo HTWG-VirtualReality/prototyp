@@ -84,13 +84,23 @@
                 this._createPolygonPoint(width2, -10);
             } else {
                 // diagonal
-                // get length of a and b
+                // For better understanding see the picture
+                // vr-connection-calculation-base.png in /docs
+                // cathetes of the big tirangle
                 var a = absoluteSubtraction(fromPos.x, toPos.x);
                 var b = absoluteSubtraction(fromObj.height/2, toObj.height/2);
                 b = absoluteSubtraction(toPos.y, b);
                 b = absoluteSubtraction(fromPos.y, b);
-                var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
+
+                // Hypotenuse of the big triangle
+                var c = pythagorasTheorem(a, b);
+
+                // b <) c
                 var alpha = Math.atan((a / b))
+
+                // smallTriangle is the red triangle in the picture
+                // calculateDiagonalPoints calculates the cathetes(d, h) of the small triangles
+                // remember the center of the leftmost element is the startpoint
                 var smallTriangleEnd = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
                 var smallTriangleStart = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
                 var yStart = pythagorasTheorem(smallTriangleStart.h, smallTriangleStart.d);
@@ -102,11 +112,9 @@
 
                 // checks on which side the arrow should be printed.
                 if(toPos.x < fromPos.x) {
-                    // end
-                    createDiagonalPolygonPoint(0, yEnd, -10, this)
+                    createDiagonalPolygonPoint(0, yEnd, -10, this) // end
                 } else {
-                    // start
-                    createDiagonalPolygonPoint(0, yStart, 10, this);
+                    createDiagonalPolygonPoint(0, yStart, 10, this); // start
                 }
 
                 // change group angle from polyline and polygon
