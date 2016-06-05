@@ -53,74 +53,84 @@
             var fromPos = fromObj.obj.position;
             var toPos = toObj.obj.position;
 
+            // set startpoint
             this.obj.position.setX((toPos.x < fromPos.x) ? toPos.x : fromPos.x);
             this.obj.position.setY((toPos.x < fromPos.x) ? toPos.y - toObj.height/2 : fromPos.y - fromObj.height/2);
 
             if(fromPos.x == toPos.x) {
-                // vertical
-                var y = absoluteSubtraction(fromPos.y, toPos.y);
-                this._createLinePoint(0, toIsGreater() ? -(fromObj.height/2) : 0 + fromObj.height/2);
-                this._createLinePoint(0, toIsGreater() ? -(y-toObj.height/2) : y - toObj.height/2);
-
-                // polygon points
-                var height1 = toIsGreater() ? -(fromObj.height/2) : (fromObj.height/2);
-                var height2 = toIsGreater() ? height1 - 10 : height1 + 10;
-                this._createPolygonPoint(0, height1);
-                this._createPolygonPoint(10, height2);
-                this._createPolygonPoint(-10, height2);
+                this._verticalCalculation(fromObj, toObj, fromPos, toPos); // vertical
             } else if (fromPos.y == toPos.y) {
                 // TODO: change condition a little bit
-                // horizontal
-                var widthLeft = (toPos.x > fromPos.x) ? fromObj.width/2 : toObj.width/2;
-                var widthRight = (toPos.x < fromPos.x) ? fromObj.width/2 : toObj.width/2;
-                this._createLinePoint(widthLeft, 0);
-                this._createLinePoint(absoluteSubtraction(fromPos.x, toPos.x) - widthRight, 0);
-
-                // polygon points
-                var width1 = (toPos.x > fromPos.x) ? fromObj.width/2 : absoluteSubtraction(fromPos.x, toPos.x) - fromObj.width/2;
-                var width2 = (toPos.x > fromPos.x) ? width1 + 10 : width1 - 10;
-                this._createPolygonPoint(width1, 0);
-                this._createPolygonPoint(width2, 10);
-                this._createPolygonPoint(width2, -10);
+                this._horizontalCalculation(fromObj, toObj, fromPos, toPos); // horizontal
             } else {
-                // diagonal
-                // For better understanding see the picture
-                // vr-connection-calculation-base.png in /docs
-                // cathetes of the big tirangle
-                var a = absoluteSubtraction(fromPos.x, toPos.x);
-                var b = absoluteSubtraction(fromObj.height/2, toObj.height/2);
-                b = absoluteSubtraction(toPos.y, b);
-                b = absoluteSubtraction(fromPos.y, b);
-
-                // Hypotenuse of the big triangle
-                var c = pythagorasTheorem(a, b);
-
-                // b <) c
-                var alpha = Math.atan((a / b))
-
-                // smallTriangle is the red triangle in the picture
-                // calculateDiagonalPoints calculates the cathetes(d, h) of the small triangles
-                // remember the center of the leftmost element is the startpoint
-                var smallTriangleEnd = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
-                var smallTriangleStart = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
-                var yStart = pythagorasTheorem(smallTriangleStart.h, smallTriangleStart.d);
-                var yEnd = absoluteSubtraction(c, pythagorasTheorem(smallTriangleEnd.h, smallTriangleEnd.d));
-
-                // create points for polyline
-                this._createLinePoint(0, toIsGreater() ? yStart : -yStart);
-                this._createLinePoint(0, toIsGreater() ? yEnd : -yEnd);
-
-                // checks on which side the arrow should be printed.
-                if(toPos.x < fromPos.x) {
-                    createDiagonalPolygonPoint(0, yEnd, -10, this) // end
-                } else {
-                    createDiagonalPolygonPoint(0, yStart, 10, this); // start
-                }
-
-                // change group angle from polyline and polygon
-                this.$.polyline.obj.rotation.z = toIsGreater() ? -alpha : alpha;
-                this.$.polygon.obj.rotation.z = toIsGreater() ? -alpha : alpha;
+                this._diagonalCalculation(fromObj, toObj, fromPos, toPos) // diagonal
             }
+        },
+
+        _verticalCalculation: function(fromObj, toObj, fromPos, toPos) {
+            var y = this._absoluteSubtraction(fromPos.y, toPos.y);
+            this._createLinePoint(0, this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : fromObj.height/2);
+            this._createLinePoint(0, this._isToGreater(toPos, fromPos) ? -(y-toObj.height/2) : y - toObj.height/2);
+
+            // polygon points
+            var height1 = this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : (fromObj.height/2);
+            var height2 = this._isToGreater(toPos, fromPos) ? height1 - 10 : height1 + 10;
+            this._createPolygonPoint(0, height1);
+            this._createPolygonPoint(10, height2);
+            this._createPolygonPoint(-10, height2);
+        },
+
+        _horizontalCalculation: function(fromObj, toObj, fromPos, toPos) {
+            var widthLeft = (toPos.x > fromPos.x) ? fromObj.width/2 : toObj.width/2;
+            var widthRight = (toPos.x < fromPos.x) ? fromObj.width/2 : toObj.width/2;
+            this._createLinePoint(widthLeft, 0);
+            this._createLinePoint(this._absoluteSubtraction(fromPos.x, toPos.x) - widthRight, 0);
+
+            // polygon points
+            var width1 = (toPos.x > fromPos.x) ? fromObj.width/2 : this._absoluteSubtraction(fromPos.x, toPos.x) - fromObj.width/2;
+            var width2 = (toPos.x > fromPos.x) ? width1 + 10 : width1 - 10;
+            this._createPolygonPoint(width1, 0);
+            this._createPolygonPoint(width2, 10);
+            this._createPolygonPoint(width2, -10);
+        },
+
+        _diagonalCalculation: function(fromObj, toObj, fromPos, toPos) {
+            // For better understanding see the picture
+            // vr-connection-calculation-base.png in /docs
+            // cathetes of the big tirangle
+            var a = this._absoluteSubtraction(fromPos.x, toPos.x);
+            var b = this._absoluteSubtraction(fromObj.height/2, toObj.height/2);
+            b = this._absoluteSubtraction(toPos.y, b);
+            b = this._absoluteSubtraction(fromPos.y, b);
+
+            // Hypotenuse of the big triangle
+            var c = pythagorasTheorem(a, b);
+
+            // b <) c
+            var alpha = Math.atan((a / b))
+
+            // smallTriangle is the red triangle in the picture
+            // calculateDiagonalPoints calculates the cathetes(d, h) of the small triangles
+            // remember the center of the leftmost element is the startpoint
+            var smallTriangleEnd = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
+            var smallTriangleStart = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
+            var yStart = pythagorasTheorem(smallTriangleStart.h, smallTriangleStart.d);
+            var yEnd = this._absoluteSubtraction(c, pythagorasTheorem(smallTriangleEnd.h, smallTriangleEnd.d));
+
+            // create points for polyline
+            this._createLinePoint(0, toIsGreater() ? yStart : -yStart);
+            this._createLinePoint(0, toIsGreater() ? yEnd : -yEnd);
+
+            // checks on which side the arrow should be printed.
+            if(toPos.x < fromPos.x) {
+                createDiagonalPolygonPoint(0, yEnd, -10, this) // end
+            } else {
+                createDiagonalPolygonPoint(0, yStart, 10, this); // start
+            }
+
+            // change group angle from polyline and polygon
+            this.$.polyline.obj.rotation.z = toIsGreater() ? -alpha : alpha;
+            this.$.polygon.obj.rotation.z = toIsGreater() ? -alpha : alpha;
 
             function createDiagonalPolygonPoint(x, y, summand, context) {
                 context._createPolygonPoint(x, toIsGreater() ? y : -y);
@@ -140,13 +150,17 @@
                 };
             }
 
-            function absoluteSubtraction(num1, num2) {
-                return Math.abs(Math.abs(num1) - Math.abs(num2));
-            }
-
             function toIsGreater() {
                 return (toPos.x > fromPos.x) ? toPos.y > fromPos.y : toPos.y < fromPos.y;
             }
+        },
+
+        _absoluteSubtraction: function(num1, num2) {
+            return Math.abs(Math.abs(num1) - Math.abs(num2));
+        },
+
+        _isToGreater: function(toPos, fromPos) {
+            return (toPos.x > fromPos.x) ? toPos.y > fromPos.y : toPos.y < fromPos.y;
         },
 
         _registerListener: function() {
