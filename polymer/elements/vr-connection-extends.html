@@ -57,14 +57,21 @@
             this.obj.position.setX((toPos.x < fromPos.x) ? toPos.x : fromPos.x);
             this.obj.position.setY((toPos.x < fromPos.x) ? toPos.y - toObj.height/2 : fromPos.y - fromObj.height/2);
 
-            if(fromPos.x == toPos.x) {
+            if(this._isVertical(fromPos, toPos)) {
                 this._verticalCalculation(fromObj, toObj, fromPos, toPos); // vertical
-            } else if (fromPos.y == toPos.y) {
-                // TODO: change condition a little bit
+            } else if (this._isHorizontal(fromPos, toPos)) {
                 this._horizontalCalculation(fromObj, toObj, fromPos, toPos); // horizontal
             } else {
                 this._diagonalCalculation(fromObj, toObj, fromPos, toPos) // diagonal
             }
+        },
+
+        _isVertical: function(fromPos, toPos) {
+            return fromPos.x == toPos.x;
+        },
+
+        _isHorizontal: function(fromPos, toPos) {
+            return fromPos.y == toPos.y; // TODO: change condition a little bit
         },
 
         _verticalCalculation: function(fromObj, toObj, fromPos, toPos) {
