@@ -4,16 +4,16 @@
 
 <script src="../js/general-connection.js"></script>
 
-<dom-module id="vr-connection-extends">
+<dom-module id="vr-connection-association">
     <template>
-        <vr-polygon id="start"></vr-polygon>
+        <vr-polyline id="start"></vr-polyline>
         <vr-polyline id="line"></vr-polyline>
     </template>
 </dom-module>
 
 <script>
     Polymer({
-        is: "vr-connection-extends",
+        is: "vr-connection-association",
 
         properties: {
             from: String,
@@ -21,6 +21,8 @@
         },
 
         ready: function () {
+            var gc = new GeneralConnection();
+
             if (!this.from || !this.to) {
                 console.error('properties from and to must be set');
                 return;

@@ -17,6 +17,7 @@
     <link rel="import" href="elements/vr-line-generic.html">
     <link rel="import" href="elements/vr-class.html">
     <link rel="import" href="elements/vr-connection-extends.html">
+    <link rel="import" href="elements/vr-connection-association.html">
 
     <style>
         body {
@@ -69,21 +70,20 @@
     <!--<vr-box id="b2" x-pos="-150" y-pos="-100" depth="10" text="test(): String; hallo(): int"></vr-box>-->
 
     <!-- <vr-line from="#c1" to="#b2"></vr-line> -->
-    <vr-connection-extends from="#customer" to="#corporatecustomer"></vr-connection-extends>
     <vr-connection-extends from="#customer" to="#personalcustomer"></vr-connection-extends>
-    <vr-connection-extends from="#orderline" to="#order"></vr-connection-extends>
-    <vr-connection-extends from="#order" to="#orderline"></vr-connection-extends>
-    <vr-connection-extends from="#orderline" to="#order"></vr-connection-extends>
-    <vr-connection-extends from="#personalcustomer" to="#corporatecustomer"></vr-connection-extends>
-    <vr-connection-extends from="#corporatecustomer" to="#personalcustomer"></vr-connection-extends>
-    <vr-connection-extends from="#customer" to="#personalcustomer"></vr-connection-extends>
-    <vr-connection-extends from="#corporatecustomer" to="#employee"></vr-connection-extends>
-    <vr-connection-extends from="#employee" to="#corporatecustomer"></vr-connection-extends>
     <vr-connection-extends from="#customer" to="#corporatecustomer"></vr-connection-extends>
-    <vr-connection-extends from="#corporatecustomer" to="#customer"></vr-connection-extends>
+    <!-- <vr-connection-association from="#order" to="#customer"></vr-connection-association> -->
+    <vr-connection-association from="#orderline" to="#order"></vr-connection-association>
+    <vr-connection-association from="#product" to="#orderline"></vr-connection-association>
+    <vr-connection-association from="#customer" to="#order"></vr-connection-association>
+    <vr-connection-association from="#employee" to="#corporatecustomer"></vr-connection-association>
+    <!-- <vr-connection-association from="#corporatecustomer" to="#employee"></vr-connection-association> -->
 
 
-    <!-- <vr-connection-extends from="#orderline" to="#corporatecustomer"></vr-connection-extends> -->
+
+    <!-- <vr-connection-extends from="#employee" to="#personalcustomer"></vr-connection-extends>
+    <vr-connection-extends from="#personalcustomer" to="#employee"></vr-connection-extends> -->
+
 
     <!-- <vr-polyline dashed>
         <vr-point x="150" y="100"></vr-point>
