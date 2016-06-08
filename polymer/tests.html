@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Mocha Tests</title>
+    <link rel="shortcut icon" type="image/png" href="bower_components/mocha/assets/mocha-logo-128.png">
+    <link rel="stylesheet" href="bower_components/mocha/mocha.css">
+</head>
+<body>
+<div id="mocha"></div>
+<script src="bower_components/mocha/mocha.js"></script>
+<script src="bower_components/chai/chai.js"></script>
+<script>mocha.setup('bdd')</script>
+
+<!-- load code you want to test here -->
+
+<!-- load your test files here -->
+<script src="tests/example.js"></script>
+
+<script>
+    mocha.run();
+</script>
+</body>
+</html>

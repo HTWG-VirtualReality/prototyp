@@ -16,5 +16,9 @@
     "threex.domevents": "*",
     "dat.gui": "v0.5",
     "webvr-polyfill": "v0.9.12"
+  },
+  "devDependencies": {
+    "mocha": "^2.5.3",
+    "chai": "^3.5.0"
   }
 }
