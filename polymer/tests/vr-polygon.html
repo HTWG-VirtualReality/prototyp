@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <link rel="stylesheet" href="../bower_components/mocha/mocha.css">
+    <script src="../bower_components/mocha/mocha.js"></script>
+    <script src="../bower_components/chai/chai.js"></script>
+    <script src="../bower_components/polymer-test-tools/htmltest.js"></script>
+    <script src="../bower_components/threejs/build/three.min.js"></script>
+
+    <link rel="import" href="../elements/vr-polygon.html">
+<body>
+    <vr-polygon>
+        <vr-point x="150" y="0"></vr-point>
+        <vr-point x="100" y="40"></vr-point>
+        <vr-point x="50" y="0"></vr-point>
+        <vr-point x="100" y="-40"></vr-point>
+    </vr-polygon>
+
+    <script>
+        document.addEventListener("WebComponentsReady", function(){
+            var assert = chai.assert;
+            var s = document.querySelector('vr-polygon');
+
+            assert.isNotNull(s);
+            assert.typeOf(s.obj, 'object');
+            assert.equal(s.obj.type, 'Group');
+            assert.lengthOf(s.obj.children, 2);
+            done();
+        });
+    </script>
+</body>

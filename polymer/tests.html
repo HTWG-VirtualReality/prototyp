@@ -9,14 +9,15 @@
 <div id="mocha"></div>
 <script src="bower_components/mocha/mocha.js"></script>
 <script src="bower_components/chai/chai.js"></script>
-<script>mocha.setup('bdd')</script>
-
-<!-- load code you want to test here -->
-
-<!-- load your test files here -->
-<script src="tests/example.js"></script>
-
+<script src="bower_components/polymer-test-tools/mocha-htmltest.js"></script>
 <script>
+    mocha.setup({ui: 'tdd', slow: 1000, timeout: 5000, htmlbase: ''});
+
+    htmlSuite('vr-polygon', function() {
+        htmlTest('tests/vr-polygon.html');
+        htmlTest('tests/vr-polygon-fail.html');
+    });
+
     mocha.run();
 </script>
 </body>
