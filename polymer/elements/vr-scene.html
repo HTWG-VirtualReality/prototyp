@@ -49,6 +49,11 @@
             self.group = self._createGroup(self.renderer.domElement);
             self.scene.add(self.camera);
             self.scene.add(self.group);
+
+
+
+
+
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
             // domEvents to listen for dom events inside our 3d scene
@@ -120,6 +125,16 @@
 
         _enterVR: function () {
             this.vrDisplay.requestPresent([{source: this.renderer.domElement}]);
+            var crosshair = new THREE.Mesh(
+                    new THREE.RingGeometry( 0.02, 0.04, 32 ),
+                    new THREE.MeshBasicMaterial( {
+                        color: 0x000000,
+                        opacity: 0.5,
+                        transparent: true
+                    } )
+            );
+            crosshair.position.z = - 2;
+            this.camera.add(crosshair);
         },
 
         _onResize: function () {
