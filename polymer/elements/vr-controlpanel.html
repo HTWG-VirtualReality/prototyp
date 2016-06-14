@@ -1,0 +1,51 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+
+<script>
+    Polymer({
+        is: "vr-controlpanel",
+
+        properties: {
+            x: {
+                type: Number,
+                value: 0
+            },
+            y: {
+                type: Number,
+                value: 0
+            },
+            width: {
+                type: Number,
+                value: 0
+            },
+            height: {
+                type: Number,
+                value: 0
+            }
+        },
+
+        ready: function() {
+            function addMesh(shape, depth, color) {
+                var extrudeSettings = {amount: depth, bevelEnabled: false};
+                var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                var mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color: color}));
+                mod.obj.add(mesh);
+            }
+
+            var mod = this;
+            mod.obj = new THREE.Group();
+            mod.obj.position.x = this.width/2;
+            mod.obj.position.y = -this.height/2;
+            mod.obj.position.z =  20;
+
+            var shape = new THREE.Shape();
+            shape.absellipse (this.x, this.y, this.width/2, this.height/2, 0, Math.PI*2);
+
+            var smileyEye1Path = new THREE.Path();
+            // smileyEye1Path.absarc( 25, 20, 10, 0, Math.PI*2, true );
+            smileyEye1Path.absellipse( this.x, this.y, 50, 50, 0, Math.PI*2, true );
+            shape.holes.push( smileyEye1Path );
+
+            addMesh(shape, 5, 'white');
+        }
+    });
+</script>
