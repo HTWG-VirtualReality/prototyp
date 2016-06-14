@@ -12,9 +12,9 @@
   ],
   "dependencies": {
     "polymer": "Polymer/polymer#~1.4.0",
-    "threejs": "*",
+    "threejs": "r77",
     "threex.domevents": "*",
-    "dat.gui": "*",
+    "dat.gui": "v0.5",
     "webvr-polyfill": "v0.9.12"
   }
 }

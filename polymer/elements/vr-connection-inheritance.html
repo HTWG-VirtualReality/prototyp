@@ -4,7 +4,7 @@
 
 <script src="../js/general-connection.js"></script>
 
-<dom-module id="vr-connection-extends">
+<dom-module id="vr-connection-inheritance">
     <template>
         <vr-polygon id="start"></vr-polygon>
         <vr-polyline id="line"></vr-polyline>
@@ -13,7 +13,7 @@
 
 <script>
     Polymer({
-        is: "vr-connection-extends",
+        is: "vr-connection-inheritance",
 
         properties: {
             from: String,
@@ -100,11 +100,16 @@
             // remove all children from polyline and polygon
             removeAllChildren(this.$.start);
             removeAllChildren(this.$.line);
+            this._render();
 
             function removeAllChildren(parent) {
-                while(parent.children.length != 0)
-                    parent.children[0].remove();
+
+                var dom = Polymer.dom(parent);
+                dom.children.forEach(function (child) {
+                    dom.removeChild(child);
+                });
             }
+
         }
 
     });
