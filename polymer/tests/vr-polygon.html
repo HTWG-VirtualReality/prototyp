@@ -1,32 +1,81 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <script src="../bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
-    <link rel="stylesheet" href="../bower_components/mocha/mocha.css">
-    <script src="../bower_components/mocha/mocha.js"></script>
-    <script src="../bower_components/chai/chai.js"></script>
-    <script src="../bower_components/polymer-test-tools/htmltest.js"></script>
+    <title>vr-polygon blub</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+
+    <script src="../bower_components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="../bower_components/web-component-tester/browser.js"></script>
+    <script src="../bower_components/test-fixture/test-fixture-mocha.js"></script>
     <script src="../bower_components/threejs/build/three.min.js"></script>
+
+    <link rel="import" href="../bower_components/test-fixture/test-fixture.html">
 
     <link rel="import" href="../elements/vr-polygon.html">
 <body>
-    <vr-polygon>
-        <vr-point x="150" y="0"></vr-point>
-        <vr-point x="100" y="40"></vr-point>
-        <vr-point x="50" y="0"></vr-point>
-        <vr-point x="100" y="-40"></vr-point>
-    </vr-polygon>
+
+    <test-fixture id="defaults">
+        <template>
+            <vr-polygon>
+                <vr-point x="150" y="0"></vr-point>
+                <vr-point x="100" y="40"></vr-point>
+                <vr-point x="50" y="0"></vr-point>
+                <vr-point x="100" y="-40"></vr-point>
+            </vr-polygon>
+        </template>
+    </test-fixture>
 
     <script>
-        document.addEventListener("WebComponentsReady", function(){
-            var assert = chai.assert;
-            var s = document.querySelector('vr-polygon');
+        suite('setup', function() {
+            var target;
 
-            assert.isNotNull(s);
-            assert.typeOf(s.obj, 'object');
-            assert.equal(s.obj.type, 'Group');
-            assert.lengthOf(s.obj.children, 2);
-            done();
+            setup(function () {
+                target = fixture('defaults');
+            });
+
+            test('THREE.Group', function () {
+                assert.isNotNull(target.obj);
+                assert.instanceOf(target.obj, THREE.Group);
+            });
+
+            test('THREE.Mesh', function (done) {
+                assert.lengthOf(target.obj.children, 0);
+
+                flush(function() {
+                    var children = target.obj.children;
+                    assert.lengthOf(children, 2);
+
+                    for (var mesh of children) {
+                        assert.isNotNull(mesh);
+                        assert.instanceOf(mesh, THREE.Mesh);
+                    }
+
+                    done();
+                });
+            });
+
+            test('THREE.Shape', function (done) {
+                assert.isNotNull(target.shape);
+                assert.instanceOf(target.shape, THREE.Shape);
+
+                flush(function() {
+                    var points = target.shape.getPoints();
+                    assert.lengthOf(points, 4);
+
+                    for (var point of points) {
+                        assert.isNotNull(point);
+                        assert.instanceOf(point, THREE.Vector2);
+                    }
+
+                    assert.include(points, new THREE.Vector2(150, 0));
+                    assert.include(points, new THREE.Vector2(100, 40));
+                    assert.include(points, new THREE.Vector2(50, 0));
+                    assert.include(points, new THREE.Vector2(100, -40));
+
+                    done();
+                });
+            });
         });
     </script>
 </body>

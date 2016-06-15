@@ -20,6 +20,6 @@
   "devDependencies": {
     "mocha": "^2.5.3",
     "chai": "^3.5.0",
-    "polymer-test-tools": "https://github.com/Polymer/polymer-test-tools.git#^0.5.6"
+    "web-component-tester": "^4.2.2"
   }
 }
