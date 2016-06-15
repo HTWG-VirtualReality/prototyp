@@ -16,27 +16,27 @@
             mod.obj = new THREE.Group();
             mod.shape = new THREE.Shape();
 
-            function addCorner(point, index) {
-                if (index === 0) {
-                    mod.shape.moveTo(point.x, point.y);
-                } else {
-                    mod.shape.lineTo(point.x, point.y);
-                }
-            }
-
-            function addMesh(shape, depth, color) {
-                var extrudeSettings = {amount: depth, bevelEnabled: false};
-                var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-                var mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: color}));
-                var wireframe = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true}));
-                mod.obj.add(mesh);
-                mod.obj.add(wireframe);
-            }
-
             Polymer.dom(mod.$.point).observeNodes(function(points) {
-                points.addedNodes.forEach(addCorner);
-                addMesh(mod.shape, 2, 0xFFFFFF);
+                points.addedNodes.forEach(mod.addCorner.bind(mod));
+                mod.addMesh(mod.shape, 2, 0xFFFFFF);
             });
+        },
+
+        addCorner: function(point, index) {
+            if (index === 0) {
+                this.shape.moveTo(point.x, point.y);
+            } else {
+                this.shape.lineTo(point.x, point.y);
+            }
+        },
+
+        addMesh: function(shape, depth, color) {
+            var extrudeSettings = {amount: depth, bevelEnabled: false};
+            var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            var mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: color}));
+            var wireFrame = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true}));
+            this.obj.add(mesh);
+            this.obj.add(wireFrame);
         }
     });
 </script>
