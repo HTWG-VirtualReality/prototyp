@@ -70,6 +70,13 @@
                             node.onClick();
                         }
                     }, false);
+
+                    // register mousedown for move-element.js 
+                    domEvents.addEventListener(node.obj, 'mousedown', function () {
+                        if(node.down)
+                            node.down()
+                    }, false);
+
                 });
 
                 nodes.removedNodes.forEach(function (node) {

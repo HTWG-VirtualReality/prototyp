@@ -56,6 +56,12 @@
             }
         },
 
+        // triggered in vr-scene.html
+        down: function() {
+            // attantion MoveElement is a globl Singelton
+            MoveElement.setElement(this);
+        },
+
         observers: [
             '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3, classType)'
         ],
@@ -147,7 +153,7 @@
             return properties;
         },
 
-        // simple on click
+        // simple on click => triggered in vr-scene.html
         onClick: function () {
             var self = this;
 

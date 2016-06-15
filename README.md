@@ -1,7 +1,4 @@
-# prototyp repo
+# UML for virtual reality
 
-## Collection
-A collection of awesome things regarding A-Frame VR.
-https://github.com/aframevr/awesome-aframe
-
-
+Our goal is to create an uml editor prototype in virtual reality.
+We're using Google Cardboard for viewing the editor virtual reality.
