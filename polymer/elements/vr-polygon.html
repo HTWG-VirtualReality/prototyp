@@ -14,9 +14,9 @@
         ready: function() {
             var mod = this;
             mod.obj = new THREE.Group();
-            mod.shape = new THREE.Shape();
 
             Polymer.dom(mod.$.point).observeNodes(function(points) {
+                mod.clearMesh();
                 points.addedNodes.forEach(mod.addCorner.bind(mod));
                 mod.addMesh(mod.shape, 2, 0xFFFFFF);
             });
@@ -30,12 +30,26 @@
             }
         },
 
+        clearMesh() {
+            var mod = this;
+            var meshes = [];
+            mod.shape = new THREE.Shape();
+            for (var child of mod.obj.children) {
+                meshes.push(child);
+            }
+            for (var mesh of meshes) {
+                mod.obj.remove(mesh);
+            }
+        },
+
         addMesh: function(shape, depth, color) {
             var extrudeSettings = {amount: depth, bevelEnabled: false};
             var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
             var mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: color}));
-            var wireFrame = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true}));
             this.obj.add(mesh);
+
+            var wireFrame = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true}));
             this.obj.add(wireFrame);
         }
     });
