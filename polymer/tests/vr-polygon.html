@@ -15,13 +15,12 @@
     <link rel="import" href="../elements/vr-polygon.html">
 <body>
 
-    <test-fixture id="defaults">
+    <test-fixture id="four-points">
         <template>
             <vr-polygon>
-                <vr-point x="150" y="0"></vr-point>
-                <vr-point x="100" y="40"></vr-point>
-                <vr-point x="50" y="0"></vr-point>
-                <vr-point x="100" y="-40"></vr-point>
+                <vr-point x="0" y="0"></vr-point>
+                <vr-point x="100" y="100"></vr-point>
+                <vr-point x="-100" y="100"></vr-point>
             </vr-polygon>
         </template>
     </test-fixture>
@@ -31,7 +30,7 @@
             var target;
 
             setup(function () {
-                target = fixture('defaults');
+                target = fixture('four-points');
             });
 
             test('THREE.Group', function () {
@@ -56,23 +55,22 @@
             });
 
             test('THREE.Shape', function (done) {
-                assert.isNotNull(target.shape);
-                assert.instanceOf(target.shape, THREE.Shape);
 
                 flush(function() {
+                    assert.isNotNull(target.shape);
+                    assert.instanceOf(target.shape, THREE.Shape);
+
                     var points = target.shape.getPoints();
-                    assert.lengthOf(points, 4);
+                    assert.lengthOf(points, 3);
 
                     for (var point of points) {
                         assert.isNotNull(point);
                         assert.instanceOf(point, THREE.Vector2);
                     }
 
-                    assert.include(points, new THREE.Vector2(150, 0));
-                    assert.include(points, new THREE.Vector2(100, 40));
-                    assert.include(points, new THREE.Vector2(50, 0));
-                    assert.include(points, new THREE.Vector2(100, -40));
-
+                    assert.include(points, new THREE.Vector2(0, 0));
+                    assert.include(points, new THREE.Vector2(100, 100));
+                    assert.include(points, new THREE.Vector2(-100, 100));
                     done();
                 });
             });

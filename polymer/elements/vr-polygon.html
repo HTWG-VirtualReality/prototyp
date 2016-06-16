@@ -14,29 +14,43 @@
         ready: function() {
             var mod = this;
             mod.obj = new THREE.Group();
-            mod.shape = new THREE.Shape();
-
-            function addCorner(point, index) {
-                if (index === 0) {
-                    mod.shape.moveTo(point.x, point.y);
-                } else {
-                    mod.shape.lineTo(point.x, point.y);
-                }
-            }
-
-            function addMesh(shape, depth, color) {
-                var extrudeSettings = {amount: depth, bevelEnabled: false};
-                var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-                var mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: color}));
-                var wireframe = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true}));
-                mod.obj.add(mesh);
-                mod.obj.add(wireframe);
-            }
 
             Polymer.dom(mod.$.point).observeNodes(function(points) {
-                points.addedNodes.forEach(addCorner);
-                addMesh(mod.shape, 2, 0xFFFFFF);
+                mod.clearMesh();
+                points.addedNodes.forEach(mod.addCorner.bind(mod));
+                mod.addMesh(mod.shape, 2, 0xFFFFFF);
             });
+        },
+
+        addCorner: function(point, index) {
+            if (index === 0) {
+                this.shape.moveTo(point.x, point.y);
+            } else {
+                this.shape.lineTo(point.x, point.y);
+            }
+        },
+
+        clearMesh() {
+            var mod = this;
+            var meshes = [];
+            mod.shape = new THREE.Shape();
+            for (var child of mod.obj.children) {
+                meshes.push(child);
+            }
+            for (var mesh of meshes) {
+                mod.obj.remove(mesh);
+            }
+        },
+
+        addMesh: function(shape, depth, color) {
+            var extrudeSettings = {amount: depth, bevelEnabled: false};
+            var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+
+            var mesh = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: color}));
+            this.obj.add(mesh);
+
+            var wireFrame = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color: 0x000000, wireframe: true}));
+            this.obj.add(wireFrame);
         }
     });
 </script>
