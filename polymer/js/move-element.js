@@ -29,7 +29,7 @@
 
             // calculate new position of element
             this.element.xPos += e.clientX - position.x;
-            this.element.yPos += e.clientY - position.y;
+            this.element.yPos -= e.clientY - position.y;
 
             // update position
             position.x = e.clientX;
