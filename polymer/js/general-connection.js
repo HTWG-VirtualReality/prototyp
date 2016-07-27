@@ -75,15 +75,11 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     // smallTriangle is the red triangle in the picture
     // calculateDiagonalPoints calculates the cathetes(d, h) of the small triangles
     // remember the center of the leftmost element is the startpoint
-    var smallTriangleStart, smallTriangleEnd;
+    // var smallTriangleStart, smallTriangleEnd;
+    var attr = (a < b) ? "height" : "width";
+    var smallTriangleStart = calculateDiagonalPoints(alpha, fromObj[attr] /2, toObj[attr] /2);
+    var smallTriangleEnd = calculateDiagonalPoints(alpha, toObj[attr] /2, fromObj[attr] /2);
 
-    if(a < b) {
-      smallTriangleStart = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
-      smallTriangleEnd = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
-    } else {
-      smallTriangleStart = calculateDiagonalPoints2(alpha, fromObj.width/2, toObj.width/2);
-      smallTriangleEnd = calculateDiagonalPoints2(alpha, toObj.width/2, fromObj.width/2);
-    }
     var yStart = pythagorasTheorem(smallTriangleStart.h, smallTriangleStart.d);
     var yEnd = this._absoluteSubtraction(c, pythagorasTheorem(smallTriangleEnd.h, smallTriangleEnd.d));
 
@@ -102,17 +98,10 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     }
 
     // combine line and startplacing points
-    for(var attr in start) { line[attr] = start[attr] }
+    for(var attri in start) { line[attri] = start[attri] }
 
     // Add angle
     line.angle = toIsGreater() ? -alpha : alpha;
-
-    console.log(a)
-    console.log(b)
-    console.log(alpha)
-    console.log(line);
-
-    // console.log(toPos)
 
     return line;
 
@@ -132,15 +121,7 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
         var h = (fromPos.x < toPos.x) ? height1 : height2;
         return {
             h: h,
-            d: Math.tan(alpha) * h
-        };
-    }
-
-    function calculateDiagonalPoints2(alpha, height1, height2) {
-        var h = (fromPos.x < toPos.x) ? height1 : height2;
-        return {
-            h: h,
-            d: (h / Math.sin(alpha))
+            d: (a < b) ? Math.tan(alpha) * h : h / Math.sin(alpha)
         };
     }
 
