@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>general-connection.js Test</title>
+    <meta charset="utf-8">
+
+    <!-- Imports for testing -->
+    <script src="../bower_components/mocha/mocha.js"></script>
+    <script src="../bower_components/chai/chai.js"></script>
+    <link rel="stylesheet" href="../bower_components/mocha/mocha.css">
+    <script src="../js/general-connection.js"></script>
+<body>
+
+    <div id="mocha"></div>
+    <div id="messages"></div>
+    <div id="fixtures"></div>
+    <script>
+      mocha.setup('bdd');
+
+      var expect = chai.expect;
+
+      function createObj() { return { width: 20, height: 20 } }
+      function createPos() { return { x: 0, y: 0 } }
+
+      describe("Test general-connection.js.", function() {
+        var gc, fromObj, toObj, formPos, toPos;
+
+        beforeEach(function() {
+          fromObj = createObj();
+          toObj = createObj();
+          fromPos = createPos();
+          toPos = createPos();
+          gc = new GeneralConnection(fromPos, toPos);
+        });
+
+        describe("Tests method _isHorizontal().", function() {
+
+          it("Should be horizontal", function() {
+            expect(gc._isHorizontal(fromPos, toPos)).to.be.true;
+          });
+
+          it("Shouldn't be horizontal.", function() {
+            toPos.y = 1;
+            expect(gc._isHorizontal(fromPos, toPos)).to.be.false;
+          });
+        });
+
+        describe("Test method _isVertical().", function() {
+          it("Should be vertical.", function() {
+            expect(gc._isVertical(fromPos, toPos)).to.be.true;
+          });
+
+          it("Shouldn't be vertical.", function() {
+            toPos.x = 1;
+            expect(gc._isVertical(fromPos, toPos)).to.be.false;
+          });
+        });
+
+        describe("Test method _absoluteSubtraction().", function() {
+          it("Should be always positiv.", function() {
+            expect(gc._absoluteSubtraction(10, 1)).to.be.above(-1);
+            expect(gc._absoluteSubtraction(-10, 1)).to.be.above(-1);
+            expect(gc._absoluteSubtraction(10, -1)).to.be.above(-1);
+            expect(gc._absoluteSubtraction(-10, -1)).to.be.above(-1);
+          });
+        });
+
+        describe("Test method _isToGreater().", function() {
+          it("toPos should be greater.", function() {
+            toPos.y = 1;
+            expect(gc._isToGreater(toPos, fromPos)).to.be.true;
+          });
+        });
+
+        describe("Test method _createPoint().", function() {
+          it("Should return Point(1,2)", function() {
+            var x = 1, y=2;
+            expect(gc._createPoint(x,y)).to.deep.equal({x:x,y:y});
+          })
+        });
+
+        describe("Test method _horizontalCalculation()", function() {
+          it("Should calculate the new horizontal Points.", function() {
+            toPos.x = 100;
+            var result = gc._horizontalCalculation(fromObj, toObj, fromPos, toPos);
+            expect(result.l1).to.deep.equal({x: 10, y: 0});
+            expect(result.l2).to.deep.equal({x: 100, y: 0});
+            expect(result.p1).to.deep.equal({x: 20, y: 10});
+            expect(result.p2).to.deep.equal({x: 10, y: 0});
+            expect(result.p3).to.deep.equal({x: 20, y: -10});
+
+          })
+        });
+
+        describe("Test method _verticalCalculation()", function() {
+          it("Should calculate the new vertical Points.", function() {
+            toPos.y = 100;
+            var result = gc._verticalCalculation(fromObj, toObj, fromPos, toPos);
+            expect(result.l1).to.deep.equal({x: 0, y: 10});
+            expect(result.l2).to.deep.equal({x: 0, y: 90});
+            expect(result.p1).to.deep.equal({x: 10, y: 20});
+            expect(result.p2).to.deep.equal({x: 0, y: 10});
+            expect(result.p3).to.deep.equal({x: -10, y: 20});
+          })
+        });
+      });
+
+      mocha.run();
+    </script>
+</body>
