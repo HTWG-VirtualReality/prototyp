@@ -75,8 +75,15 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     // smallTriangle is the red triangle in the picture
     // calculateDiagonalPoints calculates the cathetes(d, h) of the small triangles
     // remember the center of the leftmost element is the startpoint
-    var smallTriangleStart = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
-    var smallTriangleEnd = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
+    var smallTriangleStart, smallTriangleEnd;
+
+    if(a < b) {
+      smallTriangleStart = calculateDiagonalPoints(alpha, fromObj.height/2, toObj.height/2);
+      smallTriangleEnd = calculateDiagonalPoints(alpha, toObj.height/2, fromObj.height/2);
+    } else {
+      smallTriangleStart = calculateDiagonalPoints2(alpha, fromObj.width/2, toObj.width/2);
+      smallTriangleEnd = calculateDiagonalPoints2(alpha, toObj.width/2, fromObj.width/2);
+    }
     var yStart = pythagorasTheorem(smallTriangleStart.h, smallTriangleStart.d);
     var yEnd = this._absoluteSubtraction(c, pythagorasTheorem(smallTriangleEnd.h, smallTriangleEnd.d));
 
@@ -100,6 +107,13 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     // Add angle
     line.angle = toIsGreater() ? -alpha : alpha;
 
+    console.log(a)
+    console.log(b)
+    console.log(alpha)
+    console.log(line);
+
+    // console.log(toPos)
+
     return line;
 
     function createDiagonalPolygonPoint(x, y, summand, context) {
@@ -119,6 +133,14 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
         return {
             h: h,
             d: Math.tan(alpha) * h
+        };
+    }
+
+    function calculateDiagonalPoints2(alpha, height1, height2) {
+        var h = (fromPos.x < toPos.x) ? height1 : height2;
+        return {
+            h: h,
+            d: (h / Math.sin(alpha))
         };
     }
 
