@@ -67,9 +67,15 @@
 
         describe("Test method _isToGreater().", function() {
           it("toPos should be greater.", function() {
-            toPos.y = 1;
+            fromPos.y = 1;
             expect(gc._isToGreater(toPos, fromPos)).to.be.true;
           });
+
+          it("toPos should be greater.", function() {
+            fromPos.x = -1;
+            toPos.y = 1;
+            expect(gc._isToGreater(toPos, fromPos)).to.be.true;
+          })
         });
 
         describe("Test method _createPoint().", function() {
@@ -102,6 +108,50 @@
             expect(result.p2).to.deep.equal({x: 0, y: 10});
             expect(result.p3).to.deep.equal({x: -10, y: 20});
           })
+        });
+
+        describe("Test method _diagonalCalculation().", function() {
+
+          it("Should test calculation if a < b.", function() {
+            /* +---+
+             * | f |
+             * +---+
+             *
+             *    +---+
+             *    | t |
+             *    +---+
+             */
+
+            toPos.x = -10;
+            toPos.y = 100;
+            var result = gc._diagonalCalculation(fromObj, toObj, fromPos, toPos);
+            expect(result.l1).to.deep.equal({x: 0, y: -10.04987562112089});
+            expect(result.l2).to.deep.equal({x: 0, y: -90.44888059008801});
+            expect(result.p1).to.deep.equal({x: -10, y: -80.44888059008801});
+            expect(result.p2).to.deep.equal({x: 0, y: -90.44888059008801});
+            expect(result.p3).to.deep.equal({x: 10, y: -80.44888059008801});
+            expect(result.angle).to.be.above(0);
+          });
+
+          it("Should test calculation if a > b.", function() {
+            /*          +---+
+             *          | f |
+             *          +---+
+             * +---+
+             * | t |
+             * +---+
+             */
+
+            toPos.x = -100;
+            toPos.y = -45;
+            var result = gc._diagonalCalculation(fromObj, toObj, fromPos, toPos);
+            expect(result.l1).to.deep.equal({x: 0, y: 14.84082207965583});
+            expect(result.l2).to.deep.equal({x: 0, y: 94.8177389176507});
+            expect(result.p1).to.deep.equal({x: -10, y: 84.8177389176507});
+            expect(result.p2).to.deep.equal({x: 0, y: 94.8177389176507});
+            expect(result.p3).to.deep.equal({x: 10, y: 84.8177389176507});
+            expect(result.angle).to.be.below(0);
+          });
         });
       });
 
