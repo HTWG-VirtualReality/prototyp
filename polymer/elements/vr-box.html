@@ -34,19 +34,32 @@
             textCenter: {
                 type: Boolean,
                 value: false
+            },
+            image: {
+                type: String,
+                value: 'none',
+                observer: '_boxImage'
             }
         },
 
         observers: [
-            'updateBox(xPos, yPos, width, height, depth, text)'
+            'updateBox(xPos, yPos, width, height, depth, text, image)'
         ],
 
-        updateBox: function (xPos, yPos, width, height, depth, text) {
+        _boxImage: function (newValue) {
+            var validTypes = ['create', 'delete', 'move', 'edit'];
+            if (validTypes.indexOf(newValue) === -1) {
+                // set default value
+                this.classType = 'none';
+            }
+        },
+
+        updateBox: function (xPos, yPos, width, height, depth, text, image) {
             if (this.obj) {
                 this.obj.remove(this.cube);
                 this.obj.remove(this.wireframe);
 
-                this._createBox(width, height, depth, text);
+                this._createBox(width, height, depth, text, image);
                 this.wireframe.material.color.set(0xff0000);
 
                 this.obj.position.setX(xPos);
@@ -69,7 +82,7 @@
             }
 
             // creating cube and wireframe
-            this._createBox(this.width, this.height, this.depth, this.text);
+            this._createBox(this.width, this.height, this.depth, this.text, this.image);
 
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
@@ -78,15 +91,7 @@
             this.obj.add(this.wireframe);
         },
 
-        onClick: function () {
-            if (this.wireframe.material.color.r == 0) {
-                this.wireframe.material.color.set(0xff0000);
-            } else {
-                this.wireframe.material.color.set(0x000000);
-            }
-        },
-
-        _createBox: function (width, height, depth, text) {
+        _createBox: function (width, height, depth, text, image) {
             // sides of the box
             var left = 0, right = 1, bottom = 2, top = 3, front = 4, back = 5;
 
@@ -97,13 +102,39 @@
                 font: "bold 64px Verdana",
                 center: this.textCenter
             });
-            this.materials[front].map = dynamicTexture.texture;
+
+
+            var frontSideElement;
+
+            if(image === 'create') {
+                frontSideElement = new THREE.TextureLoader().load( 'images/create.png' );
+            } else if(image === 'delete') {
+                frontSideElement = new THREE.TextureLoader().load( 'images/delete.png' );
+            } else if(image === 'edit') {
+                frontSideElement = new THREE.TextureLoader().load( 'images/edit.png' );
+            } else if(image === 'move') {
+                frontSideElement = new THREE.TextureLoader().load( 'images/move.png' );
+            } else {
+                frontSideElement = dynamicTexture.texture
+            }
+
+            this.materials[front] =  new THREE.MeshBasicMaterial({
+                map: frontSideElement
+            });
 
             // create box and wireframe
             var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth));
             this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
             this.wireframe = new THREE.BoxHelper(this.cube);
             this.wireframe.material.color.set(0x000000);
+        },
+
+        onClick: function () {
+            if (this.wireframe.material.color.r == 0) {
+                this.wireframe.material.color.set(0xff0000);
+            } else {
+                this.wireframe.material.color.set(0x000000);
+            }
         }
 
     });
