@@ -1,0 +1,138 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="./vr-box.html">
+
+
+<dom-module id="vr-control">
+    <template>
+        <template is="dom-repeat" items="{{boxItems}}">
+            <vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"
+                    height="{{item.height}}" depth="{{item.depth}}" image="{{item.image}}"></vr-box>
+        </template>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "vr-control",
+
+        properties: {
+            xPos: {
+                type: Number,
+                value: 0
+            },
+            yPos: {
+                type: Number,
+                value: 0
+            },
+            width: {
+                type: Number,
+                value: 50
+            },
+            height: {
+                type: Number,
+                value: 50
+            },
+            depth: {
+                type: Number,
+                value: 10
+            }
+        },
+
+        // triggered in vr-scene.html
+        down: function () {
+            // attantion MoveElement is a globl Singelton
+            MoveElement.setElement(this);
+        },
+
+        observers: [
+            '_updateClass(xPos, yPos, width, height, depth)'
+        ],
+        _updateClass: function (xPos, yPos, width, height, depth) {
+            if (this.obj) {
+                this.obj.position.setX(xPos);
+                this.obj.position.setY(yPos);
+                var properties = this._getBoxItemProperties(width, height, depth);
+                this.splice('boxItems', 0, 4, properties[0], properties[1], properties[2], properties[3]);
+            }
+        },
+
+        ready: function () {
+            this.obj = new THREE.Group();
+            this.obj.position.setX(this.xPos);
+            this.obj.position.setY(this.yPos);
+            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth);
+        },
+
+        attached: function () {
+            this._getChildren().forEach(function (box) {
+                this.obj.add(box.obj);
+            }.bind(this));
+        },
+
+        _getChildren: function () {
+            // return all children except template element
+            return Polymer.dom(this.root).children.filter(function (node) {
+                return node.localName != 'template';
+            });
+        },
+
+        _getBoxItemProperties: function (width, height, depth) {
+            var baseNumber = width / 4;
+
+            var properties = [
+                {
+                    x: 0,
+                    y: baseNumber,
+                    width: baseNumber,
+                    height: height,
+                    depth: depth,
+                    image: 'move'
+                },
+                {
+                    x: baseNumber,
+                    y: baseNumber,
+                    width: baseNumber,
+                    height: height,
+                    depth: depth,
+                    image: 'edit'
+                },
+                {
+                    x: baseNumber * 2,
+                    y: baseNumber,
+                    width: baseNumber,
+                    height: height,
+                    depth: depth,
+                    image: 'create'
+                },
+                {
+                    x: baseNumber * 3,
+                    y: baseNumber,
+                    width: baseNumber,
+                    height: height,
+                    depth: depth,
+                    image: 'delete'
+                }];
+
+            return properties;
+        },
+
+        // simple on click => triggered in vr-scene.html
+        onClick: function (element) {
+            var self = this;
+
+
+            // TODO - different event for each box
+
+            this._getChildren().forEach(function (box) {
+                box.onClick();
+            }.bind(this));
+
+            if (!this.gui) {
+            } else {
+                this.gui.destroy();
+                this.gui = null;
+            }
+        }
+
+    });
+</script>
