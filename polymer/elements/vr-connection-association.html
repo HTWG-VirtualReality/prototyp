@@ -21,8 +21,6 @@
         },
 
         ready: function () {
-            var gc = new GeneralConnection();
-
             if (!this.from || !this.to) {
                 console.error('properties from and to must be set');
                 return;
@@ -53,9 +51,6 @@
         _render: function() {
             var fromObj = document.querySelector(this.from);
             var toObj = document.querySelector(this.to);
-
-            // var fromPos = fromObj.obj.position;
-            // var toPos = toObj.obj.position;
 
             var gc = new GeneralConnection(fromObj, toObj);
             var points = gc.render();
@@ -102,10 +97,14 @@
             // remove all children from polyline and polygon
             removeAllChildren(this.$.start);
             removeAllChildren(this.$.line);
+            this._render();
 
             function removeAllChildren(parent) {
-                while(parent.children.length != 0)
-                    parent.children[0].remove();
+
+                var dom = Polymer.dom(parent);
+                dom.children.forEach(function (child) {
+                    dom.removeChild(child);
+                });
             }
         }
 

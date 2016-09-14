@@ -60,30 +60,39 @@ GeneralConnection.prototype._horizontalCalculation = function(fromObj, toObj, fr
 };
 
 GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, fromPos, toPos) {
-    // For better understanding see the picture
-    // vr-connection-calculation-base.png in /docs
-    // cathetes of the big tirangle
     var a = this._absoluteSubtraction(fromPos.x, toPos.x);
     var b = this._absoluteSubtraction(fromPos.y - fromObj.height/2, toPos.y - toObj.height/2);
+    var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 
-    // Hypotenuse of the big triangle
-    var c = pythagorasTheorem(a, b);
+    var alpha = Math.atan(a/b);
 
-    // b <) c
-    var alpha = Math.atan((a / b));
+    var fromAlpha = Math.atan(fromObj.width / fromObj.height); // right order? => I think so
+    var toAlpha = Math.atan(toObj.width / toObj.height);
 
-    // smallTriangle is the red triangle in the picture
-    // calculateDiagonalPoints calculates the cathetes(d, h) of the small triangles
-    // remember the center of the leftmost element is the startpoint
-    // var smallTriangleStart, smallTriangleEnd;
-    var attr = (a < b) ? "height" : "width";
-    var smallTriangleStart = calculateDiagonalPoints(alpha, fromObj[attr] /2, toObj[attr] /2);
-    var smallTriangleEnd = calculateDiagonalPoints(alpha, toObj[attr] /2, fromObj[attr] /2);
+    var fromC, toC;
+    if(alpha < fromAlpha) {
+        fromC = (fromObj.height / 2) / Math.cos(alpha);
+    } else {
+        fromC = (fromObj.width / 2) / Math.sin(alpha);
+    }
 
-    var yStart = pythagorasTheorem(smallTriangleStart.h, smallTriangleStart.d);
-    var yEnd = this._absoluteSubtraction(c, pythagorasTheorem(smallTriangleEnd.h, smallTriangleEnd.d));
+    if(alpha < toAlpha) {
+      toC = (toObj.height / 2) / Math.cos(alpha);
+    } else {
+      toC = (toObj.width / 2) / Math.sin(alpha);
+    }
 
-    // create points for polyline
+    var yStart, yEnd;
+    if(fromPos.x < toPos.x) {
+      yStart = fromC;
+      yEnd = c - toC;
+    } else {
+      yStart = toC;
+      yEnd = c - fromC;
+    }
+
+
+    // // create points for polyline
     var line = {
         l1: this._createPoint(0, toIsGreater() ? yStart : -yStart),
         l2: this._createPoint(0, toIsGreater() ? yEnd : -yEnd)
@@ -102,8 +111,8 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
 
     // Add angle
     line.angle = toIsGreater() ? -alpha : alpha;
-
     return line;
+
 
     function createDiagonalPolygonPoint(x, y, summand, context) {
         return {
@@ -131,10 +140,7 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
 }
 
 GeneralConnection.prototype._createPoint = function(x, y) {
-    return {
-        x: x,
-        y: y
-    };
+    return { x: x, y: y };
 }
 
 GeneralConnection.prototype._isToGreater = function(toPos, fromPos) {

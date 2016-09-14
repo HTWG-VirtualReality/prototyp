@@ -34,16 +34,16 @@
 <body>
 <vr-scene>
 
-    <vr-controlpanel x="-500" y="22" height="200" width="202"></vr-controlpanel>
+    <!-- <vr-controlpanel x="-500" y="22" height="200" width="202"></vr-controlpanel> -->
 
-    <vr-class id="customer" x-pos="150" y-pos="150" height="100" width="120"
+    <vr-class id="customer" x-pos="150" y-pos="150" height="100" width="100"
               text1="Customer"
               text2="-name:String; -address:String"
               text3="+getCreditRating():String"
               class-type="abstract">
     </vr-class>
 
-    <vr-class id="corporatecustomer" x-pos="60" y-pos="0" height="100" width="120"
+    <vr-class id="corporatecustomer" x-pos="-60" y-pos="200" height="100" width="50"
               text1="CorporateCustomer"
               text2="-contactName:String; -creditRaiting:String; -creaditLimit:Decimal"
               text3="+billForMonth(int amount); +remind()"></vr-class>
@@ -76,14 +76,15 @@
     <!--<vr-box id="b2" x-pos="-150" y-pos="-100" depth="10" text="test(): String; hallo(): int"></vr-box>-->
 
     <!-- <vr-line from="#c1" to="#b2"></vr-line> -->
-    <!-- <vr-connection-inheritance from="#customer" to="#personalcustomer"></vr-connection-inheritance> -->
+    <vr-connection-inheritance from="#customer" to="#personalcustomer"></vr-connection-inheritance>
     <vr-connection-inheritance from="#customer" to="#corporatecustomer"></vr-connection-inheritance>
-    <!-- <vr-connection-association from="#order" to="#customer"></vr-connection-association> -->
-    <!--<vr-connection-association from="#orderline" to="#order"></vr-connection-association>-->
-    <!--<vr-connection-association from="#product" to="#orderline"></vr-connection-association>-->
-    <!--<vr-connection-association from="#customer" to="#order"></vr-connection-association>-->
-    <!--<vr-connection-association from="#employee" to="#corporatecustomer"></vr-connection-association>-->
-    <!-- <vr-connection-association from="#corporatecustomer" to="#employee"></vr-connection-association> -->
+    <vr-connection-inheritance from="#corporatecustomer" to="#customer"></vr-connection-inheritance>
+    <vr-connection-association from="#order" to="#customer"></vr-connection-association>
+    <vr-connection-association from="#orderline" to="#order"></vr-connection-association>
+    <vr-connection-association from="#product" to="#orderline"></vr-connection-association>
+    <vr-connection-association from="#customer" to="#order"></vr-connection-association>
+    <vr-connection-association from="#employee" to="#corporatecustomer"></vr-connection-association>
+    <vr-connection-association from="#corporatecustomer" to="#employee"></vr-connection-association>
 
 
 
