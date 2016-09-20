@@ -94,6 +94,15 @@
             this._getChildren().forEach(function (box) {
                 this.obj.add(box.obj);
             }.bind(this));
+            this._addResizeSquare();
+        },
+
+        _addResizeSquare: function() {
+            var cubeSize = 10;
+            var cube = new THREE.Mesh( new THREE.CubeGeometry( cubeSize, cubeSize, cubeSize ), new THREE.MeshNormalMaterial() );
+            cube.position.y = -(cubeSize/2);
+            cube.position.x = (this.width/2)-(cubeSize/2);
+            this.obj.add(cube);
         },
 
         _getChildren: function () {

@@ -66,11 +66,11 @@
                     self.group.add(node.obj);
 
                     // register click listener
-                    // domEvents.addEventListener(node.obj, 'click', function () {
-                    //     if (node.onClick) {
-                    //         node.onClick();
-                    //     }
-                    // }, false);
+                    domEvents.addEventListener(node.obj, 'click', function () {
+                        if (node.onClick) {
+                            node.onClick();
+                        }
+                    }, false);
 
                     // register mousedown for move-element.js
                     domEvents.addEventListener(node.obj, 'mousedown', function () {
