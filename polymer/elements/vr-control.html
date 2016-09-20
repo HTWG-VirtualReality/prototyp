@@ -66,6 +66,12 @@
         attached: function () {
             this._getChildren().forEach(function (box) {
                 this.obj.add(box.obj);
+
+                // add event listener
+                var self = this;
+                domEvents.addEventListener(box.obj, 'click', function() {
+                  self._event(box);
+                });
             }.bind(this));
         },
 
@@ -120,9 +126,6 @@
         onClick: function (element) {
             var self = this;
 
-
-            // TODO - different event for each box
-
             this._getChildren().forEach(function (box) {
                 box.onClick();
             }.bind(this));
@@ -132,6 +135,10 @@
                 this.gui.destroy();
                 this.gui = null;
             }
+        },
+
+        _event: function(box) {
+          console.log(box.image)
         }
 
     });

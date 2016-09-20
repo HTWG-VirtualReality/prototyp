@@ -57,7 +57,8 @@
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
             // domEvents to listen for dom events inside our 3d scene
-            var domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
+            // attention global
+            domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
 
             // observe nodes that will added to this element
             Polymer.dom(self.$.content).observeNodes(function (nodes) {
@@ -65,13 +66,13 @@
                     self.group.add(node.obj);
 
                     // register click listener
-                    domEvents.addEventListener(node.obj, 'click', function () {
-                        if (node.onClick) {
-                            node.onClick();
-                        }
-                    }, false);
+                    // domEvents.addEventListener(node.obj, 'click', function () {
+                    //     if (node.onClick) {
+                    //         node.onClick();
+                    //     }
+                    // }, false);
 
-                    // register mousedown for move-element.js 
+                    // register mousedown for move-element.js
                     domEvents.addEventListener(node.obj, 'mousedown', function () {
                         if(node.down)
                             node.down()
