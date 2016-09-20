@@ -35,7 +35,7 @@ GeneralConnection.prototype._verticalCalculation = function(fromObj, toObj, from
         l1: this._createPoint(0, yStart),
         l2: this._createPoint(0, yEnd),
         py: this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : (fromObj.height/2),
-        ps: ((toPos.x < fromPos.x) ? -10 : 10),
+        ps: ((toPos.x < fromPos.x) ? -1 : 1),
         pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)
     };
 };
@@ -49,7 +49,7 @@ GeneralConnection.prototype._horizontalCalculation = function(fromObj, toObj, fr
         l1: this._createPoint(0, widthLeft),
         l2: this._createPoint(0, rightX ),
         py: (toPos.x > fromPos.x) ? fromObj.width/2 : rightX,
-        ps: ((toPos.x < fromPos.x) ? -10 : 10),
+        ps: ((toPos.x < fromPos.x) ? -1 : 1),
         pd: (this._isToGreater(toPos, fromPos) ? -1 : 1),
         angle: -1.5708 // 90 degrees
     };
@@ -97,9 +97,9 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     // checks on which side the placing should be printed.
     var start = {};
     if(toPos.x < fromPos.x) {
-        start = {py: yEnd, ps: -10, pd: (toIsGreater() ? 1 : -1)} // end
+        start = {py: yEnd, ps: -1, pd: (toIsGreater() ? 1 : -1)} // end
     } else {
-        start = {py: yStart, ps: 10, pd: (toIsGreater() ? 1 : -1)} // start
+        start = {py: yStart, ps: 1, pd: (toIsGreater() ? 1 : -1)} // start
     }
 
     // combine line and startplacing points

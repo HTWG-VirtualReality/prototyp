@@ -65,9 +65,9 @@
 
             // create start placing
             this._createStartPlacingPoint(0, points.py * points.pd);
-            this._createStartPlacingPoint(10, (points.py + points.ps) * points.pd);
-            this._createStartPlacingPoint(0, (points.py + points.ps*2)* points.pd)
-            this._createStartPlacingPoint(-10, (points.py + points.ps) * points.pd);
+            this._createStartPlacingPoint(10, (points.py + (10 * points.ps)) * points.pd);
+            this._createStartPlacingPoint(0, (points.py + (20 * points.ps))* points.pd)
+            this._createStartPlacingPoint(-10, (points.py + (10 * points.ps)) * points.pd);
 
             // rotate line and start placing
             this.$.line.obj.rotation.z = points.angle || 0;
