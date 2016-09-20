@@ -17,8 +17,9 @@
     <link rel="import" href="elements/vr-ellipse.html">
     <link rel="import" href="elements/vr-line-generic.html">
     <link rel="import" href="elements/vr-class.html">
-    <link rel="import" href="elements/vr-connection-inheritance.html">
+    <link rel="import" href="elements/vr-connection-aggregation.html">
     <link rel="import" href="elements/vr-connection-association.html">
+    <link rel="import" href="elements/vr-connection-inheritance.html">
     <link rel="import" href="elements/vr-controlpanel.html">
     <link rel="import" href="elements/vr-control.html">
 
@@ -80,7 +81,7 @@
     <vr-connection-inheritance from="#customer" to="#personalcustomer"></vr-connection-inheritance>
     <vr-connection-inheritance from="#customer" to="#corporatecustomer"></vr-connection-inheritance>
     <vr-connection-inheritance from="#corporatecustomer" to="#customer"></vr-connection-inheritance>
-    <vr-connection-association from="#order" to="#customer"></vr-connection-association>
+    <vr-connection-aggregation from="#order" to="#customer"></vr-connection-aggregation>
     <vr-connection-association from="#orderline" to="#order"></vr-connection-association>
     <vr-connection-association from="#product" to="#orderline"></vr-connection-association>
     <vr-connection-association from="#customer" to="#order"></vr-connection-association>

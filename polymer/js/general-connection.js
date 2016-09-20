@@ -31,22 +31,12 @@ GeneralConnection.prototype._verticalCalculation = function(fromObj, toObj, from
     var yEnd = this._isToGreater(toPos, fromPos) ? -(y-toObj.height/2) : y - toObj.height/2;
 
     // start placing
-    var height1 = this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : (fromObj.height/2);
-    var height2 = this._isToGreater(toPos, fromPos) ? height1 - 10 : height1 + 10;
-
-    var start = {};
-    if(toPos.x < fromPos.x) {
-        start = {py: height1, ps: -10, pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)} // end
-    } else {
-        start = {py: height1, ps: 10, pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)} // start
-    }
-
     return {
         l1: this._createPoint(0, yStart),
         l2: this._createPoint(0, yEnd),
-        py: start.py,
-        ps: start.ps,
-        pd: start.pd
+        py: this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : (fromObj.height/2),
+        ps: ((toPos.x < fromPos.x) ? -10 : 10),
+        pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)
     };
 };
 
@@ -55,21 +45,12 @@ GeneralConnection.prototype._horizontalCalculation = function(fromObj, toObj, fr
     var widthRight = (toPos.x < fromPos.x) ? fromObj.width/2 : toObj.width/2;
     var rightX = this._absoluteSubtraction(fromPos.x, toPos.x) - widthRight;
 
-    var width1 = (toPos.x > fromPos.x) ? fromObj.width/2 : rightX;
-    var width2 = (toPos.x > fromPos.x) ? width1 + 10 : width1 - 10;
-    var start = {};
-    if(toPos.x < fromPos.x) {
-        start = {py: width1, ps: -10, pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)} // end
-    } else {
-        start = {py: width1, ps: 10, pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)} // start
-    }
-
     return {
         l1: this._createPoint(0, widthLeft),
         l2: this._createPoint(0, rightX ),
-        py: start.py,
-        ps: start.ps,
-        pd: start.pd,
+        py: (toPos.x > fromPos.x) ? fromObj.width/2 : rightX,
+        ps: ((toPos.x < fromPos.x) ? -10 : 10),
+        pd: (this._isToGreater(toPos, fromPos) ? -1 : 1),
         angle: -1.5708 // 90 degrees
     };
 };
@@ -113,7 +94,7 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
         l2: this._createPoint(0, toIsGreater() ? yEnd : -yEnd)
     };
 
-    // checks on which side the arrow should be printed.
+    // checks on which side the placing should be printed.
     var start = {};
     if(toPos.x < fromPos.x) {
         start = {py: yEnd, ps: -10, pd: (toIsGreater() ? 1 : -1)} // end
