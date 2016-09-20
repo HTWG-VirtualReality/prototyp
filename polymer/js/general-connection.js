@@ -34,28 +34,43 @@ GeneralConnection.prototype._verticalCalculation = function(fromObj, toObj, from
     var height1 = this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : (fromObj.height/2);
     var height2 = this._isToGreater(toPos, fromPos) ? height1 - 10 : height1 + 10;
 
+    var start = {};
+    if(toPos.x < fromPos.x) {
+        start = {py: height1, ps: -10, pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)} // end
+    } else {
+        start = {py: height1, ps: 10, pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)} // start
+    }
+
     return {
         l1: this._createPoint(0, yStart),
         l2: this._createPoint(0, yEnd),
-        p1: this._createPoint(10, height2),
-        p2: this._createPoint(0, height1),
-        p3: this._createPoint(-10, height2)
+        py: start.py,
+        ps: start.ps,
+        pd: start.pd
     };
 };
 
 GeneralConnection.prototype._horizontalCalculation = function(fromObj, toObj, fromPos, toPos) {
     var widthLeft = (toPos.x > fromPos.x) ? fromObj.width/2 : toObj.width/2;
     var widthRight = (toPos.x < fromPos.x) ? fromObj.width/2 : toObj.width/2;
-    var rightX = this._absoluteSubtraction(fromPos.x, toPos.x);
+    var rightX = this._absoluteSubtraction(fromPos.x, toPos.x) - widthRight;
 
-    var width1 = (toPos.x > fromPos.x) ? fromObj.width/2 : this._absoluteSubtraction(fromPos.x, toPos.x) - fromObj.width/2;
+    var width1 = (toPos.x > fromPos.x) ? fromObj.width/2 : rightX;
     var width2 = (toPos.x > fromPos.x) ? width1 + 10 : width1 - 10;
+    var start = {};
+    if(toPos.x < fromPos.x) {
+        start = {py: width1, ps: -10, pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)} // end
+    } else {
+        start = {py: width1, ps: 10, pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)} // start
+    }
+
     return {
-        l1: this._createPoint(widthLeft, 0),
-        l2: this._createPoint(rightX , 0),
-        p1: this._createPoint(width2, 10),
-        p2: this._createPoint(width1, 0),
-        p3: this._createPoint(width2, -10)
+        l1: this._createPoint(0, widthLeft),
+        l2: this._createPoint(0, rightX ),
+        py: start.py,
+        ps: start.ps,
+        pd: start.pd,
+        angle: -1.5708 // 90 degrees
     };
 };
 
@@ -101,9 +116,9 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     // checks on which side the arrow should be printed.
     var start = {};
     if(toPos.x < fromPos.x) {
-        start = createDiagonalPolygonPoint(0, yEnd, -10, this); // end
+        start = {py: yEnd, ps: -10, pd: (toIsGreater() ? 1 : -1)} // end
     } else {
-        start = createDiagonalPolygonPoint(0, yStart, 10, this); // start
+        start = {py: yStart, ps: 10, pd: (toIsGreater() ? 1 : -1)} // start
     }
 
     // combine line and startplacing points
@@ -112,15 +127,6 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     // Add angle
     line.angle = toIsGreater() ? -alpha : alpha;
     return line;
-
-
-    function createDiagonalPolygonPoint(x, y, summand, context) {
-        return {
-            p1: context._createPoint(x - 10, (y + summand) * (toIsGreater() ? 1 : -1)),
-            p2: context._createPoint(x, toIsGreater() ? y : -y),
-            p3: context._createPoint(x + 10, (y + summand) * (toIsGreater() ? 1 : -1))
-        };
-    }
 
     function pythagorasTheorem(a, b) {
         return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
