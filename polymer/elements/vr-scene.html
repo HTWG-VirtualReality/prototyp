@@ -46,19 +46,22 @@
             self.renderer = self._createRenderer();
             self.camera = self._createCamera(self.renderer.domElement);
             self.scene = new THREE.Scene();
-            self.group = self._createGroup(self.renderer.domElement);
-            self.scene.add(self.camera);
-            self.scene.add(self.group);
-
-
-
-
-
-            Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
             // domEvents to listen for dom events inside our 3d scene
             // attention global
             domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
+            THREE.Object3D.prototype.on = function(eventName, callback, useCapture) {
+                domEvents.bind(this, eventName, callback, useCapture);
+            };
+            THREE.Object3D.prototype.off = function(eventName, callback, useCapture) {
+                domEvents.unbind(this, eventName, callback, useCapture);
+            };
+
+            self.group = self._createGroup(self.renderer.domElement);
+            self.scene.add(self.camera);
+            self.scene.add(self.group);
+
+            Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
             // observe nodes that will added to this element
             Polymer.dom(self.$.content).observeNodes(function (nodes) {
