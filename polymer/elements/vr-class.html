@@ -57,7 +57,7 @@
         },
 
         // triggered in vr-scene.html
-        down: function() {
+        onMouseDown: function() {
             // attantion MoveElement is a globl Singelton
             MoveElement.setElement(this);
         },
@@ -88,6 +88,8 @@
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
+            this.obj.on('click', this.onClick.bind(this));
+            this.obj.on('mousedown', this.onMouseDown.bind(this));
         },
 
         attached: function () {
@@ -167,7 +169,7 @@
             var self = this;
 
             this._getChildren().forEach(function (box) {
-                box.onClick();
+                box.highlight();
             }.bind(this));
 
             if (!this.gui) {

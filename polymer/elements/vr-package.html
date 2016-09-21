@@ -70,6 +70,7 @@
             this.obj.position.setY(this.yPos);
             this.obj.position.setZ(-(this.depth - 2)); // TODO: discuss z axis
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2);
+            this.obj.on('click', this.onClick.bind(this));
         },
 
         attached: function () {
@@ -124,9 +125,8 @@
         // simple on click
         onClick: function () {
             var self = this;
-
             this._getChildren().forEach(function (box) {
-                box.onClick();
+                box.highlight();
             }.bind(this));
 
             if (!this.gui) {

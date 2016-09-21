@@ -41,46 +41,36 @@
     Polymer({
         is: "vr-scene",
 
-        ready: function () {
+        created: function() {
             var self = this;
             self.renderer = self._createRenderer();
             self.camera = self._createCamera(self.renderer.domElement);
             self.scene = new THREE.Scene();
-
-            // domEvents to listen for dom events inside our 3d scene
-            // attention global
-            domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
-            THREE.Object3D.prototype.on = function(eventName, callback, useCapture) {
-                domEvents.bind(this, eventName, callback, useCapture);
-            };
-            THREE.Object3D.prototype.off = function(eventName, callback, useCapture) {
-                domEvents.unbind(this, eventName, callback, useCapture);
-            };
-
+            self._initiateThreeEvents();
             self.group = self._createGroup(self.renderer.domElement);
             self.scene.add(self.camera);
             self.scene.add(self.group);
+        },
 
+        _initiateThreeEvents: function() {
+            var self = this;
+            var domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
+            THREE.Object3D.prototype.on = function(eventName, callback, useCapture) {
+                domEvents.bind(this, eventName, callback, useCapture || false);
+            };
+            THREE.Object3D.prototype.off = function(eventName, callback, useCapture) {
+                domEvents.unbind(this, eventName, callback, useCapture || false);
+            };
+        },
+
+        ready: function () {
+            var self = this;
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
             // observe nodes that will added to this element
             Polymer.dom(self.$.content).observeNodes(function (nodes) {
                 nodes.addedNodes.forEach(function (node) {
                     self.group.add(node.obj);
-
-                    // register click listener
-                    domEvents.addEventListener(node.obj, 'click', function () {
-                        if (node.onClick) {
-                            node.onClick();
-                        }
-                    }, false);
-
-                    // register mousedown for move-element.js
-                    domEvents.addEventListener(node.obj, 'mousedown', function () {
-                        if(node.down)
-                            node.down()
-                    }, false);
-
                 });
 
                 nodes.removedNodes.forEach(function (node) {
@@ -149,7 +139,6 @@
         },
 
         _onResize: function () {
-            console.log('Resizing to %s x %s.', window.innerWidth, window.innerHeight);
             this.effect.setSize(window.innerWidth, window.innerHeight);
             this.camera.aspect = window.innerWidth / window.innerHeight;
             this.camera.updateProjectionMatrix();

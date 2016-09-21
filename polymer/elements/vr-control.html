@@ -39,7 +39,7 @@
         },
 
         // triggered in vr-scene.html
-        down: function () {
+        onMouseDown: function () {
             // attantion MoveElement is a globl Singelton
             MoveElement.setElement(this);
         },
@@ -56,23 +56,22 @@
             }
         },
 
-        ready: function () {
+        ready: function() {
             this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth);
+            this.obj.on('mousedown', this.onMouseDown.bind(this));
         },
 
         attached: function () {
-            this._getChildren().forEach(function (box) {
-                this.obj.add(box.obj);
-
-                // add event listener
-                var self = this;
-                domEvents.addEventListener(box.obj, 'click', function() {
-                  self._event(box);
+            var self = this;
+            this._getChildren().forEach(function(box) {
+                self.obj.add(box.obj);
+                box.obj.on('click', function() {
+                    self.onClickBox(box);
                 });
-            }.bind(this));
+            });
         },
 
         _getChildren: function () {
@@ -122,24 +121,12 @@
             return properties;
         },
 
-        // simple on click => triggered in vr-scene.html
-        onClick: function (element) {
-            var self = this;
-
-            this._getChildren().forEach(function (box) {
-                box.onClick();
-            }.bind(this));
-
-            if (!this.gui) {
-            } else {
+        onClickBox: function(box) {
+            box.highlight();
+            if (this.gui) {
                 this.gui.destroy();
                 this.gui = null;
             }
-        },
-
-        _event: function(box) {
-          console.log(box.image)
         }
-
     });
 </script>
