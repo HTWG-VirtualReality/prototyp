@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../behaviors/vr-move.html">
+<link rel="import" href="../behaviors/vr-three.html">
 <link rel="import" href="./vr-box.html">
-
 
 <dom-module id="vr-class">
     <template>
@@ -17,14 +18,6 @@
         is: "vr-class",
 
         properties: {
-            xPos: {
-                type: Number,
-                value: 0
-            },
-            yPos: {
-                type: Number,
-                value: 0
-            },
             width: {
                 type: Number,
                 value: 50
@@ -56,11 +49,10 @@
             }
         },
 
-        // triggered in vr-scene.html
-        onMouseDown: function() {
-            // attantion MoveElement is a globl Singelton
-            MoveElement.setElement(this);
-        },
+        behaviors: [
+            VrBehaviors.ThreeBehavior,
+            VrBehaviors.MoveBehavior
+        ],
 
         observers: [
             '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3, classType)'
@@ -77,19 +69,22 @@
             if (this.obj) {
                 this.obj.position.setX(xPos);
                 this.obj.position.setY(yPos);
-                var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3, classType);
-                this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
+                if (this.boxItems) {
+                    var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3, classType);
+                    this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
+                }
                 this.fire('vr-resize', {});
             }
         },
 
+        created: function() {
+            this.obj.on('click', this.onClick.bind(this));
+        },
+
         ready: function () {
-            this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
-            this.obj.on('click', this.onClick.bind(this));
-            this.obj.on('mousedown', this.onMouseDown.bind(this));
         },
 
         attached: function () {

@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../behaviors/vr-move.html">
+<link rel="import" href="../behaviors/vr-three.html">
 <link rel="import" href="./vr-box.html">
-
 
 <dom-module id="vr-control">
     <template>
@@ -16,14 +17,6 @@
         is: "vr-control",
 
         properties: {
-            xPos: {
-                type: Number,
-                value: 0
-            },
-            yPos: {
-                type: Number,
-                value: 0
-            },
             width: {
                 type: Number,
                 value: 50
@@ -38,11 +31,10 @@
             }
         },
 
-        // triggered in vr-scene.html
-        onMouseDown: function () {
-            // attantion MoveElement is a globl Singelton
-            MoveElement.setElement(this);
-        },
+        behaviors: [
+            VrBehaviors.ThreeBehavior,
+            VrBehaviors.MoveBehavior
+        ],
 
         observers: [
             '_updateClass(xPos, yPos, width, height, depth)'
@@ -51,17 +43,17 @@
             if (this.obj) {
                 this.obj.position.setX(xPos);
                 this.obj.position.setY(yPos);
-                var properties = this._getBoxItemProperties(width, height, depth);
-                this.splice('boxItems', 0, 4, properties[0], properties[1], properties[2], properties[3]);
+                if (this.boxItems) {
+                    var properties = this._getBoxItemProperties(width, height, depth);
+                    this.splice('boxItems', 0, 4, properties[0], properties[1], properties[2], properties[3]);
+                }
             }
         },
 
         ready: function() {
-            this.obj = new THREE.Group();
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth);
-            this.obj.on('mousedown', this.onMouseDown.bind(this));
         },
 
         attached: function () {

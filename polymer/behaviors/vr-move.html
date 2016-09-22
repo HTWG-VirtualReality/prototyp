@@ -1,0 +1,49 @@
+<script>
+    window.VrBehaviors = window.VrBehaviors || {};
+    VrBehaviors.MoveBehavior = {
+
+        properties: {
+            xPos: {
+                type: Number,
+                value: 0
+            },
+            yPos: {
+                type: Number,
+                value: 0
+            }
+        },
+
+        created: function() {
+            this.obj.on('mousedown', this.onMouseDown.bind(this));
+        },
+
+        onMouseDown: function(event) {
+            event.origDomEvent.stopImmediatePropagation();
+            var self = this;
+            var dom = event.origDomEvent.target;
+            var position = {
+                x: event.origDomEvent.clientX,
+                y: event.origDomEvent.clientY
+            };
+            dom.addEventListener('mousemove', onMouseMove);
+            dom.addEventListener('mouseup', reset);
+            dom.addEventListener('mouseout', reset);
+
+            function onMouseMove(e) {
+                // calculate new position of element
+                self.xPos += e.clientX - position.x;
+                self.yPos -= e.clientY - position.y;
+
+                // update position
+                position.x = e.clientX;
+                position.y = e.clientY;
+            }
+
+            function reset() {
+                dom.removeEventListener('mousemove', onMouseMove);
+                dom.removeEventListener('mouseup', reset);
+                dom.removeEventListener('mouseout', reset);
+            }
+        }
+    };
+</script>
