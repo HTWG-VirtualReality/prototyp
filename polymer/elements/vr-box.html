@@ -97,6 +97,7 @@
 
             // create text
             var dynamicTexture = new THREEx.DynamicTexture(width * 10, height * 10);
+            dynamicTexture.texture.minFilter = THREE.NearestFilter;
             dynamicTexture.clear('white').drawTextCooked({
                 text: text,
                 font: "bold 64px Verdana",
