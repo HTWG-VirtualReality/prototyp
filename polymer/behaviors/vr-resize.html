@@ -10,20 +10,20 @@
             height: {
                 type: Number,
                 value: 50
+            },
+            depth: {
+                type: Number,
+                value: 10
             }
         },
 
-        attached: function() {
-            var depth = 12;
-            var width = 3;
-            var geometry = new THREE.CylinderGeometry(width, width, depth, 32);
-            var padding = width/1.5;
-            var group = this._createGroup();
-            this._createMesh(group, geometry, padding, padding);
-            this._createMesh(group, geometry, padding, this.height - padding);
-            this._createMesh(group, geometry, this.width - padding, this.height - padding);
-            this._createMesh(group, geometry, this.width - padding, padding);
+        observers: [
+            '_onPropertyChange(width, height)'
+        ],
 
+        attached: function() {
+            var group = this._createGroup();
+            this._initiateMeshes(group);
         },
 
         onMouseOverGroup: function(event) {
@@ -34,11 +34,6 @@
             this._updateChildrenOpacity(event);
         },
 
-        onMouseDownGroup: function(event) {
-            event.origDomEvent.stopImmediatePropagation();
-            event.stopPropagation();
-        },
-
         onMouseOverChild: function(event) {
             event.target.material.color.set(0xFF0000);
         },
@@ -47,13 +42,66 @@
             event.target.material.color.set(0x000000);
         },
 
+        onMouseDownChild: function(event) {
+            event.stopPropagation();
+            event.origDomEvent.stopImmediatePropagation();
+            this._handleResize(event.origDomEvent, event.target);
+        },
+
+        _onPropertyChange: function(width, height) {
+            var self = this;
+            self.obj.children.forEach(function(element){
+                if (element.name === 'resize') {
+                    self._updateMeshes(element);
+                }
+            });
+        },
+
         _createGroup: function() {
             var group = new THREE.Group();
+            group.name = 'resize';
             this.obj.add(group);
             group.on('mouseover', this.onMouseOverGroup.bind(this));
             group.on('mouseout', this.onMouseOutGroup.bind(this));
-            group.on('mousedown', this.onMouseDownGroup.bind(this));
             return group;
+        },
+
+        _initiateMeshes: function(group) {
+            var width = 3;
+            var geometry = new THREE.CylinderGeometry(width, width, this.depth + 2, 32);
+
+            this._addMesh(group, geometry, 'left', 'bottom');
+            this._addMesh(group, geometry, 'left', 'top');
+            this._addMesh(group, geometry, 'right', 'top');
+            this._addMesh(group, geometry, 'right', 'bottom');
+            this._updateMeshes(group);
+        },
+
+        _addMesh: function(group, geometry, side, vertical) {
+            var material = new THREE.MeshBasicMaterial({color: 0x000000, transparent: true, opacity: 0});
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.userData = { side: side, vertical: vertical };
+            mesh.rotateX(90 * (Math.PI/180));
+            mesh.position.z += 1; //Fixes raycaster detection
+            group.add(mesh);
+
+            mesh.on('mouseover', this.onMouseOverChild.bind(this));
+            mesh.on('mouseout', this.onMouseOutChild.bind(this));
+            mesh.on('mousedown', this.onMouseDownChild.bind(this));
+        },
+
+        _updateMeshes: function (group) {
+            var width = 3;
+            var padding = width/1.5;
+            this._updateMeshPosition(group.children[0], padding, padding);
+            this._updateMeshPosition(group.children[1], padding, this.height - padding);
+            this._updateMeshPosition(group.children[2], this.width - padding, this.height - padding);
+            this._updateMeshPosition(group.children[3], this.width - padding, padding);
+        },
+
+        _updateMeshPosition: function(element, x, y) {
+            element.position.x = x - (this.width/2);
+            element.position.y = y - this.height;
         },
 
         _updateChildrenOpacity: function (event) {
@@ -62,17 +110,44 @@
             })
         },
 
-        _createMesh: function(group, geometry, x, y) {
-            var material = new THREE.MeshBasicMaterial({color: 0x000000, transparent: true, opacity: 0});
-            var mesh = new THREE.Mesh(geometry, material);
-            mesh.rotateX(90 * (Math.PI/180));
-            mesh.position.x = x - (this.width/2);
-            mesh.position.y = y - this.height;
-            mesh.position.z += 1;
-            group.add(mesh);
+        _handleResize: function (event, object) {
+            var self = this;
+            var dom = event.target;
+            var position = {
+                x: event.clientX,
+                y: event.clientY
+            };
+            var throttle = _.throttle(onMouseMove, 100);
+            self._handleEventListener(true, dom, throttle, reset);
 
-            mesh.on('mouseover', this.onMouseOverChild.bind(this));
-            mesh.on('mouseout', this.onMouseOutChild.bind(this));
+            function onMouseMove(e) {
+                self._updateDimension(object.userData, position, e);
+                position.x = e.clientX;
+                position.y = e.clientY;
+            }
+            function reset() {
+                self._handleEventListener(false, dom, throttle, reset);
+            }
+        },
+
+        _updateDimension: function(userData, position, event) {
+            this.width += this._getValueChange(userData.side == 'left', position.x, event.clientX);
+            this.height += this._getValueChange(userData.vertical == 'top', position.y, event.clientY);
+
+            if (userData.vertical == 'top') {
+                this.yPos += position.y - event.clientY;
+            }
+        },
+
+        _getValueChange: function(userData, position, client) {
+            return userData ? position - client : client - position;
+        },
+
+        _handleEventListener: function(add, dom, throttle, reset) {
+            var action = add ? dom.addEventListener : dom.removeEventListener;
+            action('mousemove', throttle);
+            action('mouseup', reset);
+            action('mouseout', reset);
         }
     };
 </script>
