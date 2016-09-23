@@ -15,7 +15,8 @@
     "threejs": "r77",
     "threex.domevents": "*",
     "dat.gui": "v0.5",
-    "webvr-polyfill": "v0.9.12"
+    "webvr-polyfill": "v0.9.12",
+    "underscore": "^1.8.3"
   },
   "devDependencies": {
     "mocha": "^2.5.3",
