@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../behaviors/vr-move.html">
 <link rel="import" href="../behaviors/vr-three.html">
+<link rel="import" href="../behaviors/vr-move.html">
+<link rel="import" href="../behaviors/vr-resize.html">
 <link rel="import" href="./vr-box.html">
 
 <dom-module id="vr-class">
@@ -51,7 +52,8 @@
 
         behaviors: [
             VrBehaviors.ThreeBehavior,
-            VrBehaviors.MoveBehavior
+            VrBehaviors.MoveBehavior,
+            VrBehaviors.ResizeBehavior
         ],
 
         observers: [
@@ -91,15 +93,6 @@
             this._getChildren().forEach(function (box) {
                 this.obj.add(box.obj);
             }.bind(this));
-            this._addResizeSquare();
-        },
-
-        _addResizeSquare: function() {
-            var cubeSize = 10;
-            var cube = new THREE.Mesh( new THREE.CubeGeometry( cubeSize, cubeSize, cubeSize ), new THREE.MeshNormalMaterial() );
-            cube.position.y = -(cubeSize/2);
-            cube.position.x = (this.width/2)-(cubeSize/2);
-            this.obj.add(cube);
         },
 
         _getChildren: function () {
