@@ -35,6 +35,7 @@
             this.fire('vr-delete', {});
 
             // delete this object
+            Polymer.dom(this.parentNode).removeChild(this);
         }
 
     };

@@ -115,8 +115,7 @@
         },
 
         _deleteConnection: function() {
-            console.log('delete');
-            Polymer.dom(this).parentNode.removeChild(this);
+            Polymer.dom(this.parentNode).removeChild(this);
         }
 
     });
