@@ -2,6 +2,7 @@
 <link rel="import" href="../behaviors/vr-three.html">
 <link rel="import" href="../behaviors/vr-move.html">
 <link rel="import" href="../behaviors/vr-resize.html">
+<link rel="import" href="../behaviors/vr-delete.html">
 <link rel="import" href="./vr-box.html">
 
 <dom-module id="vr-class">
@@ -41,7 +42,8 @@
         behaviors: [
             VrBehaviors.ThreeBehavior,
             VrBehaviors.MoveBehavior,
-            VrBehaviors.ResizeBehavior
+            VrBehaviors.ResizeBehavior,
+            VrBehaviors.DeleteBehavior
         ],
 
         observers: [

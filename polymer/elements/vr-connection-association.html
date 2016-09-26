@@ -40,7 +40,7 @@
             this._render();
 
             // add event listener for resizing
-            this._registerListener(fromObj, toObj);
+            this._registerAllListener(fromObj, toObj);
 
             // add Polymer children to three js group
             Polymer.dom(this.root).children.forEach(function (box) {
@@ -73,9 +73,14 @@
             this.$.start.obj.rotation.z = points.angle || 0;
         },
 
-        _registerListener: function(fromObj, toObj) {
-            fromObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
-            toObj.addEventListener('vr-resize', this._resizeConnection.bind(this));
+        _registerAllListener: function(fromObj, toObj) {
+            this._registerListener(fromObj, toObj, 'vr-resize', this._resizeConnection);
+            this._registerListener(fromObj, toObj, 'vr-delete', this._deleteConnection);
+        },
+
+        _registerListener: function(fromObj, toObj, event, func) {
+            fromObj.addEventListener(event, func.bind(this));
+            toObj.addEventListener(event, func.bind(this));
         },
 
         _createLinePoint: function(x, y) {
@@ -106,6 +111,11 @@
                     dom.removeChild(child);
                 });
             }
+        },
+
+        _deleteConnection: function() {
+            console.log('delete');
+            Polymer.dom(this).parentNode.removeChild(this);
         }
 
     });
