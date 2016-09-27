@@ -25,7 +25,7 @@
             var group = this._createGroup();
             this._initiateMeshes(group);
 
-            this.obj.on('mousedown', function() {
+            this.obj.on('click', function() {
                 group.children.forEach(function (element) {
                     element.material.opacity = (element.material.opacity === 1) ? 0 : 1;
                 })

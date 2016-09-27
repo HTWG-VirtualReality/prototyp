@@ -8,7 +8,7 @@
             var mesh = this._initializeDeleteButton();
             this._registerDeleteListener(mesh);
 
-            this.obj.on('mousedown', function() {
+            this.obj.on('click', function() {
                 mesh.material.opacity = (mesh.material.opacity === 1) ? 0 : 1;
             }.bind(this));
         },
