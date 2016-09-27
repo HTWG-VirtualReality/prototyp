@@ -1,4 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../behaviors/vr-three.html">
+<link rel="import" href="../behaviors/vr-connection.html">
 <link rel="import" href="./vr-polygon.html">
 <link rel="import" href="./vr-polyline.html">
 
@@ -15,46 +17,12 @@
     Polymer({
         is: "vr-connection-inheritance",
 
-        properties: {
-            from: String,
-            to: String
-        },
+        behaviors: [
+            VrBehaviors.ThreeBehavior,
+            VrBehaviors.ConnectionBehavior
+        ],
 
-        ready: function () {
-            if (!this.from || !this.to) {
-                console.error('properties from and to must be set');
-                return;
-            }
-
-            var fromObj = document.querySelector(this.from);
-            var toObj = document.querySelector(this.to);
-            if (!fromObj || !toObj) {
-                console.error('could not find element');
-                return;
-            }
-
-            // create group
-            this.obj = new THREE.Group();
-
-            // calculate and render connection
-            this._render();
-
-            // add event listener for resizing
-            this._registerAllListener(fromObj, toObj);
-
-            // add Polymer children to three js group
-            Polymer.dom(this.root).children.forEach(function (box) {
-                this.obj.add(box.obj);
-            }.bind(this));
-        },
-
-        _render: function() {
-            var fromObj = document.querySelector(this.from);
-            var toObj = document.querySelector(this.to);
-
-            var gc = new GeneralConnection(fromObj, toObj);
-            var points = gc.render();
-
+        _render: function(points) {
             // set startpoint
             this.obj.position.setX(points.start.x);
             this.obj.position.setY(points.start.y);
@@ -73,14 +41,18 @@
             this.$.start.obj.rotation.z = points.angle || 0;
         },
 
-        _registerAllListener: function(fromObj, toObj) {
-            this._registerListener(fromObj, toObj, 'vr-resize', this._resizeConnection);
-            this._registerListener(fromObj, toObj, 'vr-delete', this._deleteConnection);
-        },
+        _preResize: function() {
+            // remove all children from polyline and polygon
+            removeAllChildren(this.$.start);
+            removeAllChildren(this.$.line);
 
-        _registerListener: function(fromObj, toObj, event, func) {
-            fromObj.addEventListener(event, func.bind(this));
-            toObj.addEventListener(event, func.bind(this));
+            function removeAllChildren(parent) {
+
+                var dom = Polymer.dom(parent);
+                dom.children.forEach(function (child) {
+                    dom.removeChild(child);
+                });
+            }
         },
 
         _createLinePoint: function(x, y) {
@@ -96,25 +68,6 @@
             point.x = x;
             point.y = y;
             Polymer.dom(element).appendChild(point);
-        },
-
-        _resizeConnection: function () {
-            // remove all children from polyline and polygon
-            removeAllChildren(this.$.start);
-            removeAllChildren(this.$.line);
-            this._render();
-
-            function removeAllChildren(parent) {
-
-                var dom = Polymer.dom(parent);
-                dom.children.forEach(function (child) {
-                    dom.removeChild(child);
-                });
-            }
-        },
-
-        _deleteConnection: function() {
-            Polymer.dom(this.parentNode).removeChild(this);
         }
 
     });
