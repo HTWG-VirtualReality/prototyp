@@ -12,7 +12,7 @@ GeneralConnection.prototype.render = function() {
     var points = {};
     if(this._isVertical(fromPos, toPos)) {
         points = this._verticalCalculation(fromObj, toObj, fromPos, toPos);
-    } else if (this._isHorizontal(fromPos, toPos)) {
+    } else if (this._isHorizontal(fromObj.height, toObj.height, fromPos, toPos)) {
         points = this._horizontalCalculation(fromObj, toObj, fromPos, toPos);
     } else {
         points = this._diagonalCalculation(fromObj, toObj, fromPos, toPos);
@@ -48,9 +48,9 @@ GeneralConnection.prototype._horizontalCalculation = function(fromObj, toObj, fr
     return {
         l1: this._createPoint(0, widthLeft),
         l2: this._createPoint(0, rightX ),
-        py: (toPos.x > fromPos.x) ? fromObj.width/2 : rightX,
+        py: (toPos.x > fromPos.x) ? widthLeft : rightX,
         ps: ((toPos.x < fromPos.x) ? -1 : 1),
-        pd: (this._isToGreater(toPos, fromPos) ? -1 : 1),
+        pd: 1,
         angle: -1.5708 // 90 degrees
     };
 };
@@ -122,7 +122,11 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     }
 
     function toIsGreater() {
-        return (toPos.x > fromPos.x) ? toPos.y > fromPos.y : toPos.y < fromPos.y;
+        if(toPos.x > fromPos.x) {
+            return (toPos.y-toObj.height/2) > (fromPos.y-fromObj.height/2);
+        } else {
+            return (toPos.y-toObj.height/2) < (fromPos.y-fromObj.height/2);
+        }
     }
 }
 
@@ -142,6 +146,6 @@ GeneralConnection.prototype._isVertical = function(fromPos, toPos) {
     return fromPos.x == toPos.x;
 }
 
-GeneralConnection.prototype._isHorizontal = function(fromPos, toPos) {
-    return fromPos.y == toPos.y; // TODO: change condition a little bit
+GeneralConnection.prototype._isHorizontal = function(fromHeight, toHeight, fromPos, toPos) {
+    return (fromPos.y - fromHeight/2) == (toPos.y - toHeight/2);
 }
