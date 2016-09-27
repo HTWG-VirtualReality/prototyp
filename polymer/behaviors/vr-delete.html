@@ -2,6 +2,8 @@
     window.VrBehaviors = window.VrBehaviors || {};
     VrBehaviors.DeleteBehavior = {
 
+        observers: ['_handleResizeDelete(width)'],
+
         attached: function() {
             var mesh = this._initializeDeleteButton();
             this._registerDeleteListener(mesh);
@@ -11,22 +13,32 @@
             }.bind(this));
         },
 
+        _handleResizeDelete: function(width) {
+            this.obj.children.forEach(function (element) {
+                if(element.name === 'delete') this._changeDeleteButtonPosition(element);
+            }.bind(this));
+        },
+
+        _changeDeleteButtonPosition(mesh) {
+            var padding = 10;
+            mesh.position.x = this.width / 2 + padding;
+            mesh.position.y = padding;
+        },
+
         _registerDeleteListener: function(mesh) {
             mesh.on('mouseover', this.onMouseOver.bind(this));
             mesh.on('mouseout', this.onMouseOut.bind(this));
             mesh.on('mousedown', this.delete.bind(this));
         },
 
-
         _initializeDeleteButton: function() {
             var width = 6;
-            var padding = 10;
             var geometry = new THREE.CylinderGeometry(width, width, 10, 32);
             var material = new THREE.MeshBasicMaterial({color: 0x000000, transparent: true, opacity: 0});
             var mesh = new THREE.Mesh(geometry, material);
             mesh.rotateX(90 * (Math.PI/180));
-            mesh.position.x = this.width / 2 + padding;
-            mesh.position.y = padding;
+            mesh.name = 'delete';
+            this._changeDeleteButtonPosition(mesh);
             this.obj.add(mesh);
             return mesh;
         },
