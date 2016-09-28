@@ -1,0 +1,107 @@
+<link rel="import" href="../elements/vr-connection-aggregation.html">
+<link rel="import" href="../elements/vr-connection-association.html">
+<link rel="import" href="../elements/vr-connection-inheritance.html">
+
+<script>
+    window.VrBehaviors = window.VrBehaviors || {};
+    VrBehaviors.ConnectBehavior = {
+
+        observers: ['_handleResizeConnect(width)'],
+        attached: function() {
+            this.obj.on('click', this._handleClickConnectButton.bind(this));
+        },
+
+        _handleClickConnectButton: function() {
+            if(!this.highlighted) {
+                //destroy Connect button and eventlistener
+                var mesh = this._getConnectMesh();
+                this._deregisterConnectListener(mesh);
+                this.obj.remove(mesh);
+            } else {
+                //create Connect button and eventlistener
+                var mesh = this._initializeConnectButton();
+                this._registerConnectListener(mesh);
+            }
+        },
+
+        _handleResizeConnect: function(width) {
+            // only execute when element is highlighted
+            if(!this.highlighted) return;
+            this._changeConnectButtonPosition(this._getConnectMesh());
+        },
+
+        _getConnectMesh:function() {
+            return this.obj.children.filter(function(item) { return item.name === 'connect'; })[0];
+        },
+
+        _changeConnectButtonPosition(mesh) {
+            var padding = 10;
+            mesh.position.x = this.width / 2 + padding;
+            mesh.position.y = -(this.height + padding);
+        },
+
+        _registerConnectListener: function(mesh) {
+            mesh.on('mouseover', this.onMouseOver.bind(this));
+            mesh.on('mouseout', this.onMouseOut.bind(this));
+            mesh.on('mousedown', this.connect.bind(this));
+        },
+
+        _deregisterConnectListener: function(mesh) {
+            mesh.off('mouseover', this.onMouseOver.bind(this));
+            mesh.off('mouseout', this.onMouseOut.bind(this));
+            mesh.off('mousedown', this.connect.bind(this));
+        },
+
+        _initializeConnectButton: function() {
+            var width = 6;
+            var geometry = new THREE.CylinderGeometry(width, width, 10, 32);
+            var material = new THREE.MeshBasicMaterial({color: 0x000000});
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.rotateX(90 * (Math.PI/180));
+            mesh.name = 'connect';
+            this._changeConnectButtonPosition(mesh);
+            this.obj.add(mesh);
+            return mesh;
+        },
+
+        onMouseOver: function(event) {
+            event.target.material.color.set(0xFF0000);
+        },
+
+        onMouseOut: function(event) {
+            event.target.material.color.set(0x000000);
+        },
+
+        connect: function(event) {
+            var self = this;
+            var fromID = this.id;
+            registerListener();
+
+            function registerListener() {
+                Polymer.dom(self.parentNode).children.forEach(function(element) {
+                    if(element.id != fromID) { element.obj.on('click', handleOnClick.bind(self)); }
+                });
+            }
+
+            function handleOnClick(event) {
+                var toID = getPolymerElement(event.target.id).id;
+
+                // Dirty workaround to avoid error message from vr-connection
+                // that from and to are not defined.
+                var wrapper = document.createElement("div");
+                wrapper.innerHTML = "<vr-connection-inheritance from=\"#" + fromID
+                    + "\" to=\"#" + toID + "\"></vr-connection-inheritance>";
+                var node = wrapper.firstChild;
+
+                Polymer.dom(self.parentNode).appendChild(node);
+            }
+
+            function getPolymerElement(id) {
+                 return Polymer.dom(self.parentNode).children.filter(function(element) {
+                    return (element.obj.id == id);
+                })[0];
+            }
+        }
+
+    };
+</script>
