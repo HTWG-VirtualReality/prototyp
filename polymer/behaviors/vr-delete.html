@@ -3,20 +3,31 @@
     VrBehaviors.DeleteBehavior = {
 
         observers: ['_handleResizeDelete(width)'],
-
         attached: function() {
-            var mesh = this._initializeDeleteButton();
-            this._registerDeleteListener(mesh);
+            this.obj.on('click', this._handleClickDeleteButton.bind(this));
+        },
 
-            this.obj.on('click', function() {
-                mesh.material.opacity = (mesh.material.opacity === 1) ? 0 : 1;
-            }.bind(this));
+        _handleClickDeleteButton: function() {
+            if(!this.highlighted) {
+                //destroy delete button and eventlistener
+                var mesh = this._getDeleteMesh();
+                this._deregisterDeleteListener(mesh);
+                this.obj.remove(mesh);
+            } else {
+                //create delete button and eventlistener
+                var mesh = this._initializeDeleteButton();
+                this._registerDeleteListener(mesh);
+            }
         },
 
         _handleResizeDelete: function(width) {
-            this.obj.children.forEach(function (element) {
-                if(element.name === 'delete') this._changeDeleteButtonPosition(element);
-            }.bind(this));
+            // only execute when element is highlighted
+            if(!this.highlighted) return;
+            this._changeDeleteButtonPosition(this._getDeleteMesh());
+        },
+
+        _getDeleteMesh:function() {
+            return this.obj.children.filter(function(item) { return item.name === 'delete'; })[0];
         },
 
         _changeDeleteButtonPosition(mesh) {
@@ -31,10 +42,16 @@
             mesh.on('mousedown', this.delete.bind(this));
         },
 
+        _deregisterDeleteListener: function(mesh) {
+            mesh.off('mouseover', this.onMouseOver.bind(this));
+            mesh.off('mouseout', this.onMouseOut.bind(this));
+            mesh.off('mousedown', this.delete.bind(this));
+        },
+
         _initializeDeleteButton: function() {
             var width = 6;
             var geometry = new THREE.CylinderGeometry(width, width, 10, 32);
-            var material = new THREE.MeshBasicMaterial({color: 0x000000, transparent: true, opacity: 0});
+            var material = new THREE.MeshBasicMaterial({color: 0x000000});
             var mesh = new THREE.Mesh(geometry, material);
             mesh.rotateX(90 * (Math.PI/180));
             mesh.name = 'delete';
@@ -54,7 +71,6 @@
         delete: function(event) {
             // delete all connections
             this.fire('vr-delete', {});
-
             // delete this object
             Polymer.dom(this.parentNode).removeChild(this);
         }

@@ -144,6 +144,7 @@
 
         // simple on click => triggered in vr-scene.html
         onClick: function () {
+            this.highlighted = this.highlighted ? false : true;
             var self = this;
 
             this._getChildren().forEach(function (box) {
