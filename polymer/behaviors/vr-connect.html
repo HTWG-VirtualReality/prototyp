@@ -75,27 +75,26 @@
         connect: function(event) {
             var self = this;
             var fromID = this.id;
-            // Without deregistred it throws an Assertion Error if you click on
-            // an element after inserting the connection
-            var deregistred = null;
+
+            // prepare eventlistener data for succesful deregistration
+            var eventFunction = handleOnClick.bind(self);
+            var allElements = Polymer.dom(self.parentNode).children.slice(0);
+
             registerListener();
 
             function registerListener() {
-                Polymer.dom(self.parentNode).children.forEach(function(element) {
-                    if(element.id != fromID) { element.obj.on('click', handleOnClick.bind(self)); }
+                allElements.forEach(function(element) {
+                    if(element.id != fromID) { element.obj.on('click', eventFunction); }
                 });
-                deregistred = false;
             }
 
             function deregisterListener() {
-                Polymer.dom(self.parentNode).children.forEach(function(element) {
-                    if(element.id != fromID) { element.obj.off('click', handleOnClick.bind(self)); }
+                allElements.forEach(function(element) {
+                    if(element.id != fromID) { element.obj.off('click', eventFunction); }
                 });
-                deregistred = true;
             }
 
             function handleOnClick(event) {
-                if(deregistred) return;
                 // clean up eventlistener
                 deregisterListener();
 
