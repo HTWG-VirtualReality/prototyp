@@ -75,15 +75,30 @@
         connect: function(event) {
             var self = this;
             var fromID = this.id;
+            // Without deregistred it throws an Assertion Error if you click on
+            // an element after inserting the connection
+            var deregistred = null;
             registerListener();
 
             function registerListener() {
                 Polymer.dom(self.parentNode).children.forEach(function(element) {
                     if(element.id != fromID) { element.obj.on('click', handleOnClick.bind(self)); }
                 });
+                deregistred = false;
+            }
+
+            function deregisterListener() {
+                Polymer.dom(self.parentNode).children.forEach(function(element) {
+                    if(element.id != fromID) { element.obj.off('click', handleOnClick.bind(self)); }
+                });
+                deregistred = true;
             }
 
             function handleOnClick(event) {
+                if(deregistred) return;
+                // clean up eventlistener
+                deregisterListener();
+
                 var toID = getPolymerElement(event.target.id).id;
 
                 // Dirty workaround to avoid error message from vr-connection
@@ -92,7 +107,6 @@
                 wrapper.innerHTML = "<vr-connection-inheritance from=\"#" + fromID
                     + "\" to=\"#" + toID + "\"></vr-connection-inheritance>";
                 var node = wrapper.firstChild;
-
                 Polymer.dom(self.parentNode).appendChild(node);
             }
 
