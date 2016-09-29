@@ -7,31 +7,38 @@
     VrBehaviors.ConnectBehavior = {
 
         observers: ['_handleResizeConnect(width)'],
+
         attached: function() {
             this.obj.on('click', this._handleClickConnectButton.bind(this));
+            this.ConnectBehavior = {
+                mesh: null,
+                mouseover: this.onMouseOver.bind(this),
+                mouseout: this.onMouseOut.bind(this),
+                mousedown: this.connect.bind(this),
+                connectActive: false
+            };
         },
 
         _handleClickConnectButton: function() {
-            if(!this.highlighted) {
-                //destroy Connect button and eventlistener
-                var mesh = this._getConnectMesh();
-                this._deregisterConnectListener(mesh);
-                this.obj.remove(mesh);
-            } else {
+            if(this.highlighted) {
                 //create Connect button and eventlistener
-                var mesh = this._initializeConnectButton();
-                this._registerConnectListener(mesh);
+                this.ConnectBehavior.mesh = this._initializeConnectButton();
+                this._registerConnectListener(this.ConnectBehavior.mesh);
+            } else {
+                //destroy Connect button and eventlistener
+                this._deregisterConnectListener(this.ConnectBehavior.mesh);
+                if(!this.ConnectBehavior.connectActive) this._removeConnectButton();
             }
         },
 
         _handleResizeConnect: function(width) {
             // only execute when element is highlighted
             if(!this.highlighted) return;
-            this._changeConnectButtonPosition(this._getConnectMesh());
+            this._changeConnectButtonPosition(this.ConnectBehavior.mesh);
         },
 
-        _getConnectMesh:function() {
-            return this.obj.children.filter(function(item) { return item.name === 'connect'; })[0];
+        _removeConnectButton: function() {
+            this.obj.remove(this.ConnectBehavior.mesh);
         },
 
         _changeConnectButtonPosition(mesh) {
@@ -41,15 +48,15 @@
         },
 
         _registerConnectListener: function(mesh) {
-            mesh.on('mouseover', this.onMouseOver.bind(this));
-            mesh.on('mouseout', this.onMouseOut.bind(this));
-            mesh.on('mousedown', this.connect.bind(this));
+            mesh.on('mouseover', this.ConnectBehavior.mouseover);
+            mesh.on('mouseout', this.ConnectBehavior.mouseout);
+            mesh.on('mousedown', this.ConnectBehavior.mousedown);
         },
 
         _deregisterConnectListener: function(mesh) {
-            mesh.off('mouseover', this.onMouseOver.bind(this));
-            mesh.off('mouseout', this.onMouseOut.bind(this));
-            mesh.off('mousedown', this.connect.bind(this));
+            mesh.off('mouseover', this.ConnectBehavior.mouseover);
+            mesh.off('mouseout', this.ConnectBehavior.mouseout);
+            mesh.off('mousedown', this.ConnectBehavior.mousedown);
         },
 
         _initializeConnectButton: function() {
@@ -73,14 +80,35 @@
         },
 
         connect: function(event) {
-            var self = this;
+            // save some data that is needed later
             var fromID = this.id;
+            var parent = this.parentNode;
+            var eventFunction = handleOnClick.bind(this);
+            var allElements = Polymer.dom(parent).children.slice(0);
 
-            // prepare eventlistener data for succesful deregistration
-            var eventFunction = handleOnClick.bind(self);
-            var allElements = Polymer.dom(self.parentNode).children.slice(0);
-
+            // actual function
+            event.target.material.color.set(0xFF0000);
+            this.ConnectBehavior.connectActive = true;
             registerListener();
+
+            function handleOnClick(event) {
+                // clean up eventlistener and state
+                deregisterListener();
+                this._removeConnectButton();
+                this.ConnectBehavior.connectActive = false;
+
+                var toID = getPolymerElement(event.target.id).id;
+                Polymer.dom(parent).appendChild(createNewConnectionNode(toID));
+            }
+
+            function createNewConnectionNode(toID) {
+                // Dirty workaround to avoid error message from vr-connection
+                // that from and to are not defined.
+                var wrapper = document.createElement("div");
+                wrapper.innerHTML = "<vr-connection-inheritance from=\"#" + fromID
+                    + "\" to=\"#" + toID + "\"></vr-connection-inheritance>";
+                return wrapper.firstChild;
+            }
 
             function registerListener() {
                 allElements.forEach(function(element) {
@@ -94,23 +122,8 @@
                 });
             }
 
-            function handleOnClick(event) {
-                // clean up eventlistener
-                deregisterListener();
-
-                var toID = getPolymerElement(event.target.id).id;
-
-                // Dirty workaround to avoid error message from vr-connection
-                // that from and to are not defined.
-                var wrapper = document.createElement("div");
-                wrapper.innerHTML = "<vr-connection-inheritance from=\"#" + fromID
-                    + "\" to=\"#" + toID + "\"></vr-connection-inheritance>";
-                var node = wrapper.firstChild;
-                Polymer.dom(self.parentNode).appendChild(node);
-            }
-
             function getPolymerElement(id) {
-                 return Polymer.dom(self.parentNode).children.filter(function(element) {
+                 return Polymer.dom(parent).children.filter(function(element) {
                     return (element.obj.id == id);
                 })[0];
             }
