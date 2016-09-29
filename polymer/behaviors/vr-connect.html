@@ -22,7 +22,12 @@
         _handleClickConnectButton: function() {
             if(this.highlighted) {
                 //create Connect button and eventlistener
-                this.ConnectBehavior.mesh = this._initializeConnectButton();
+                if(this.ConnectBehavior.connectActive) {
+                    this.ConnectBehavior.connectActive = false;
+                    this.ConnectBehavior.mesh.material.color.set(0x000000);
+                } else {
+                    this.ConnectBehavior.mesh = this._initializeConnectButton();
+                }
                 this._registerConnectListener(this.ConnectBehavior.mesh);
             } else {
                 //destroy Connect button and eventlistener
@@ -94,11 +99,12 @@
             function handleOnClick(event) {
                 // clean up eventlistener and state
                 deregisterListener();
-                this._removeConnectButton();
-                this.ConnectBehavior.connectActive = false;
-
-                var toID = getPolymerElement(event.target.id).id;
-                Polymer.dom(parent).appendChild(createNewConnectionNode(toID));
+                if(this.ConnectBehavior.connectActive) {
+                    this.ConnectBehavior.connectActive = false;
+                    this._removeConnectButton();
+                    var toID = getPolymerElement(event.target.id).id;
+                    Polymer.dom(parent).appendChild(createNewConnectionNode(toID));
+                }
             }
 
             function createNewConnectionNode(toID) {
