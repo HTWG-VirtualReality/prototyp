@@ -11,10 +11,14 @@
         attached: function() {
             this.obj.on('click', this._handleClickConnectButton.bind(this));
             this.ConnectBehavior = {
+                fromID: this._getPolymerElement(this.obj.id).id,
                 mesh: null,
                 mouseover: this.onMouseOver.bind(this),
                 mouseout: this.onMouseOut.bind(this),
-                mousedown: this.connect.bind(this),
+                click: this.handleOnClick.bind(this),
+                cancel: this.cancel.bind(this),
+                connect: this.connect.bind(this),
+                allElements: null,
                 connectActive: false
             };
         },
@@ -22,22 +26,17 @@
         _handleClickConnectButton: function() {
             if(this.highlighted) {
                 //create Connect button and eventlistener
-                if(this.ConnectBehavior.connectActive) {
-                    this.ConnectBehavior.connectActive = false;
-                    this.ConnectBehavior.mesh.material.color.set(0x000000);
-                } else {
-                    this.ConnectBehavior.mesh = this._initializeConnectButton();
-                }
+                this.ConnectBehavior.mesh = this._initializeConnectButton();
                 this._registerConnectListener(this.ConnectBehavior.mesh);
             } else {
                 //destroy Connect button and eventlistener
+                if(this.ConnectBehavior.connectActive) this._executeCancel();
                 this._deregisterConnectListener(this.ConnectBehavior.mesh);
-                if(!this.ConnectBehavior.connectActive) this._removeConnectButton();
+                this._removeConnectButton();
             }
         },
 
         _handleResizeConnect: function(width) {
-            // only execute when element is highlighted
             if(!this.highlighted) return;
             this._changeConnectButtonPosition(this.ConnectBehavior.mesh);
         },
@@ -55,13 +54,13 @@
         _registerConnectListener: function(mesh) {
             mesh.on('mouseover', this.ConnectBehavior.mouseover);
             mesh.on('mouseout', this.ConnectBehavior.mouseout);
-            mesh.on('mousedown', this.ConnectBehavior.mousedown);
+            mesh.on('click', this.ConnectBehavior.click);
         },
 
         _deregisterConnectListener: function(mesh) {
             mesh.off('mouseover', this.ConnectBehavior.mouseover);
             mesh.off('mouseout', this.ConnectBehavior.mouseout);
-            mesh.off('mousedown', this.ConnectBehavior.mousedown);
+            mesh.off('click', this.ConnectBehavior.click);
         },
 
         _initializeConnectButton: function() {
@@ -84,28 +83,23 @@
             event.target.material.color.set(0x000000);
         },
 
-        connect: function(event) {
-            // save some data that is needed later
-            var fromID = this.id;
-            var parent = this.parentNode;
-            var eventFunction = handleOnClick.bind(this);
-            var allElements = Polymer.dom(parent).children.slice(0);
-
-            // actual function
-            event.target.material.color.set(0xFF0000);
+        handleOnClick: function(event) {
+            event.stopPropagation();
+            event.origDomEvent.stopImmediatePropagation();
             this.ConnectBehavior.connectActive = true;
-            registerListener();
+            this.ConnectBehavior.allElements = Polymer.dom(this.parentNode).children.slice(0);
 
-            function handleOnClick(event) {
-                // clean up eventlistener and state
-                deregisterListener();
-                if(this.ConnectBehavior.connectActive) {
-                    this.ConnectBehavior.connectActive = false;
-                    this._removeConnectButton();
-                    var toID = getPolymerElement(event.target.id).id;
-                    Polymer.dom(parent).appendChild(createNewConnectionNode(toID));
-                }
-            }
+            this._deregisterConnectListener(this.ConnectBehavior.mesh);
+            this.ConnectBehavior.mesh.on('click', this.ConnectBehavior.cancel);
+            event.target.material.color.set(0xFF0000);
+            this._registerAllElementsListener();
+        },
+
+        connect: function(event) {
+            this._executeCancel();
+            var fromID = this.ConnectBehavior.fromID;
+            var toID = this._getPolymerElement(event.target.id).id;
+            Polymer.dom(this.parentNode).appendChild(createNewConnectionNode(toID));
 
             function createNewConnectionNode(toID) {
                 // Dirty workaround to avoid error message from vr-connection
@@ -115,24 +109,40 @@
                     + "\" to=\"#" + toID + "\"></vr-connection-inheritance>";
                 return wrapper.firstChild;
             }
+        },
 
-            function registerListener() {
-                allElements.forEach(function(element) {
-                    if(element.id != fromID) { element.obj.on('click', eventFunction); }
-                });
-            }
+        cancel: function(event) {
+            event.stopPropagation();
+            event.origDomEvent.stopImmediatePropagation();
+            this._executeCancel();
+        },
 
-            function deregisterListener() {
-                allElements.forEach(function(element) {
-                    if(element.id != fromID) { element.obj.off('click', eventFunction); }
-                });
-            }
+        _executeCancel: function() {
+            this.ConnectBehavior.connectActive = false;
+            this.ConnectBehavior.mesh.material.color.set(0x000000);
+            this._deregisterAllElementsListener();
+            this.ConnectBehavior.mesh.off('click', this.ConnectBehavior.cancel);
+            this._registerConnectListener(this.ConnectBehavior.mesh);
+        },
 
-            function getPolymerElement(id) {
-                 return Polymer.dom(parent).children.filter(function(element) {
-                    return (element.obj.id == id);
-                })[0];
-            }
+        _registerAllElementsListener: function() {
+            var cb = this.ConnectBehavior;
+            cb.allElements.forEach(function(element) {
+                if(element.id != cb.fromID) { element.obj.on('click', cb.connect); }
+            });
+        },
+
+        _deregisterAllElementsListener: function() {
+            var cb = this.ConnectBehavior;
+            cb.allElements.forEach(function(element) {
+                if(element.id != cb.fromID) { element.obj.off('click', cb.connect); }
+            });
+        },
+
+        _getPolymerElement: function(id) {
+             return Polymer.dom(this.parentNode).children.filter(function(element) {
+                return (element.obj.id == id);
+            })[0];
         }
 
     };
