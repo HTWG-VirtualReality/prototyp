@@ -4,6 +4,7 @@
 <link rel="import" href="../behaviors/vr-resize.html">
 <link rel="import" href="../behaviors/vr-delete.html">
 <link rel="import" href="../behaviors/vr-connect.html">
+<link rel="import" href="../behaviors/vr-highlight.html">
 <link rel="import" href="./vr-box.html">
 
 <dom-module id="vr-class">
@@ -44,6 +45,7 @@
             VrBehaviors.ThreeBehavior,
             VrBehaviors.MoveBehavior,
             VrBehaviors.ResizeBehavior,
+            VrBehaviors.HighlightBehavior,
             VrBehaviors.DeleteBehavior,
             VrBehaviors.ConnectBehavior
         ],
@@ -146,12 +148,7 @@
 
         // simple on click => triggered in vr-scene.html
         onClick: function () {
-            this.highlighted = this.highlighted ? false : true;
             var self = this;
-
-            this._getChildren().forEach(function (box) {
-                box.highlight();
-            }.bind(this));
 
             if (!this.gui) {
                 var Menu = function () {

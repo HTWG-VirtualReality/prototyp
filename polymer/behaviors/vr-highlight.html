@@ -1,0 +1,33 @@
+<script>
+    window.VrBehaviors = window.VrBehaviors || {};
+    VrBehaviors.HighlightBehavior = {
+        created: function() {
+            var self = this;
+            self.highlighted = false;
+
+            var COLOR_NORMAL = 0x000000;
+            var COLOR_HIGHLIGHTED = 0xff0000;
+
+            this.obj.on('mousedown', function() {
+                var boxes = Polymer.dom(this.root).children.filter(function(node) {
+                    return (node.nodeName == "VR-BOX");
+                });
+                iterateBoxes(boxes);
+            }.bind(self));
+
+            function iterateBoxes(boxes) {
+                self.highlighted = !self.highlighted;
+                boxes.forEach(function (node){
+                    node.obj.children.forEach(function(element) {
+                        toggleHighlighting(element);
+                    });
+                });
+            }
+            function toggleHighlighting(element) {
+                if (element instanceof THREE.LineSegments) {
+                    element.material.color.set(self.highlighted ? COLOR_HIGHLIGHTED : COLOR_NORMAL);
+                }
+            }
+        }
+    };
+</script>
