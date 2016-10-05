@@ -1,0 +1,14 @@
+<script>
+    window.VrBehaviors = window.VrBehaviors || {};
+    VrBehaviors.ZoomBehavior = {
+        ready: function() {
+            var dom = this.renderer.domElement;
+            var speed = 5;
+            var element = this.camera;
+
+            dom.addEventListener('wheel', function (e) {
+                element.position.setZ(element.position.z + e.deltaY * speed);
+            });
+        }
+    };
+</script>
