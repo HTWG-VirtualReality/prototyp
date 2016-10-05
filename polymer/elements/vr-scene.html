@@ -1,9 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-zoom.html">
+<link rel="import" href="../behaviors/vr-axis-control.html">
 
 <script src="../bower_components/threejs/build/three.min.js"></script>
 <script src="../bower_components/threex.domevents/threex.domevents.js"></script>
-<script src="../js/axis-controls.js"></script>
 
 <!-- WebVR -->
 <script>
@@ -42,7 +42,8 @@
         is: "vr-scene",
 
         behaviors: [
-            VrBehaviors.ZoomBehavior
+            VrBehaviors.ZoomBehavior,
+            VrBehaviors.AxisControlBehavior
         ],
 
         created: function() {
@@ -51,7 +52,7 @@
             self.camera = self._createCamera();
             self.scene = new THREE.Scene();
             self._initiateThreeEvents();
-            self.group = self._createGroup(self.renderer.domElement);
+            self.group = self._createGroup();
             self.scene.add(self.camera);
             self.scene.add(self.group);
         },
@@ -114,10 +115,9 @@
             return camera;
         },
 
-        _createGroup: function (dom) {
+        _createGroup: function () {
             var group = new THREE.Group();
             group.position.setZ(-200);
-            new THREE.AxisControls(group, dom);
             return group;
         },
 
