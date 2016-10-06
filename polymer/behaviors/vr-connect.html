@@ -9,7 +9,7 @@
         observers: ['_handleResizeConnect(width)'],
 
         attached: function() {
-            this.obj.on('click', this._handleClickConnectButton.bind(this));
+            this.obj.on('mousedown', this._handleClickConnectButton.bind(this));
             this.ConnectBehavior = {
                 fromID: this._getPolymerElement(this.obj.id).id,
                 mesh: null,
@@ -54,13 +54,13 @@
         _registerConnectListener: function(mesh) {
             mesh.on('mouseover', this.ConnectBehavior.mouseover);
             mesh.on('mouseout', this.ConnectBehavior.mouseout);
-            mesh.on('click', this.ConnectBehavior.click);
+            mesh.on('mousedown', this.ConnectBehavior.click);
         },
 
         _deregisterConnectListener: function(mesh) {
             mesh.off('mouseover', this.ConnectBehavior.mouseover);
             mesh.off('mouseout', this.ConnectBehavior.mouseout);
-            mesh.off('click', this.ConnectBehavior.click);
+            mesh.off('mousedown', this.ConnectBehavior.click);
         },
 
         _initializeConnectButton: function() {
@@ -90,7 +90,7 @@
             this.ConnectBehavior.allElements = Polymer.dom(this.parentNode).children.slice(0);
 
             this._deregisterConnectListener(this.ConnectBehavior.mesh);
-            this.ConnectBehavior.mesh.on('click', this.ConnectBehavior.cancel);
+            this.ConnectBehavior.mesh.on('mousedown', this.ConnectBehavior.cancel);
             event.target.material.color.set(0xFF0000);
             this._registerAllElementsListener();
         },
@@ -121,21 +121,21 @@
             this.ConnectBehavior.connectActive = false;
             this.ConnectBehavior.mesh.material.color.set(0x000000);
             this._deregisterAllElementsListener();
-            this.ConnectBehavior.mesh.off('click', this.ConnectBehavior.cancel);
+            this.ConnectBehavior.mesh.off('mousedown', this.ConnectBehavior.cancel);
             this._registerConnectListener(this.ConnectBehavior.mesh);
         },
 
         _registerAllElementsListener: function() {
             var cb = this.ConnectBehavior;
             cb.allElements.forEach(function(element) {
-                if(element.id != cb.fromID) { element.obj.on('click', cb.connect); }
+                if(element.id != cb.fromID) { element.obj.on('mousedown', cb.connect); }
             });
         },
 
         _deregisterAllElementsListener: function() {
             var cb = this.ConnectBehavior;
             cb.allElements.forEach(function(element) {
-                if(element.id != cb.fromID) { element.obj.off('click', cb.connect); }
+                if(element.id != cb.fromID) { element.obj.off('mousedown', cb.connect); }
             });
         },
 

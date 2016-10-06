@@ -4,7 +4,7 @@
 
         observers: ['_handleResizeDelete(width)'],
         attached: function() {
-            this.obj.on('click', this._handleClickDeleteButton.bind(this));
+            this.obj.on('mousedown', this._handleClickDeleteButton.bind(this));
         },
 
         _handleClickDeleteButton: function() {
