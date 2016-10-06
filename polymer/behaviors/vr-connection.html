@@ -1,6 +1,6 @@
 <!--
 Attention: Use this behavior when you're creating a connecting. This behavior
-does a lot. The new connection must have the functions:
+does a lot. The new connection need the functions:
 * "_render(points)"
 * "_preResize()"
 
@@ -27,14 +27,14 @@ of this behavior.
                 return;
             }
 
-            this.ConnectionBehavior = {
+            var cb = this.ConnectionBehavior = {
                 fromObj: document.querySelector(this.from),
                 toObj: document.querySelector(this.to),
                 resize: this._resizeConnection.bind(this),
                 delete: this._deleteConnection.bind(this)
             };
 
-            if (!this.ConnectionBehavior.fromObj || !this.ConnectionBehavior.toObj) {
+            if (!cb.fromObj || !cb.toObj) {
                 console.error('could not find element');
                 return;
             }
@@ -43,7 +43,8 @@ of this behavior.
             this._preRender();
 
             // add event listener for resizing
-            this._registerListener()
+            this._handleListener(cb.fromObj.addEventListener.bind(cb.fromObj));
+            this._handleListener(cb.toObj.addEventListener.bind(cb.toObj));
 
             // add Polymer children to three js group
             Polymer.dom(this.root).children.forEach(function (box) {
@@ -51,36 +52,25 @@ of this behavior.
             }.bind(this));
         },
 
-        _registerListener: function() {
-            var cb = this.ConnectionBehavior;
-            cb.fromObj.addEventListener('vr-resize', cb.resize);
-            cb.fromObj.addEventListener('vr-delete', cb.delete);
-            cb.toObj.addEventListener('vr-resize', cb.resize);
-            cb.toObj.addEventListener('vr-delete', cb.delete);
-        },
-
-        _deregisterListener: function() {
-            var cb = this.ConnectionBehavior;
-            cb.fromObj.removeEventListener('vr-resize', cb.resize);
-            cb.fromObj.removeEventListener('vr-delete', cb.delete);
-            cb.toObj.removeEventListener('vr-resize', cb.resize);
-            cb.toObj.removeEventListener('vr-delete', cb.delete);
+        _handleListener: function(func) {
+            func('vr-resize', this.ConnectionBehavior.resize);
+            func('vr-delete', this.ConnectionBehavior.delete);
         },
 
         _resizeConnection: function () {
-            console.log('resize..')
             this._preResize();
             this._preRender();
         },
 
         _preRender: function() {
-            var fromObj = this.ConnectionBehavior.fromObj;
-            var toObj = this.ConnectionBehavior.toObj;
-            this._render((new GeneralConnection(fromObj, toObj).render()))
+            var cb = this.ConnectionBehavior;
+            this._render((new GeneralConnection(cb.fromObj, cb.toObj).render()));
         },
 
         _deleteConnection: function() {
-            this._deregisterListener();
+            var cb = this.ConnectionBehavior;
+            this._handleListener(cb.fromObj.removeEventListener.bind(cb.fromObj));
+            this._handleListener(cb.toObj.removeEventListener.bind(cb.toObj));
 
             Polymer.dom(this.parentNode).removeChild(this);
         }
