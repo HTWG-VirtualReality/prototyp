@@ -1,0 +1,54 @@
+<script>
+    window.VrBehaviors = window.VrBehaviors || {};
+    VrBehaviors.NewBehavior = {
+        ready: function() {
+            var self = this;
+            var dom = self.renderer.domElement;
+            var group;
+
+            dom.addEventListener('mousedown', function () {
+                dom.addEventListener('mousemove', reset);
+                dom.addEventListener('mouseup', onMouseUp)
+            });
+
+            function reset() {
+                dom.removeEventListener('mousemove', reset);
+                dom.removeEventListener('mouseup', onMouseUp);
+            }
+            function onMouseUp(event) {
+                if (group) {
+                    self.group.remove(group);
+                    group = null;
+                } else {
+                    create(event);
+                }
+                reset();
+            }
+            function create(event) {
+                group = new THREE.Group();
+                group.add(createBox(0));
+                group.add(createBox(52));
+                group.add(createBox(104));
+
+                group.position.setX(event.clientX);
+                group.position.setY(-event.clientY);
+
+                self.group.add(group);
+            }
+
+            function createBox(x) {
+                var geometry = new THREE.BoxGeometry(50, 50, 10);
+                var material = new THREE.MeshBasicMaterial();
+                var mesh = new THREE.Mesh(geometry, material);
+                var wireFrame = new THREE.BoxHelper(mesh);
+                wireFrame.material.color.set(0x000000);
+
+                var group = new THREE.Group();
+                group.position.setX(x);
+                group.add(mesh);
+                group.add(wireFrame);
+                return group;
+            }
+        }
+    };
+</script>

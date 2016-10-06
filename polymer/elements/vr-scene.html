@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-zoom.html">
 <link rel="import" href="../behaviors/vr-axis-control.html">
+<link rel="import" href="../behaviors/vr-new.html">
 
 <script src="../bower_components/threejs/build/three.min.js"></script>
 <script src="../bower_components/threex.domevents/threex.domevents.js"></script>
@@ -43,7 +44,8 @@
 
         behaviors: [
             VrBehaviors.ZoomBehavior,
-            VrBehaviors.AxisControlBehavior
+            VrBehaviors.AxisControlBehavior,
+            VrBehaviors.NewBehavior
         ],
 
         created: function() {
