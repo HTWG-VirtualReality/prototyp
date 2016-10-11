@@ -3,13 +3,21 @@
     VrBehaviors.ResizeBehavior = {
 
         properties: {
+            minWidth: {
+              type: Number,
+              value: 50,
+              readOnly: true
+            },
+            minHeight: {
+              type: Number,
+              value: 60,
+              readOnly: true
+            },
             width: {
-                type: Number,
-                value: 50
+                type: Number
             },
             height: {
-                type: Number,
-                value: 50
+                type: Number
             },
             depth: {
                 type: Number,
@@ -20,6 +28,15 @@
         observers: [
             '_onPropertyChange(width, height)'
         ],
+
+        ready: function() {
+            if(!this.width || (this.width && this.width < this.minWidth)) {
+                this.width = this.minWidth;
+            }
+            if(!this.height || (this.height && this.height < this.minHeight)) {
+                this.height = this.minHeight;
+            }
+        },
 
         attached: function() {
             var group = this._createGroup();
@@ -121,8 +138,15 @@
         },
 
         _updateDimension: function(userData, position, event) {
-            this.width += this._getValueChange(userData.side == 'left', position.x, event.clientX);
-            this.height += this._getValueChange(userData.vertical == 'top', position.y, event.clientY);
+            var newWidth = this.width + this._getValueChange(userData.side == 'left', position.x, event.clientX);
+            var newHeight = this.height + this._getValueChange(userData.vertical == 'top', position.y, event.clientY);
+
+            if(newWidth >= this.minWidth) {
+                this.width = newWidth;
+            }
+            if(newHeight >= this.minHeight) {
+                this.height = newHeight;
+            }
 
             if (userData.vertical == 'top') {
                 this.yPos += position.y - event.clientY;
