@@ -25,6 +25,18 @@
                 mouseY = event.clientY;
             });
 
+            dom.addEventListener('touchstart', function (event) {
+                event.preventDefault();
+
+                dom.addEventListener('touchend', resetTouch);
+
+                positionX = element.position.x;
+                positionY = element.position.y;
+                mouseX = event.clientX;
+                mouseY = event.clientY;
+            });
+
+
             function onMouseMove(event) {
                 var moveX = event.clientX - mouseX;
                 var moveY = mouseY - event.clientY;
@@ -37,6 +49,10 @@
                 dom.removeEventListener('mousemove', throttle);
                 dom.removeEventListener('mouseup', resetMouse);
                 dom.removeEventListener('mouseout', resetMouse);
+            }
+
+            function resetTouch() {
+                dom.removeEventListener('touchend', resetTouch);
             }
         }
     };
