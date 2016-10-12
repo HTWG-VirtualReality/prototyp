@@ -6,6 +6,18 @@
             var dom = self.renderer.domElement;
             var group;
 
+            function getPositionInThreeScene(event) {
+                var object = self.group;
+                var scale = object.position.z/320 * -1;
+                var centerX = event.clientX - Math.floor(window.innerWidth/2);
+                var centerY = Math.floor(window.innerHeight/2) - event.clientY;
+                return {
+                    x: Math.round(centerX * scale) - Math.round(object.position.x),
+                    y: Math.round(centerY * scale) - Math.round(object.position.y),
+                    scale: Math.round(scale*100)/100
+                };
+            }
+
             dom.addEventListener('mousedown', function () {
                 dom.addEventListener('mousemove', reset);
                 dom.addEventListener('mouseup', onMouseUp)
@@ -26,12 +38,13 @@
             }
             function create(event) {
                 group = new THREE.Group();
+                group.add(createBox(-52));
                 group.add(createBox(0));
                 group.add(createBox(52));
-                group.add(createBox(104));
 
-                group.position.setX(event.clientX);
-                group.position.setY(-event.clientY);
+                var position = getPositionInThreeScene(event);
+                group.position.setX(position.x);
+                group.position.setY(position.y);
 
                 self.group.add(group);
             }
