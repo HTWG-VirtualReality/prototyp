@@ -19,8 +19,7 @@ GeneralConnection.prototype.render = function() {
     }
 
     // startpoint
-    points.coord = this._createPoint((toPos.x < fromPos.x) ? toPos.x : fromPos.x,
-        (toPos.x < fromPos.x) ? toPos.y - toObj.height/2 : fromPos.y - fromObj.height/2);
+    points.coord = this._createPoint(fromPos.x, fromPos.y - fromObj.height/2);
 
     return points;
 };
@@ -58,41 +57,43 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
 
     var alpha = Math.atan(a/b);
 
-    var fromAlpha = Math.atan(fromObj.width / fromObj.height); // right order? => I think so
-    var toAlpha = Math.atan(toObj.width / toObj.height);
+    var fromC = calculateSmallC(Math.atan(fromObj.width / fromObj.height), fromObj);
+    var toC = calculateSmallC(Math.atan(toObj.width / toObj.height), toObj);
 
-    var fromC, toC;
-    if(alpha < fromAlpha) {
-        fromC = (fromObj.height / 2) / Math.cos(alpha);
-    } else {
-        fromC = (fromObj.width / 2) / Math.sin(alpha);
-    }
-
-    if(alpha < toAlpha) {
-      toC = (toObj.height / 2) / Math.cos(alpha);
-    } else {
-      toC = (toObj.width / 2) / Math.sin(alpha);
-    }
-
-    var yStart, yEnd;
-    if(fromPos.x < toPos.x) {
-      yStart = fromC;
-      yEnd = c - toC;
-    } else {
-      yStart = toC;
-      yEnd = c - fromC;
-    }
-
-    // create points for polyline
-    var line = {
-        l1: this._createPoint(0, toIsGreater() ? yStart : -yStart),
-        l2: this._createPoint(0, toIsGreater() ? yEnd : -yEnd),
-    };
+    var line = {};
+    line.l1 = this._createPoint(0, fromC);
+    line.l2 = this._createPoint(0, c - toC);
     line.distance = this._absoluteSubtraction(line.l1.y, line.l2.y);
-
-    // Add angle
-    line.angle = toIsGreater() ? -alpha : alpha;
+    line.angle = getAngle();
     return line;
+
+
+    function calculateSmallC(beta, obj) {
+        if(alpha < beta) {
+            return (obj.height / 2) / Math.cos(alpha);
+        } else {
+            return (obj.width / 2) / Math.sin(alpha);
+        }
+    }
+
+    function getAngle() {
+        var fromPosY = fromPos.y - fromObj.height/2;
+        var toPosY = toPos.y - toObj.height/2;
+        if(fromPos.x < toPos.x && fromPosY < toPosY) {
+            return -alpha;
+        } else if(fromPos.x < toPos.x && fromPosY > toPosY) {
+            return calculateAngle(alpha, 180);
+        } else if (fromPos.x > toPos.x && fromPosY < toPosY) {
+            return alpha;
+        } else {
+            return calculateAngle(-alpha, 180);
+        }
+    }
+
+    function calculateAngle(alpha, angle) {
+        var deg = alpha * (180/Math.PI);
+        return ((deg + angle) % 360) * (Math.PI/180);
+    }
 
     function pythagorasTheorem(a, b) {
         return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
