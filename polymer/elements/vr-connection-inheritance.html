@@ -44,10 +44,6 @@
             VrBehaviors.ConnectionBehavior
         ],
 
-        // _ready: function() {
-        //     this.placings = [{offset: 0, angle:0, radius:0}]
-        // },
-
         _render: function(points) {
             // set startpoint
             this.obj.position.setX(points.coord.x);
@@ -63,47 +59,43 @@
                 }
             }.bind(this));
 
-            // createPlacing(this, this.$.placing)
-
             this.obj.rotation.z = points.angle || 0;
 
             function createPlacing(that, placing) {
-
+                // first group is used for placing angle
                 var group = new THREE.Group();
                 group.position.setX(0);
                 group.position.setY((points.distance*placing.offset)+points.l1.y);
-                var material = new THREE.LineBasicMaterial({ color: 0x000000, linewidth: 2 });
-                var geometry = new THREE.Geometry();
-                geometry.vertices.push(new THREE.Vector3(0, 0, 0));
-                geometry.vertices.push(new THREE.Vector3(0, 20, 0));
-                var line = new THREE.Line(geometry, material);
-                group.add(line)
                 group.rotation.z = placing.angle;
+
+                // second group is used to add placing itself
                 var group2 = new THREE.Group();
                 group2.position.setX(0);
-                group2.position.setY(20);
-                // group2.add(mesh);
-                // group2.rotation.z = points.angle || 0;
+                group2.position.setY(placing.radius);
                 group2.rotation.z = -placing.angle
-                // var line2 = new THREE.Line(geometry, material);
-                // group2.add(line2)
 
+                // compose everything
                 group2.add(Polymer.dom(placing).children[0].obj)
-
                 group.add(group2);
-
                 that.obj.add(group)
-
             }
         },
 
         _preResize: function() {
             // remove all children from polyline and polygon
-            removeAllChildren(this.$.start);
             removeAllChildren(this.$.line);
+            removeAllGroups(this.obj.children);
+
+            function removeAllGroups(children) {
+                children.forEach(function(child) {
+                    if(child instanceof THREE.Group) {
+                        removeAllGroups(child.children)
+                        child.parent.remove(child);
+                    }
+                });
+            }
 
             function removeAllChildren(parent) {
-
                 var dom = Polymer.dom(parent);
                 dom.children.forEach(function (child) {
                     dom.removeChild(child);
