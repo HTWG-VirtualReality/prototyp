@@ -18,9 +18,7 @@ GeneralConnection.prototype.render = function() {
         points = this._diagonalCalculation(fromObj, toObj, fromPos, toPos);
     }
 
-    // startpoint
     points.coord = this._createPoint(fromPos.x, fromPos.y - fromObj.height/2);
-
     return points;
 };
 
@@ -94,31 +92,11 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     function pythagorasTheorem(a, b) {
         return Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
     }
-
-    function calculateDiagonalPoints(alpha, height1, height2) {
-        var h = (fromPos.x < toPos.x) ? height1 : height2;
-        return {
-            h: h,
-            d: (a < b) ? Math.tan(alpha) * h : h / Math.sin(alpha)
-        };
-    }
-
-    function toIsGreater() {
-        if(toPos.x > fromPos.x) {
-            return (toPos.y-toObj.height/2) > (fromPos.y-fromObj.height/2);
-        } else {
-            return (toPos.y-toObj.height/2) < (fromPos.y-fromObj.height/2);
-        }
-    }
 }
 
 GeneralConnection.prototype._createPoint = function(x, y) {
     return { x: x, y: y };
 }
-
-GeneralConnection.prototype._isToGreater = function(toPos, fromPos) {
-    return (toPos.x > fromPos.x) ? toPos.y > fromPos.y : toPos.y < fromPos.y;
-};
 
 GeneralConnection.prototype._absoluteSubtraction = function(num1, num2) {
     return Math.abs(num1-num2);
@@ -129,6 +107,5 @@ GeneralConnection.prototype._isVertical = function(fromPos, toPos) {
 }
 
 GeneralConnection.prototype._isHorizontal = function(fromHeight, toHeight, fromPos, toPos) {
-    // return (fromPos.y - fromHeight/2) == (toPos.y - toHeight/2);
-    return fromPos.y == toPos.y;
+    return (fromPos.y - fromHeight/2) == (toPos.y - toHeight/2);
 }
