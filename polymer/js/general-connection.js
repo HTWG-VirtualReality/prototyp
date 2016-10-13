@@ -3,7 +3,7 @@ function GeneralConnection(fromObj, toObj) {
     this.toObj = toObj;
 }
 
-GeneralConnection.prototype.render = function() {
+GeneralConnection.prototype.render = function(placings) {
     var fromObj = this.fromObj;
     var toObj = this.toObj;
     var fromPos = fromObj.obj.position;
@@ -19,7 +19,36 @@ GeneralConnection.prototype.render = function() {
     }
 
     points.coord = this._createPoint(fromPos.x, fromPos.y - fromObj.height/2);
+    points.placingObjs = this._createPlacingObjs(placings, points);
     return points;
+};
+
+GeneralConnection.prototype._createPlacingObjs = function(placings, points) {
+    var placingObjs = [];
+
+    placings.forEach(function(placing) {
+        // first group is used for placing angle
+        var group1Y = (points.distance*placing.offset)+points.lines[0].y;
+        var group1 = createGroup(0, group1Y, placing.angle);
+
+        // second group is used to add placing itself
+        var group2 = createGroup(0, placing.radius, -placing.angle);
+
+        // compose everything
+        group2.add(Polymer.dom(placing).children[0].obj)
+        group1.add(group2);
+        placingObjs.push(group1);
+    });
+
+    return placingObjs;
+
+    function createGroup(x, y, angle) {
+        var group = new THREE.Group();
+        group.position.setX(x);
+        group.position.setY(y);
+        group.rotation.z = angle;
+        return group;
+    }
 };
 
 GeneralConnection.prototype._verticalCalculation = function(fromObj, toObj, fromPos, toPos) {

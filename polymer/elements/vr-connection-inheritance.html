@@ -42,78 +42,7 @@
         behaviors: [
             VrBehaviors.ThreeBehavior,
             VrBehaviors.ConnectionBehavior
-        ],
-
-        _render: function(points) {
-            // set startpoint
-            this.obj.position.setX(points.coord.x);
-            this.obj.position.setY(points.coord.y);
-
-            // create line
-            points.lines.forEach(function(point) {
-                this._createLinePoint(point.x, point.y);
-            }.bind(this));
-
-            Polymer.dom(this.root).children.forEach(function (node) {
-                if(node.nodeName == "VR-PLACING") {
-                    createPlacing(this, node);
-                }
-            }.bind(this));
-
-            this.obj.rotation.z = points.angle || 0;
-
-            function createPlacing(that, placing) {
-                // first group is used for placing angle
-                var group = new THREE.Group();
-                group.position.setX(0);
-                group.position.setY((points.distance*placing.offset)+points.lines[0].y);
-                group.rotation.z = placing.angle;
-
-                // second group is used to add placing itself
-                var group2 = new THREE.Group();
-                group2.position.setX(0);
-                group2.position.setY(placing.radius);
-                group2.rotation.z = -placing.angle
-
-                // compose everything
-                group2.add(Polymer.dom(placing).children[0].obj)
-                group.add(group2);
-                that.obj.add(group)
-            }
-        },
-
-        _preResize: function() {
-            // remove all children from polyline and polygon
-            removeAllChildren(this.$.line);
-            removeAllGroups(this.obj.children);
-
-            function removeAllGroups(children) {
-                children.forEach(function(child) {
-                    if(child instanceof THREE.Group) {
-                        removeAllGroups(child.children)
-                        child.parent.remove(child);
-                    }
-                });
-            }
-
-            function removeAllChildren(parent) {
-                var dom = Polymer.dom(parent);
-                dom.children.forEach(function (child) {
-                    dom.removeChild(child);
-                });
-            }
-        },
-
-        _createLinePoint: function(x, y) {
-            this._createPoint(x, y, this.$.line);
-        },
-
-        _createPoint: function(x, y, element) {
-            var point = document.createElement('vr-point');
-            point.x = x;
-            point.y = y;
-            Polymer.dom(element).appendChild(point);
-        }
+        ]
 
     });
 </script>

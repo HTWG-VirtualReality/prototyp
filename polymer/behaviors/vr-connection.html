@@ -30,7 +30,7 @@ of this behavior.
             var cb = this.ConnectionBehavior = {
                 fromObj: document.querySelector(this.from),
                 toObj: document.querySelector(this.to),
-                resize: this._resizeConnection.bind(this),
+                resize: this._updateConnection.bind(this),
                 delete: this._deleteConnection.bind(this)
             };
 
@@ -40,7 +40,7 @@ of this behavior.
             }
 
             // calculate and render connection
-            this._preRender();
+            this._render();
 
             // add event listener for resizing
             this._handleListener(cb.fromObj.addEventListener.bind(cb.fromObj));
@@ -57,14 +57,59 @@ of this behavior.
             func('vr-delete', this.ConnectionBehavior.delete);
         },
 
-        _resizeConnection: function () {
-            this._preResize();
-            this._preRender();
+        _updateConnection: function () {
+            this._removeOldConnection();
+            this._render();
         },
 
-        _preRender: function() {
+        _removeOldConnection: function() {
+            removeAllChildren(this.$.line);
+            removeAllGroups(this.obj.children);
+
+            function removeAllGroups(children) {
+                children.forEach(function(child) {
+                    if(child instanceof THREE.Group) {
+                        removeAllGroups(child.children)
+                        child.parent.remove(child);
+                    }
+                });
+            }
+
+            function removeAllChildren(parent) {
+                var dom = Polymer.dom(parent);
+                dom.children.forEach(function (child) {
+                    dom.removeChild(child);
+                });
+            }
+        },
+
+        _render: function() {
             var cb = this.ConnectionBehavior;
-            this._render((new GeneralConnection(cb.fromObj, cb.toObj).render()));
+            var gc = new GeneralConnection(cb.fromObj, cb.toObj);
+            var connection = gc.render(this._getPlacings());
+
+            // set startpoint
+            this.obj.position.setX(connection.coord.x);
+            this.obj.position.setY(connection.coord.y);
+
+            // set angle
+            this.obj.rotation.z = connection.angle || 0;
+
+            // points to polyline
+            connection.lines.forEach(function(point) {
+                this._createLinePoint(point.x, point.y);
+            }.bind(this));
+
+            // add placings
+            connection.placingObjs.forEach(function(placingObj) {
+                this.obj.add(placingObj);
+            }.bind(this));
+        },
+
+        _getPlacings: function() {
+            return Polymer.dom(this.root).children.filter(function(node) {
+                return node.nodeName == "VR-PLACING";
+            })
         },
 
         _deleteConnection: function() {
@@ -73,6 +118,17 @@ of this behavior.
             this._handleListener(cb.toObj.removeEventListener.bind(cb.toObj));
 
             Polymer.dom(this.parentNode).removeChild(this);
+        },
+
+        _createLinePoint: function(x, y) {
+            this._createPoint(x, y, this.$.line);
+        },
+
+        _createPoint: function(x, y, element) {
+            var point = document.createElement('vr-point');
+            point.x = x;
+            point.y = y;
+            Polymer.dom(element).appendChild(point);
         }
     };
 </script>
