@@ -22,19 +22,35 @@
             VrBehaviors.ConnectionBehavior
         ],
 
+        // _ready: function() {
+        //     this.placings = [{offset: 0, angle:0, radius:0}]
+        // },
+
         _render: function(points) {
+            console.log(points)
             // set startpoint
-            this.obj.position.setX(points.start.x);
-            this.obj.position.setY(points.start.y);
+            this.obj.position.setX(points.coord.x);
+            this.obj.position.setY(points.coord.y);
 
             // create line
             this._createLinePoint(points.l1.x, points.l1.y);
             this._createLinePoint(points.l2.x, points.l2.y);
 
+            // TODO: set placing and calculate offset
+            var placing = {offset: 0.5, angle:0, radius:0};
+
+            console.log(points.distance)
+            console.log(points.distance*placing.offset)
+
+            this._createStartPlacingPoint(0, (points.distance*placing.offset)+points.l1.y)
+            this._createStartPlacingPoint(10, (points.distance*placing.offset)+points.l1.y+10)
+            this._createStartPlacingPoint(-10, (points.distance*placing.offset)+points.l1.y+10)
+
+
             // create start placing
-            this._createStartPlacingPoint(10, (points.py + (10 * points.ps)) * points.pd);
-            this._createStartPlacingPoint(0, points.py * points.pd);
-            this._createStartPlacingPoint(-10, (points.py + (10 * points.ps)) * points.pd);
+            // this._createStartPlacingPoint(10, (points.py + (10 * points.ps)) * points.pd);
+            // this._createStartPlacingPoint(0, points.py * points.pd);
+            // this._createStartPlacingPoint(-10, (points.py + (10 * points.ps)) * points.pd);
 
             // rotate line and start placing
             this.$.line.obj.rotation.z = points.angle || 0;

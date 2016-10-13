@@ -19,7 +19,7 @@ GeneralConnection.prototype.render = function() {
     }
 
     // startpoint
-    points.start = this._createPoint((toPos.x < fromPos.x) ? toPos.x : fromPos.x,
+    points.coord = this._createPoint((toPos.x < fromPos.x) ? toPos.x : fromPos.x,
         (toPos.x < fromPos.x) ? toPos.y - toObj.height/2 : fromPos.y - fromObj.height/2);
 
     return points;
@@ -34,9 +34,10 @@ GeneralConnection.prototype._verticalCalculation = function(fromObj, toObj, from
     return {
         l1: this._createPoint(0, yStart),
         l2: this._createPoint(0, yEnd),
-        py: this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : (fromObj.height/2),
-        ps: ((toPos.x < fromPos.x) ? -1 : 1),
-        pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)
+        distance: yStart-yEnd
+        // py: this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : (fromObj.height/2),
+        // ps: ((toPos.x < fromPos.x) ? -1 : 1),
+        // pd: (this._isToGreater(toPos, fromPos) ? -1 : 1)
     };
 };
 
@@ -48,9 +49,10 @@ GeneralConnection.prototype._horizontalCalculation = function(fromObj, toObj, fr
     return {
         l1: this._createPoint(0, widthLeft),
         l2: this._createPoint(0, rightX ),
-        py: (toPos.x > fromPos.x) ? widthLeft : rightX,
-        ps: ((toPos.x < fromPos.x) ? -1 : 1),
-        pd: 1,
+        distance: widthLeft - rightX,
+        // py: (toPos.x > fromPos.x) ? widthLeft : rightX,
+        // ps: ((toPos.x < fromPos.x) ? -1 : 1),
+        // pd: 1,
         angle: -1.5708 // 90 degrees
     };
 };
@@ -91,19 +93,20 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     // // create points for polyline
     var line = {
         l1: this._createPoint(0, toIsGreater() ? yStart : -yStart),
-        l2: this._createPoint(0, toIsGreater() ? yEnd : -yEnd)
+        l2: this._createPoint(0, toIsGreater() ? yEnd : -yEnd),
     };
+    line.distance = this._absoluteSubtraction(line.l1.y, line.l2.y);
 
     // checks on which side the placing should be printed.
-    var start = {};
-    if(toPos.x < fromPos.x) {
-        start = {py: yEnd, ps: -1, pd: (toIsGreater() ? 1 : -1)} // end
-    } else {
-        start = {py: yStart, ps: 1, pd: (toIsGreater() ? 1 : -1)} // start
-    }
-
-    // combine line and startplacing points
-    for(var attri in start) { line[attri] = start[attri] }
+    // var start = {};
+    // if(toPos.x < fromPos.x) {
+    //     start = {py: yEnd, ps: -1, pd: (toIsGreater() ? 1 : -1)} // end
+    // } else {
+    //     start = {py: yStart, ps: 1, pd: (toIsGreater() ? 1 : -1)} // start
+    // }
+    //
+    // // combine line and startplacing points
+    // for(var attri in start) { line[attri] = start[attri] }
 
     // Add angle
     line.angle = toIsGreater() ? -alpha : alpha;
