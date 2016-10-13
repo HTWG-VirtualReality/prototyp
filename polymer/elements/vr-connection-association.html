@@ -1,15 +1,22 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-three.html">
 <link rel="import" href="../behaviors/vr-connection.html">
-<link rel="import" href="./vr-polygon.html">
+<link rel="import" href="./vr-placing.html">
+<link rel="import" href="./vr-point.html">
 <link rel="import" href="./vr-polyline.html">
 
 <script src="../js/general-connection.js"></script>
 
 <dom-module id="vr-connection-association">
     <template>
-        <vr-polyline id="start"></vr-polyline>
         <vr-polyline id="line"></vr-polyline>
+        <vr-placing offset="0" angle="0" radius="0">
+            <vr-polyline>
+                <vr-point x="10" y="10"></vr-point>
+                <vr-point x="0" y="0"></vr-point>
+                <vr-point x="-10" y="10"></vr-point>
+            </vr-polyline>
+        </vr-placing>
     </template>
 </dom-module>
 
@@ -20,55 +27,6 @@
         behaviors: [
             VrBehaviors.ThreeBehavior,
             VrBehaviors.ConnectionBehavior
-        ],
-
-        _render: function(points) {
-            // set startpoint
-            this.obj.position.setX(points.start.x);
-            this.obj.position.setY(points.start.y);
-
-            // create line
-            this._createLinePoint(points.l1.x, points.l1.y);
-            this._createLinePoint(points.l2.x, points.l2.y);
-
-            // create start placing
-            this._createStartPlacingPoint(10, (points.py + (10 * points.ps)) * points.pd);
-            this._createStartPlacingPoint(0, points.py * points.pd);
-            this._createStartPlacingPoint(-10, (points.py + (10 * points.ps)) * points.pd);
-
-            // rotate line and start placing
-            this.$.line.obj.rotation.z = points.angle || 0;
-            this.$.start.obj.rotation.z = points.angle || 0;
-        },
-
-        _createLinePoint: function(x, y) {
-            this._createPoint(x, y, this.$.line);
-        },
-
-        _createStartPlacingPoint: function(x, y) {
-            this._createPoint(x, y, this.$.start);
-        },
-
-        _createPoint: function(x, y, element) {
-            var point = document.createElement('vr-point');
-            point.x = x;
-            point.y = y;
-            Polymer.dom(element).appendChild(point);
-        },
-
-        _preResize: function () {
-            // remove all children from polyline and polygon
-            removeAllChildren(this.$.start);
-            removeAllChildren(this.$.line);
-
-            function removeAllChildren(parent) {
-
-                var dom = Polymer.dom(parent);
-                dom.children.forEach(function (child) {
-                    dom.removeChild(child);
-                });
-            }
-        }
-
+        ]
     });
 </script>
