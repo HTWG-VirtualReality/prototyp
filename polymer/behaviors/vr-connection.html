@@ -47,9 +47,9 @@ of this behavior.
             this._handleListener(cb.toObj.addEventListener.bind(cb.toObj));
 
             // add Polymer children to three js group
-            // Polymer.dom(this.root).children.forEach(function (box) {
-            //     this.obj.add(box.obj);
-            // }.bind(this));
+            Polymer.dom(this.root).children.forEach(function (node) {
+                if(node.nodeName != "VR-PLACING") this.obj.add(node.obj);
+            }.bind(this));
         },
 
         _handleListener: function(func) {
