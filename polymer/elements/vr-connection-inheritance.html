@@ -1,15 +1,21 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-three.html">
 <link rel="import" href="../behaviors/vr-connection.html">
+<link rel="import" href="./vr-placing.html">
+<link rel="import" href="./vr-point.html">
 <link rel="import" href="./vr-polygon.html">
-<link rel="import" href="./vr-polyline.html">
 
 <script src="../js/general-connection.js"></script>
 
 <dom-module id="vr-connection-inheritance">
     <template>
-        <vr-polygon id="start"></vr-polygon>
-        <vr-polyline id="line"></vr-polyline>
+        <vr-placing id="placing" offset=0 angle=0 radius=0>
+            <vr-polygon id="polygon">
+                <vr-point x="0" y="0"></vr-point>
+                <vr-point x="10" y="10"></vr-point>
+                <vr-point x="-10" y="10"></vr-point>
+            </vr-polygon>
+        </vr-placing>
     </template>
 </dom-module>
 
@@ -33,8 +39,8 @@
             this.obj.position.setY(points.coord.y);
 
             // create line
-            this._createLinePoint(points.l1.x, points.l1.y);
-            this._createLinePoint(points.l2.x, points.l2.y);
+            // this._createLinePoint(points.l1.x, points.l1.y);
+            // this._createLinePoint(points.l2.x, points.l2.y);
 
             // TODO: set placing and calculate offset
             var placing = {offset: 0.5, angle:1.5, radius:0};
@@ -58,13 +64,18 @@
             // group2.add(mesh);
             // group2.rotation.z = points.angle || 0;
             group2.rotation.z = -placing.angle
-            var line2 = new THREE.Line(geometry, material);
-            group2.add(line2)
+            // var line2 = new THREE.Line(geometry, material);
+            // group2.add(line2)
+
+            console.log(this.$.polygon)
+            group2.add(this.$.polygon.obj)
 
             group.add(group2);
 
             this.obj.add(group)
             this.obj.rotation.z = points.angle || 0;
+
+
 
             // this._createStartPlacingPoint(0, )
             // this._createStartPlacingPoint(10, (points.distance*placing.offset)+points.l1.y+10)
@@ -96,20 +107,20 @@
             }
         },
 
-        _createLinePoint: function(x, y) {
-            this._createPoint(x, y, this.$.line);
-        },
-
-        _createStartPlacingPoint: function(x, y) {
-            this._createPoint(x, y, this.$.start);
-        },
-
-        _createPoint: function(x, y, element) {
-            var point = document.createElement('vr-point');
-            point.x = x;
-            point.y = y;
-            Polymer.dom(element).appendChild(point);
-        }
+        // _createLinePoint: function(x, y) {
+        //     this._createPoint(x, y, this.$.line);
+        // },
+        //
+        // _createStartPlacingPoint: function(x, y) {
+        //     this._createPoint(x, y, this.$.start);
+        // },
+        //
+        // _createPoint: function(x, y, element) {
+        //     var point = document.createElement('vr-point');
+        //     point.x = x;
+        //     point.y = y;
+        //     Polymer.dom(element).appendChild(point);
+        // }
 
     });
 </script>
