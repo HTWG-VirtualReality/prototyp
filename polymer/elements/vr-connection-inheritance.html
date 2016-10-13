@@ -11,13 +11,13 @@
 <dom-module id="vr-connection-inheritance">
     <template>
         <vr-polyline id="line"></vr-polyline>
-        <!-- <vr-placing offset="0.5" angle="1.5" radius="20">
+        <vr-placing offset="0.5" angle="1.5" radius="20">
             <vr-polygon>
                 <vr-point x="0" y="0"></vr-point>
                 <vr-point x="10" y="10"></vr-point>
                 <vr-point x="-10" y="10"></vr-point>
             </vr-polygon>
-        </vr-placing> -->
+        </vr-placing>
         <vr-placing offset="0" angle="0" radius="0">
             <vr-polygon>
                 <vr-point x="0" y="0"></vr-point>
@@ -25,7 +25,7 @@
                 <vr-point x="-10" y="10"></vr-point>
             </vr-polygon>
         </vr-placing>
-        <vr-placing offset="0.8" angle="0" radius="0">
+        <vr-placing offset="1" angle="0" radius="0">
             <vr-polygon>
                 <vr-point x="0" y="0"></vr-point>
                 <vr-point x="10" y="-10"></vr-point>
@@ -50,8 +50,9 @@
             this.obj.position.setY(points.coord.y);
 
             // create line
-            this._createLinePoint(points.l1.x, points.l1.y);
-            this._createLinePoint(points.l2.x, points.l2.y);
+            points.lines.forEach(function(point) {
+                this._createLinePoint(point.x, point.y);
+            }.bind(this));
 
             Polymer.dom(this.root).children.forEach(function (node) {
                 if(node.nodeName == "VR-PLACING") {
@@ -65,7 +66,7 @@
                 // first group is used for placing angle
                 var group = new THREE.Group();
                 group.position.setX(0);
-                group.position.setY((points.distance*placing.offset)+points.l1.y);
+                group.position.setY((points.distance*placing.offset)+points.lines[0].y);
                 group.rotation.z = placing.angle;
 
                 // second group is used to add placing itself

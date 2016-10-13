@@ -26,10 +26,9 @@ GeneralConnection.prototype._verticalCalculation = function(fromObj, toObj, from
     var yEnd = this._absoluteSubtraction(fromPos.y, toPos.y) - (toObj.height/2);
 
     return {
-        l1: this._createPoint(0, fromObj.height/2),
-        l2: this._createPoint(0, yEnd),
+        lines: [this._createPoint(0, fromObj.height/2), this._createPoint(0, yEnd)],
         distance: yEnd - (fromObj.height/2),
-        angle: (fromPos.y > toPos.y) ? 3.1416 : 0
+        angle: (fromPos.y > toPos.y) ? 3.1416 : 0 // 180 degrees
     };
 };
 
@@ -37,8 +36,7 @@ GeneralConnection.prototype._horizontalCalculation = function(fromObj, toObj, fr
     var rightX = this._absoluteSubtraction(fromPos.x, toPos.x) - toObj.width/2;
 
     return {
-        l1: this._createPoint(0, fromObj.width/2),
-        l2: this._createPoint(0, rightX),
+        lines: [this._createPoint(0, fromObj.width/2), this._createPoint(0, rightX)],
         distance: rightX - fromObj.width/2,
         angle: (fromPos.x < toPos.x) ? -1.5708 : 1.5708 // 90 degrees
     };
@@ -54,10 +52,10 @@ GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, from
     var fromC = calculateSmallC(Math.atan(fromObj.width / fromObj.height), fromObj);
     var toC = calculateSmallC(Math.atan(toObj.width / toObj.height), toObj);
 
-    var line = {};
-    line.l1 = this._createPoint(0, fromC);
-    line.l2 = this._createPoint(0, c - toC);
-    line.distance = this._absoluteSubtraction(line.l1.y, line.l2.y);
+    var line = {lines: []};
+    line.lines.push(this._createPoint(0, fromC));
+    line.lines.push(this._createPoint(0, c - toC));
+    line.distance = this._absoluteSubtraction(line.lines[0].y, line.lines[1].y);
     line.angle = getAngle();
     return line;
 
