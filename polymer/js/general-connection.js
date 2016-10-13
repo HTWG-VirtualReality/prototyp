@@ -25,28 +25,24 @@ GeneralConnection.prototype.render = function() {
 };
 
 GeneralConnection.prototype._verticalCalculation = function(fromObj, toObj, fromPos, toPos) {
-    var y = this._absoluteSubtraction(fromPos.y, toPos.y);
-    var yStart =  this._isToGreater(toPos, fromPos) ? -(fromObj.height/2) : fromObj.height/2;
-    var yEnd = this._isToGreater(toPos, fromPos) ? -(y-toObj.height/2) : y - toObj.height/2;
+    var yEnd = this._absoluteSubtraction(fromPos.y, toPos.y) - (toObj.height/2);
 
-    // start placing
     return {
-        l1: this._createPoint(0, yStart),
+        l1: this._createPoint(0, fromObj.height/2),
         l2: this._createPoint(0, yEnd),
-        distance: yStart-yEnd
+        distance: yEnd - (fromObj.height/2),
+        angle: (fromPos.y > toPos.y) ? 3.1416 : 0
     };
 };
 
 GeneralConnection.prototype._horizontalCalculation = function(fromObj, toObj, fromPos, toPos) {
-    var widthLeft = (toPos.x > fromPos.x) ? fromObj.width/2 : toObj.width/2;
-    var widthRight = (toPos.x < fromPos.x) ? fromObj.width/2 : toObj.width/2;
-    var rightX = this._absoluteSubtraction(fromPos.x, toPos.x) - widthRight;
+    var rightX = this._absoluteSubtraction(fromPos.x, toPos.x) - toObj.width/2;
 
     return {
-        l1: this._createPoint(0, widthLeft),
-        l2: this._createPoint(0, rightX ),
-        distance: widthLeft - rightX,
-        angle: -1.5708 // 90 degrees
+        l1: this._createPoint(0, fromObj.width/2),
+        l2: this._createPoint(0, rightX),
+        distance: rightX - fromObj.width/2,
+        angle: (fromPos.x < toPos.x) ? -1.5708 : 1.5708 // 90 degrees
     };
 };
 
@@ -133,5 +129,6 @@ GeneralConnection.prototype._isVertical = function(fromPos, toPos) {
 }
 
 GeneralConnection.prototype._isHorizontal = function(fromHeight, toHeight, fromPos, toPos) {
-    return (fromPos.y - fromHeight/2) == (toPos.y - toHeight/2);
+    // return (fromPos.y - fromHeight/2) == (toPos.y - toHeight/2);
+    return fromPos.y == toPos.y;
 }
