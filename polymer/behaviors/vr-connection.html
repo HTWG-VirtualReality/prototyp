@@ -24,13 +24,15 @@ change the implementation of GeneralConnection.
                 fromObj: document.querySelector(this.from),
                 toObj: document.querySelector(this.to),
                 resize: this._updateConnection.bind(this),
-                delete: this._deleteConnection.bind(this)
+                delete: this._deleteConnection.bind(this),
+                mousedown: this._handleClick.bind(this)
             };
 
             if (!cb.fromObj || !cb.toObj) {
                 console.error('could not find element');
                 return;
             }
+            this.highlighted = false;
 
             // calculate and render connection
             this._render();
@@ -38,6 +40,7 @@ change the implementation of GeneralConnection.
             // add event listener for resizing
             this._handleListener(cb.fromObj.addEventListener.bind(cb.fromObj));
             this._handleListener(cb.toObj.addEventListener.bind(cb.toObj));
+            this.obj.on('mousedown', cb.mousedown);
 
             // add Polymer children to three js group
             Polymer.dom(this.root).children.forEach(function (node) {
@@ -109,6 +112,7 @@ change the implementation of GeneralConnection.
             var cb = this.ConnectionBehavior;
             this._handleListener(cb.fromObj.removeEventListener.bind(cb.fromObj));
             this._handleListener(cb.toObj.removeEventListener.bind(cb.toObj));
+            this.obj.off('mousedown', cb.mousedown);
 
             Polymer.dom(this.parentNode).removeChild(this);
         },
@@ -122,6 +126,10 @@ change the implementation of GeneralConnection.
             point.x = x;
             point.y = y;
             Polymer.dom(element).appendChild(point);
+        },
+
+        _handleClick: function() {
+            this.highlighted = !this.highlighted;
         }
     };
 </script>

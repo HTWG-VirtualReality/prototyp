@@ -11,12 +11,12 @@
             if(!this.highlighted) {
                 //destroy delete button and eventlistener
                 var mesh = this._getDeleteMesh();
-                this._deregisterDeleteListener(mesh);
+                this._handleDeleteListener(mesh.on.bind(mesh));
                 this.obj.remove(mesh);
             } else {
                 //create delete button and eventlistener
                 var mesh = this._initializeDeleteButton();
-                this._registerDeleteListener(mesh);
+                this._handleDeleteListener(mesh.on.bind(mesh));
             }
         },
 
@@ -36,16 +36,10 @@
             mesh.position.y = padding;
         },
 
-        _registerDeleteListener: function(mesh) {
-            mesh.on('mouseover', this.onMouseOver.bind(this));
-            mesh.on('mouseout', this.onMouseOut.bind(this));
-            mesh.on('mousedown', this.delete.bind(this));
-        },
-
-        _deregisterDeleteListener: function(mesh) {
-            mesh.off('mouseover', this.onMouseOver.bind(this));
-            mesh.off('mouseout', this.onMouseOut.bind(this));
-            mesh.off('mousedown', this.delete.bind(this));
+        _handleDeleteListener: function(func) {
+            func('mouseover', this.onMouseOver.bind(this));
+            func('mouseout', this.onMouseOut.bind(this));
+            func('mousedown', this.delete.bind(this));
         },
 
         _initializeDeleteButton: function() {
