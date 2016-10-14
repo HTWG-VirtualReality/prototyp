@@ -1,15 +1,8 @@
 <!--
-Attention: Use this behavior when you're creating a connecting. This behavior
-does a lot. The new connection need the functions:
-* "_render(points)"
-* "_preResize()"
-
-The task of "_render" is to draw the connection.
-The task of "preResize" is to prepare to draw a new line but you don't need to
-call "_render" by yourself.
-
-If you're confused see vr-connection-inheritance as an example for the usage
-of this behavior.
+This behavior contains the complete logic for all kinds of connections.
+You propably don't need to change anything in this file. If you want to change
+the line e.g that it has edges instead of just a diagonal line you need to
+change the implementation of GeneralConnection.
 -->
 
 <script>

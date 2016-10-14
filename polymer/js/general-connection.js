@@ -3,6 +3,15 @@ function GeneralConnection(fromObj, toObj) {
     this.toObj = toObj;
 }
 
+/**
+ * Input: an array/list of placings
+ * Output: {
+ *   lines: [point, point, ...],
+ *   distance: Number,
+ *   coord: point, // center of fromObj
+ *   placingObjs: [Three.Group,..]
+ * }
+ */
 GeneralConnection.prototype.render = function(placings) {
     var fromObj = this.fromObj;
     var toObj = this.toObj;
