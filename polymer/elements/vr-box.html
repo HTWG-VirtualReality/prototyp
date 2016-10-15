@@ -75,10 +75,9 @@
             this.materials = [];
 
             // init all sides of cube
+            var material = new THREE.MeshBasicMaterial({color: 0xffffff});
             for (var i = 0; i < sides; i++) {
-                this.materials.push(new THREE.MeshBasicMaterial({
-                    color: 0xffffff
-                }));
+                this.materials.push(material);
             }
 
             // creating cube and wireframe
@@ -100,7 +99,7 @@
             dynamicTexture.texture.minFilter = THREE.NearestFilter;
             dynamicTexture.clear('white').drawTextCooked({
                 text: text,
-                font: "bold 64px Verdana",
+                font: "64px Verdana",
                 center: this.textCenter
             });
 

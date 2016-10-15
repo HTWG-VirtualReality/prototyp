@@ -5,6 +5,20 @@
             var self = this;
             var dom = self.renderer.domElement;
             var group;
+            var position;
+            var counter = 0;
+
+            function getPositionInThreeScene(event) {
+                var object = self.group;
+                var scale = object.position.z/320 * -1;
+                var centerX = event.clientX - Math.floor(window.innerWidth/2);
+                var centerY = Math.floor(window.innerHeight/2) - event.clientY;
+                return {
+                    x: Math.round(centerX * scale) - Math.round(object.position.x),
+                    y: Math.round(centerY * scale) - Math.round(object.position.y),
+                    scale: Math.round(scale*100)/100
+                };
+            }
 
             dom.addEventListener('mousedown', function () {
                 dom.addEventListener('mousemove', reset);
@@ -19,35 +33,64 @@
                 if (group) {
                     self.group.remove(group);
                     group = null;
+                    position = null;
                 } else {
                     create(event);
                 }
                 reset();
             }
             function create(event) {
+                var width = 40;
                 group = new THREE.Group();
-                group.add(createBox(0));
-                group.add(createBox(52));
-                group.add(createBox(104));
+                group.add(createBox(width, -width - 2, 'Interface',  'interface'));
+                group.add(createBox(width, 0, 'Class', 'class'));
+                group.add(createBox(width, width + 2, 'Abstract', 'abstract'));
 
-                group.position.setX(event.clientX);
-                group.position.setY(-event.clientY);
+                position = getPositionInThreeScene(event);
+                group.position.setX(position.x);
+                group.position.setY(position.y);
 
                 self.group.add(group);
             }
 
-            function createBox(x) {
-                var geometry = new THREE.BoxGeometry(50, 50, 10);
+            function createBox(width, x, text, type) {
                 var material = new THREE.MeshBasicMaterial();
-                var mesh = new THREE.Mesh(geometry, material);
+                var sides = [];
+                for (var i=0; i<6; i++) {
+                    sides.push(material);
+                }
+                sides[4] = generateText(width, text);
+
+                var geometry = new THREE.BoxGeometry(width, width, 10);
+                var mesh = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(sides));
                 var wireFrame = new THREE.BoxHelper(mesh);
-                wireFrame.material.color.set(0x000000);
+                wireFrame.material.color.set(0xFF0000);
 
                 var group = new THREE.Group();
                 group.position.setX(x);
                 group.add(mesh);
                 group.add(wireFrame);
+                group.on('mousedown', function(e) {
+                    e.origDomEvent.stopImmediatePropagation();
+                    e.stopPropagation();
+                    self.push('classItems', {id: 'class-' + (counter++), xPos: position.x, yPos: position.y, classType: type});
+                    onMouseUp(null);
+                });
                 return group;
+            }
+
+            function generateText(width, text) {
+                var dynamicTexture = new THREEx.DynamicTexture(width * 10, width * 10);
+                dynamicTexture.texture.minFilter = THREE.NearestFilter;
+                dynamicTexture.clear('white').drawTextCooked({
+                    text: text,
+                    font: "70px Verdana",
+                    center: true
+                });
+
+                return new THREE.MeshBasicMaterial({
+                    map: dynamicTexture.texture
+                });
             }
         }
     };

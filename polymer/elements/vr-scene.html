@@ -2,6 +2,7 @@
 <link rel="import" href="../behaviors/vr-zoom.html">
 <link rel="import" href="../behaviors/vr-axis-control.html">
 <link rel="import" href="../behaviors/vr-new.html">
+<link rel="import" href="./vr-class.html">
 
 <script src="../bower_components/threejs/build/three.min.js"></script>
 <script src="../bower_components/threex.domevents/threex.domevents.js"></script>
@@ -34,7 +35,15 @@
         </style>
 
         <button on-click="_enterVR">Enter VR (WebVR/Mobile only)</button>
+
         <content id="content" select="*"></content>
+
+        <div id="classItems">
+            <template is="dom-repeat" items="{{classItems}}" strip-whitespace>
+                <vr-class id="{{item.id}}" x-pos="{{item.xPos}}" y-pos="{{item.yPos}}" class-type="{{item.classType}}"></vr-class>
+            </template>
+        </div>
+
     </template>
 </dom-module>
 
@@ -47,6 +56,15 @@
             VrBehaviors.AxisControlBehavior,
             VrBehaviors.NewBehavior
         ],
+
+        properties: {
+            classItems: {
+                type: Array,
+                value: function() {
+                    return [];
+                }
+            }
+        },
 
         created: function() {
             var self = this;
@@ -75,15 +93,22 @@
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
             // observe nodes that will added to this element
-            Polymer.dom(self.$.content).observeNodes(function (nodes) {
+            Polymer.dom(self.$.content).observeNodes(observe);
+            Polymer.dom(self.$.classItems).observeNodes(observe);
+
+            function observe(nodes) {
                 nodes.addedNodes.forEach(function (node) {
-                    self.group.add(node.obj);
+                    if (node.obj) {
+                        self.group.add(node.obj);
+                    }
                 });
 
                 nodes.removedNodes.forEach(function (node) {
-                    self.group.remove(node.obj);
+                    if (node.obj) {
+                        self.group.remove(node.obj);
+                    }
                 });
-            });
+            }
 
             // WebVR
             self.controls = new THREE.VRControls(self.camera);

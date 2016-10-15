@@ -4,7 +4,7 @@
         ready: function() {
             var dom = this.renderer.domElement;
             var speed = 5;
-            var element = this.camera;
+            var element = this.group;
 
             dom.addEventListener('wheel', function (e) {
                 element.position.setZ(element.position.z + e.deltaY * speed);
