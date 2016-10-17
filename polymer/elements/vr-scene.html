@@ -2,6 +2,7 @@
 <link rel="import" href="../behaviors/vr-zoom.html">
 <link rel="import" href="../behaviors/vr-axis-control.html">
 <link rel="import" href="../behaviors/vr-new.html">
+<link rel="import" href="../behaviors/vr-touch.html">
 <link rel="import" href="./vr-class.html">
 
 <script src="../bower_components/threejs/build/three.min.js"></script>
@@ -52,6 +53,7 @@
         is: "vr-scene",
 
         behaviors: [
+            VrBehaviors.TouchBehavoir,
             VrBehaviors.ZoomBehavior,
             VrBehaviors.AxisControlBehavior,
             VrBehaviors.NewBehavior
