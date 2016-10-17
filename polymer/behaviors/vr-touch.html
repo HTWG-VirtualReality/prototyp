@@ -21,15 +21,15 @@
                 var x = Math.floor(windowDimension['width'] / 2);
                 var y = Math.floor(windowDimension['height'] / 2);
 
-                mousedown(x, y);
-                mouseup(x, y);
+                mouseDown(x, y);
+                mouseUp(x, y);
             }
 
-            function mousedown(x, y) {
+            function mouseDown(x, y) {
                 dispatchMouseEvent(x, y, "mousedown");
             }
 
-            function mouseup(x, y) {
+            function mouseUp(x, y) {
                 dispatchMouseEvent(x, y, "mouseup");
             }
 
