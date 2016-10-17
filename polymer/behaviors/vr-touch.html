@@ -5,6 +5,23 @@
             var self = this;
             var dom = self.renderer.domElement;
 
+            dom.addEventListener('touchstart', function () {
+                dom.addEventListener('touchmove', reset);
+                dom.addEventListener('touchend', triggerClickEvent)
+            });
+
+            function reset() {
+                dom.removeEventListener('touchmove', reset);
+                dom.removeEventListener('touchend', triggerClickEvent);
+            }
+
+            function triggerClickEvent() {
+                var windowDimension = getWindowDimension();
+
+                var x = Math.floor(windowDimension['width']  / 2);
+                var y = Math.floor(windowDimension['height'] / 2);
+            }
+
             function getWindowDimension() {
                 var dimension = {};
                 var myWidth = 0, myHeight = 0;
