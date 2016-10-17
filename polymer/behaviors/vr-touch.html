@@ -20,6 +20,38 @@
 
                 var x = Math.floor(windowDimension['width']  / 2);
                 var y = Math.floor(windowDimension['height'] / 2);
+
+            }
+
+
+            function mousedown(x, y) {
+                var ev = document.createEvent("MouseEvent");
+                var el = document.elementFromPoint(x, y);
+                ev.initMouseEvent(
+                        "mousedown",
+                        true /* bubble */, true /* cancelable */,
+                        window, null,
+                        x, y, x, y, /* coordinates */
+                        false, false, false, false, /* modifier keys */
+                        0 /*left*/, null
+                );
+
+                el.dispatchEvent(ev);
+            }
+
+            function mouseup(x, y) {
+                var ev = document.createEvent("MouseEvent");
+                var el = document.elementFromPoint(x, y);
+                ev.initMouseEvent(
+                        "mouseup",
+                        true /* bubble */, true /* cancelable */,
+                        window, null,
+                        x, y, x, y, /* coordinates */
+                        false, false, false, false, /* modifier keys */
+                        0 /*left*/, null
+                );
+
+                el.dispatchEvent(ev);
             }
 
             function getWindowDimension() {
