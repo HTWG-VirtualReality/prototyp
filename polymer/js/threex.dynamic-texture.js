@@ -147,6 +147,24 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     }
 };
 
+THREEx.DynamicTexture.prototype.computeWidth = function(text, font) {
+    var context = this.context;
+    var canvas = this.canvas;
+    var margin = 0.1;
+
+    // sanity check
+    console.assert(typeof(text) === 'string');
+
+    context.save();
+    context.fillStyle = 'black';
+    context.font = font;
+
+    var currentWidth = (1 - margin * 2) * canvas.width;
+    var size = context.measureText(text);
+    var width = size.width / (1 - margin * 2) + 10;
+    return currentWidth < size.width ? width : -1;
+};
+
 /**
  * execute the drawImage on the internal context
  * the arguments are the same the official context2d.drawImage
