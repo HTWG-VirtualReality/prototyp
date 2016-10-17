@@ -18,34 +18,26 @@
             function triggerClickEvent() {
                 var windowDimension = getWindowDimension();
 
-                var x = Math.floor(windowDimension['width']  / 2);
+                var x = Math.floor(windowDimension['width'] / 2);
                 var y = Math.floor(windowDimension['height'] / 2);
 
                 mousedown(x, y);
                 mouseup(x, y);
             }
 
-
             function mousedown(x, y) {
-                var ev = document.createEvent("MouseEvent");
-                var el = document.elementFromPoint(x, y);
-                ev.initMouseEvent(
-                        "mousedown",
-                        true /* bubble */, true /* cancelable */,
-                        window, null,
-                        x, y, x, y, /* coordinates */
-                        false, false, false, false, /* modifier keys */
-                        0 /*left*/, null
-                );
-
-                el.dispatchEvent(ev);
+                dispatchMouseEvent(x, y, "mousedown");
             }
 
             function mouseup(x, y) {
+                dispatchMouseEvent(x, y, "mouseup");
+            }
+
+            function dispatchMouseEvent(x, y, eventtyp) {
                 var ev = document.createEvent("MouseEvent");
                 var el = document.elementFromPoint(x, y);
                 ev.initMouseEvent(
-                        "mouseup",
+                        eventtyp,
                         true /* bubble */, true /* cancelable */,
                         window, null,
                         x, y, x, y, /* coordinates */
@@ -55,6 +47,7 @@
 
                 el.dispatchEvent(ev);
             }
+
 
             function getWindowDimension() {
                 var dimension = {};
