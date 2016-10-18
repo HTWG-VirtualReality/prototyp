@@ -44,12 +44,12 @@
               class-type="abstract">
     </vr-class>
 
-    <vr-class id="corporatecustomer" x-pos="-60" y-pos="0" height="100" width="50"
+    <vr-class id="corporatecustomer" x-pos="-20" y-pos="0" height="100" width="50"
               text1="CorporateCustomer"
               text2="-contactName:String; -creditRaiting:String; -creaditLimit:Decimal"
               text3="+billForMonth(int amount); +remind()"></vr-class>
 
-    <vr-class id="personalcustomer" x-pos="250" y-pos="0" height="70" width="175"
+    <vr-class id="personalcustomer" x-pos="250" y-pos="0" height="100" width="175"
               text1="PersonalCustomer"
               text2="-creaditCardNumber:String"
               text3="+getCreditRaiting(creditRaiting:String)"
@@ -58,14 +58,14 @@
     <vr-class id="employee" x-pos="160" y-Pos="-120" width="50" height="30"
               text1="Employee" text2="" text3=""></vr-class>
 
-    <vr-class id="orderline" x-pos="-150" y-Pos="0" width="80" height="70"
+    <vr-class id="orderline" x-pos="-150" y-Pos="0" width="80" height="95"
               text1="OrderLine" text2="-quantity:Integer; -price:Decimal" text3="">
     </vr-class>
 
-    <vr-class id="product" x-pos="-150" y-Pos="-100" width="50" height="30"
+    <vr-class id="product" x-pos="-150" y-Pos="-130" width="50" height="30"
               text1="Product" text2="" text3=""></vr-class>
 
-    <vr-class id="order" x-pos="-150" y-Pos="150" width="90" height="70"
+    <vr-class id="order" x-pos="-150" y-Pos="150" width="90" height="100"
               text1="Order"
               text2="-dateRecieved:Date; -isPrePaid:Boolean; -lineItems[]"
               text3="+dispatch(); +close()"
