@@ -5,10 +5,41 @@
             var self = this;
             var dom = self.renderer.domElement;
 
+
             dom.addEventListener('touchstart', function () {
                 dom.addEventListener('touchmove', reset);
                 dom.addEventListener('touchend', triggerClickEvent)
             });
+
+            dom.addEventListener('touchstart', function () {
+                dom.addEventListener('touchmove', triggerMouseMove)
+            });
+
+
+            function triggerMouseMove() {
+                var position = {
+                    x: event.origDomEvent.clientX,
+                    y: event.origDomEvent.clientY
+                };
+                dom.addEventListener('touchmove', onMouseMove);
+                dom.addEventListener('touchend', reset);
+
+                function onMouseMove(e) {
+                    // calculate new position of element
+                    self.xPos += e.clientX - position.x;
+                    self.yPos -= e.clientY - position.y;
+
+                    // update position
+                    position.x = e.clientX;
+                    position.y = e.clientY;
+                    alert('postion x: ' + position.x + 'position.y: ' + position.y);
+                }
+
+                function reset() {
+                    dom.removeEventListener('touchmove', onMouseMove);
+                    dom.removeEventListener('touchend', reset);
+                }
+            }
 
             function reset() {
                 dom.removeEventListener('touchmove', reset);
