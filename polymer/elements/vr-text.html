@@ -1,0 +1,71 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<script src="../js/threex.dynamic-texture.js"></script>
+
+
+<script>
+    Polymer({
+        is: "vr-text",
+
+        behaviors: [VrBehaviors.ThreeBehavior],
+
+        properties: {
+            x: {
+                type: Number,
+                value: 0
+            },
+            y: {
+                type: Number,
+                value: 0
+            },
+            height: {
+                type: Number,
+                value: 10
+            },
+            width: {
+                type: Number,
+                value: 30
+            },
+            text: {
+                type: String,
+                value: ''
+            },
+            textCenter: {
+                type: Boolean,
+                value: true
+            }
+        },
+
+        ready: function() {
+            this._render();
+        },
+
+        _render: function() {
+            this.obj.position.setX(this.x);
+            this.obj.position.setY(this.y);
+
+            // init all sides of cube
+            var materials = [];
+            var material = new THREE.MeshBasicMaterial();
+            for (var i = 0; i < 6; i++) {
+                materials.push(material);
+            }
+
+            var dynamicTexture = new THREEx.DynamicTexture(this.width * 10, this.height * 10);
+            dynamicTexture.texture.minFilter = THREE.NearestFilter;
+            dynamicTexture.clear('white').drawTextCooked({
+                text: this.text,
+                font: "64px Verdana",
+                center: this.textCenter
+            });
+
+            materials[4] =  new THREE.MeshBasicMaterial({
+                map: dynamicTexture.texture
+            });
+
+            var geometry = new THREE.BoxGeometry(this.width, this.height, 1);
+            var cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
+            this.obj.add(cube);
+        }
+
+    });
+</script>
