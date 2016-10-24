@@ -4,13 +4,24 @@
 
         observers: ['_handleResizeDelete(width)'],
         attached: function() {
+            // this object is needed because of the eventlistener
+            this.DeleteBehavior = {
+                mesh: null,
+                mouseover: this.onMouseOver.bind(this),
+                mouseout: this.onMouseOut.bind(this),
+                mousedown: this.delete.bind(this)
+            };
+
             this.obj.on('mousedown', this._handleClickDeleteButton.bind(this));
         },
 
-        _handleClickDeleteButton: function() {
+        _handleClickDeleteButton: function(event) {
+            event.stopPropagation();
+            event.origDomEvent.stopImmediatePropagation();
+            
             if(!this.highlighted) {
                 //destroy delete button and eventlistener
-                var mesh = this._getDeleteMesh();
+                var mesh = this.DeleteBehavior.mesh;
                 this._handleDeleteListener(mesh.on.bind(mesh));
                 this.obj.remove(mesh);
             } else {
@@ -23,23 +34,26 @@
         _handleResizeDelete: function(width) {
             // only execute when element is highlighted
             if(!this.highlighted) return;
-            this._changeDeleteButtonPosition(this._getDeleteMesh());
-        },
-
-        _getDeleteMesh:function() {
-            return this.obj.children.filter(function(item) { return item.name === 'delete'; })[0];
+            this._changeDeleteButtonPosition(this.DeleteBehavior.mesh);
         },
 
         _changeDeleteButtonPosition(mesh) {
             var padding = 10;
-            mesh.position.x = this.width / 2 + padding;
-            mesh.position.y = padding;
+            var width = this.width ? this.width : 0;
+            if(this.behaviors.indexOf(VrBehaviors.ConnectionBehavior) != -1) {
+                mesh.position.x = padding;
+                mesh.position.y = width + padding;
+            } else {
+                mesh.position.x = width/2 + padding;
+                mesh.position.y = padding;
+            }
+            mesh.rotation.y = (90 * (Math.PI/180))- this.obj.rotation.z;
         },
 
         _handleDeleteListener: function(func) {
-            func('mouseover', this.onMouseOver.bind(this));
-            func('mouseout', this.onMouseOut.bind(this));
-            func('mousedown', this.delete.bind(this));
+            func('mouseover', this.DeleteBehavior.mouseover);
+            func('mouseout', this.DeleteBehavior.mouseout);
+            func('mousedown', this.DeleteBehavior.mousedown);
         },
 
         _initializeDeleteButton: function() {
@@ -53,9 +67,10 @@
             var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
             var mesh = new THREE.Mesh(geometry, material);
             mesh.rotateX(90 * (Math.PI/180));
-            mesh.rotateY(90 * (Math.PI/180));
             mesh.name = 'delete';
+            mesh.position.setZ(15);
             this._changeDeleteButtonPosition(mesh);
+            this.DeleteBehavior.mesh = mesh;
             this.obj.add(mesh);
             return mesh;
         },
@@ -65,7 +80,7 @@
         },
 
         onMouseOut: function(event) {
-            event.target.material.color.set(0x000000);
+            event.target.material.color.set(0xFFFFFF);
         },
 
         delete: function(event) {

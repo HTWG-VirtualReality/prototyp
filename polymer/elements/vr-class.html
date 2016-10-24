@@ -22,6 +22,11 @@
         is: "vr-class",
 
         properties: {
+            maxWidth: {
+                type: Number,
+                value: 200,
+                readOnly: true
+            },
             text1: {
                 type: String,
                 value: ''
@@ -70,7 +75,7 @@
                 // compute width for fitting the text
                 var newWidth = this._computeWidth();
                 if (newWidth > 0) {
-                    this.width = newWidth;
+                    this.width = newWidth < this.maxWidth ? newWidth : this.maxWidth;
                 }
 
                 if (this.boxItems) {

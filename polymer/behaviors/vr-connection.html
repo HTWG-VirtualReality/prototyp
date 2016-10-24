@@ -96,6 +96,9 @@ change the implementation of GeneralConnection.
                 this._createLinePoint(point.x, point.y);
             }.bind(this));
 
+            // set value of width for delete button
+            this.width = connection.lines[connection.lines.length-1].y;
+
             // add placings
             connection.placingObjs.forEach(function(placingObj) {
                 this.obj.add(placingObj);
@@ -114,6 +117,7 @@ change the implementation of GeneralConnection.
             this._handleListener(cb.toObj.removeEventListener.bind(cb.toObj));
             this.obj.off('mousedown', cb.mousedown);
 
+            if(this.parentNode === null) return; // TODO: quick fix
             Polymer.dom(this.parentNode).removeChild(this);
         },
 
@@ -128,8 +132,11 @@ change the implementation of GeneralConnection.
             Polymer.dom(element).appendChild(point);
         },
 
-        _handleClick: function() {
+        _handleClick: function(event) {
             this.highlighted = !this.highlighted;
+
+            // change color of line
+            this.$.line.obj.material.color.set(this.highlighted? 0xFF0000 : 0x000000);
         }
     };
 </script>
