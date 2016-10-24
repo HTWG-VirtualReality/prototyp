@@ -25,6 +25,7 @@
                 x: event.origDomEvent.clientX,
                 y: event.origDomEvent.clientY
             };
+            dom.addEventListener('touchmove', onTouchMove);
             dom.addEventListener('mousemove', onMouseMove);
             dom.addEventListener('mouseup', reset);
             dom.addEventListener('mouseout', reset);
@@ -39,7 +40,18 @@
                 position.y = e.clientY;
             }
 
+            function onTouchMove(e) {
+                // calculate new position of element
+                self.xPos += e.touches[0].clientX - position.x;
+                self.yPos -= e.touches[0].clientY - position.y;
+
+                // update position
+                position.x = e.touches[0].clientX;
+                position.y = e.touches[0].clientY;
+            }
+
             function reset() {
+                dom.removeEventListener('touchmove', onTouchMove);
                 dom.removeEventListener('mousemove', onMouseMove);
                 dom.removeEventListener('mouseup', reset);
                 dom.removeEventListener('mouseout', reset);

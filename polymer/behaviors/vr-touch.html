@@ -7,38 +7,25 @@
 
 
             dom.addEventListener('touchstart', function () {
-                dom.addEventListener('touchmove', reset);
-                dom.addEventListener('touchend', triggerClickEvent)
+                var windowDimension = getWindowDimension();
+                var x = Math.floor(windowDimension['width'] / 2);
+                var y = Math.floor(windowDimension['height'] / 2);
+
+                mouseDown(x, y);
             });
 
-            dom.addEventListener('touchstart', function () {
-                dom.addEventListener('touchmove', triggerMouseMove)
+            dom.addEventListener('touchend', function () {
+                var windowDimension = getWindowDimension();
+                var x = Math.floor(windowDimension['width'] / 2);
+                var y = Math.floor(windowDimension['height'] / 2);
+
+                mouseUp(x, y);
             });
 
-
-            function triggerMouseMove() {
-                var position = {
-                    x: event.origDomEvent.clientX,
-                    y: event.origDomEvent.clientY
-                };
-                dom.addEventListener('touchmove', onMouseMove);
-                dom.addEventListener('touchend', reset);
-
-                function onMouseMove(e) {
-                    // calculate new position of element
-                    self.xPos += e.clientX - position.x;
-                    self.yPos -= e.clientY - position.y;
-
-                    // update position
-                    position.x = e.clientX;
-                    position.y = e.clientY;
-                    alert('postion x: ' + position.x + 'position.y: ' + position.y);
-                }
-
-                function reset() {
-                    dom.removeEventListener('touchmove', onMouseMove);
-                    dom.removeEventListener('touchend', reset);
-                }
+            function reset() {
+                dom.removeEventListener('mousemove', onMouseMove);
+                dom.removeEventListener('mouseup', reset);
+                dom.removeEventListener('mouseout', reset);
             }
 
             function reset() {
@@ -53,7 +40,6 @@
                 var y = Math.floor(windowDimension['height'] / 2);
 
                 mouseDown(x, y);
-                mouseUp(x, y);
             }
 
             function mouseDown(x, y) {
@@ -65,11 +51,11 @@
             }
 
             function dispatchMouseEvent(x, y, eventtyp) {
-                var ev = document.createEvent("MouseEvent");
+                var ev = document.createEvent("MouseEvents");
                 var el = document.elementFromPoint(x, y);
                 ev.initMouseEvent(
                         eventtyp,
-                        true /* bubble */, true /* cancelable */,
+                        true /* bubble */, false /* cancelable */,
                         window, null,
                         x, y, x, y, /* coordinates */
                         false, false, false, false, /* modifier keys */
