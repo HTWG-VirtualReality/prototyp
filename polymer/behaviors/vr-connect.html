@@ -64,11 +64,14 @@
         },
 
         _initializeConnectButton: function() {
-            var width = 6;
+            var width = 10;
             var geometry = new THREE.CylinderGeometry(width, width, 10, 32);
-            var material = new THREE.MeshBasicMaterial({color: 0x000000});
+            var texture = new THREE.TextureLoader().load( 'images/arrow.png' );
+            var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
             var mesh = new THREE.Mesh(geometry, material);
             mesh.rotateX(90 * (Math.PI/180));
+            mesh.rotateY(45 * (Math.PI/180));
+
             mesh.name = 'connect';
             this._changeConnectButtonPosition(mesh);
             this.obj.add(mesh);
@@ -119,7 +122,7 @@
 
         _executeCancel: function() {
             this.ConnectBehavior.connectActive = false;
-            this.ConnectBehavior.mesh.material.color.set(0x000000);
+            this.ConnectBehavior.mesh.material.color.set(0xFFFFFF);
             this._deregisterAllElementsListener();
             this.ConnectBehavior.mesh.off('mousedown', this.ConnectBehavior.cancel);
             this._registerConnectListener(this.ConnectBehavior.mesh);
