@@ -23,12 +23,6 @@
             });
 
             function reset() {
-                dom.removeEventListener('mousemove', onMouseMove);
-                dom.removeEventListener('mouseup', reset);
-                dom.removeEventListener('mouseout', reset);
-            }
-
-            function reset() {
                 dom.removeEventListener('touchmove', reset);
                 dom.removeEventListener('touchend', triggerClickEvent);
             }
