@@ -78,11 +78,12 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     var linebreak = "; ";
     var context = this.context;
     var canvas = this.canvas;
+
     options = options || {};
     var text = options.text;
     var params = {
         margin: options.margin !== undefined ? options.margin : 0.1,
-        lineHeight: options.lineHeight !== undefined ? options.lineHeight : 0.1,
+        lineHeight: options.lineHeight !== undefined ? options.lineHeight : 50,
         align: options.align !== undefined ? options.align : 'left',
         center: options.center !== undefined ? options.center : false,
         fillStyle: options.fillStyle !== undefined ? options.fillStyle : 'black',
@@ -95,10 +96,10 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     context.fillStyle = params.fillStyle;
     context.font = params.font;
 
-    var y = (params.lineHeight + params.margin) * canvas.height;
+    var y = params.lineHeight + 50;
     if (params.center) {
         params.align = 'center';
-        y = canvas.height - y * 2;
+        // y = canvas.height - y * 2;
     }
 
     var splittedText = text.split(linebreak);
@@ -123,9 +124,13 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
             this.context.fillText(maxText, x, y);
 
             // goto the next line
-            y += params.lineHeight * canvas.height
+            var wrapMultiplicator = 1;
+            if (text.length > 0) {
+                wrapMultiplicator = 1.5;
+            }
+            y += params.lineHeight * wrapMultiplicator;
         }
-        y += params.lineHeight * canvas.height
+        y += params.lineHeight
     }.bind(this));
 
     context.restore();
@@ -147,7 +152,7 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     }
 };
 
-THREEx.DynamicTexture.prototype.computeWidth = function(text, font) {
+THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
     var context = this.context;
     var canvas = this.canvas;
     var margin = 0.1;
