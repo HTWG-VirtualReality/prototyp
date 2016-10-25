@@ -1,26 +1,14 @@
+<script src="../bower_components/threejs/build/three.min.js"></script>
+<script src="../bower_components/threex.domevents/threex.domevents.js"></script>
+
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-zoom.html">
 <link rel="import" href="../behaviors/vr-axis-control.html">
 <link rel="import" href="../behaviors/vr-new.html">
 <link rel="import" href="../behaviors/vr-touch.html">
+<link rel="import" href="../behaviors/vr-webvr.html">
 <link rel="import" href="./vr-class.html">
 
-<script src="../bower_components/threejs/build/three.min.js"></script>
-<script src="../bower_components/threex.domevents/threex.domevents.js"></script>
-
-<!-- WebVR -->
-<script>
-    WebVRConfig = {
-        // To disable keyboard and mouse controls, if you want to use your own implementation.
-        MOUSE_KEYBOARD_CONTROLS_DISABLED: true,
-
-        // Scales the recommended buffer size reported by WebVR, which can improve performance.
-        BUFFER_SCALE: 1.0
-    };
-</script>
-<script src="../bower_components/webvr-polyfill/build/webvr-polyfill.js"></script>
-<script src="../bower_components/threejs/examples/js/controls/VRControls.js"></script>
-<script src="../bower_components/threejs/examples/js/effects/VREffect.js"></script>
 
 <dom-module id="vr-scene">
     <template>
@@ -56,7 +44,8 @@
             VrBehaviors.TouchBehavoir,
             VrBehaviors.ZoomBehavior,
             VrBehaviors.AxisControlBehavior,
-            VrBehaviors.NewBehavior
+            VrBehaviors.NewBehavior,
+            VrBehaviors.WebvrBehavior
         ],
 
         properties: {
@@ -112,21 +101,6 @@
                 });
             }
 
-            // WebVR
-            self.controls = new THREE.VRControls(self.camera);
-            self.effect = new THREE.VREffect(self.renderer);
-            self.effect.setSize(window.innerWidth, window.innerHeight);
-            navigator.getVRDisplays().then(function (displays) {
-                if (displays.length > 0) {
-                    self.vrDisplay = displays[0];
-                }
-            });
-
-            // Resize the WebGL canvas when we resize and also when we change modes.
-            this.listen(window, 'resize', '_onResize');
-            this.listen(window, 'vrdisplaypresentchange', '_onResize');
-
-            // start rendering
             self._render();
         },
 
@@ -152,28 +126,8 @@
 
         _render: function () {
             requestAnimationFrame(this._render.bind(this));
-            this.controls.update();
+            this.controls.update(); //WebvrBehavior
             this.effect.render(this.scene, this.camera);
-        },
-
-        _enterVR: function () {
-            this.vrDisplay.requestPresent([{source: this.renderer.domElement}]);
-            var crosshair = new THREE.Mesh(
-                    new THREE.RingGeometry( 0.02, 0.04, 32 ),
-                    new THREE.MeshBasicMaterial( {
-                        color: 0x000000,
-                        opacity: 0.5,
-                        transparent: true
-                    } )
-            );
-            crosshair.position.z = - 2;
-            this.camera.add(crosshair);
-        },
-
-        _onResize: function () {
-            this.effect.setSize(window.innerWidth, window.innerHeight);
-            this.camera.aspect = window.innerWidth / window.innerHeight;
-            this.camera.updateProjectionMatrix();
         }
 
     });
