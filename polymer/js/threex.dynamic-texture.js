@@ -109,12 +109,13 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     context.font = params.font;
 
     var y = params.lineHeight + params.margin;
+    var splittedText = text.split(THREEx.linebreak);
+
     if (params.center) {
         params.align = 'center';
-        // y = canvas.height - y * 2;
+        y = canvas.height - (0.2 * canvas.height) * (splittedText.length + 1);
     }
 
-    var splittedText = text.split(THREEx.linebreak);
     splittedText.forEach(function (text) {
         while (text.length > 0) {
             // compute the text for specifically this line
@@ -178,7 +179,7 @@ THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
 
     var currentWidth = canvas.width;
     var size = context.measureText(text);
-    var newWidth = size.width + 2 * THREEx.margin ;
+    var newWidth = size.width + 2 * THREEx.margin;
     return currentWidth < newWidth ? newWidth : -1;
 };
 
