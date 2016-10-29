@@ -119,7 +119,7 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     splittedText.forEach(function (text) {
         while (text.length > 0) {
             // compute the text for specifically this line
-            var maxText = computeMaxTextLength(text);
+            var maxText = this.computeMaxTextLength(text, params.margin);
             // update the remaining text
             text = text.substr(maxText.length);
 
@@ -153,17 +153,17 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     this.texture.needsUpdate = true;
     // for chained API
     return this;
+};
 
-    function computeMaxTextLength(text) {
-        var maxText = '';
-        var maxWidth = canvas.width - params.margin * 2;
-        while (maxText.length !== text.length) {
-            var textSize = context.measureText(maxText);
-            if (textSize.width > maxWidth)    break;
-            maxText += text.substr(maxText.length, 1)
-        }
-        return maxText
+THREEx.DynamicTexture.prototype.computeMaxTextLength = function (text, margin) {
+    var maxText = '';
+    var maxWidth = this.canvas.width - margin * 2;
+    while (maxText.length !== text.length) {
+        var textSize = this.context.measureText(maxText);
+        if (textSize.width > maxWidth)    break;
+        maxText += text.substr(maxText.length, 1)
     }
+    return maxText
 };
 
 THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
@@ -181,6 +181,38 @@ THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
     var size = context.measureText(text);
     var newWidth = size.width + 2 * THREEx.margin;
     return currentWidth < newWidth ? newWidth : -1;
+};
+
+THREEx.DynamicTexture.prototype.computeHeight = function (text, font) {
+    // sanity check
+    console.assert(typeof(text) === 'string');
+
+    var context = this.context;
+    context.save();
+    context.fillStyle = 'black';
+    context.font = font;
+
+    var y = THREEx.lineHeight + THREEx.margin;
+    var splittedText = text.split(THREEx.linebreak);
+
+    splittedText.forEach(function (text) {
+        while (text.length > 0) {
+            // compute the text for specifically this line
+            var maxText = this.computeMaxTextLength(text, THREEx.margin);
+            // update the remaining text
+            text = text.substr(maxText.length);
+
+            // goto the next line
+            var wrapMultiplicator = 1;
+            if (text.length > 0) {
+                wrapMultiplicator = 1.5;
+            }
+            y += THREEx.lineHeight * wrapMultiplicator;
+        }
+        y += THREEx.lineHeight;
+    }.bind(this));
+
+    return y;
 };
 
 /**
