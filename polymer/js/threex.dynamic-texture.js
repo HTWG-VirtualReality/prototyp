@@ -82,7 +82,7 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     options = options || {};
     var text = options.text;
     var params = {
-        margin: options.margin !== undefined ? options.margin : 0.1,
+        margin: options.margin !== undefined ? options.margin : 75,
         lineHeight: options.lineHeight !== undefined ? options.lineHeight : 50,
         align: options.align !== undefined ? options.align : 'left',
         center: options.center !== undefined ? options.center : false,
@@ -96,7 +96,7 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
     context.fillStyle = params.fillStyle;
     context.font = params.font;
 
-    var y = params.lineHeight + 50;
+    var y = params.lineHeight + params.margin;
     if (params.center) {
         params.align = 'center';
         // y = canvas.height - y * 2;
@@ -113,9 +113,10 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
             // compute x based on params.align
             var textSize = context.measureText(maxText);
             if (params.align === 'left') {
-                var x = params.margin * canvas.width
+                var x = params.margin
             } else if (params.align === 'right') {
-                var x = (1 - params.margin) * canvas.width - textSize.width
+                // OLD: var x = (1 - params.margin) * canvas.width - textSize.width
+                console.error("align right is not implemented");
             } else if (params.align === 'center') {
                 var x = (canvas.width - textSize.width) / 2;
             } else    console.assert(false);
@@ -142,7 +143,7 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
 
     function computeMaxTextLength(text) {
         var maxText = '';
-        var maxWidth = (1 - params.margin * 2) * canvas.width;
+        var maxWidth = canvas.width - params.margin * 2;
         while (maxText.length !== text.length) {
             var textSize = context.measureText(maxText);
             if (textSize.width > maxWidth)    break;
@@ -155,7 +156,7 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
 THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
     var context = this.context;
     var canvas = this.canvas;
-    var margin = 0.1;
+    var margin = 75;
 
     // sanity check
     console.assert(typeof(text) === 'string');
@@ -164,9 +165,9 @@ THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
     context.fillStyle = 'black';
     context.font = font;
 
-    var currentWidth = (1 - margin * 2) * canvas.width;
+    var currentWidth = canvas.width + 2 * margin;
     var size = context.measureText(text);
-    var width = size.width / (1 - margin * 2) + 10;
+    var width = size.width + 2 * margin + 10;
     return currentWidth < size.width ? width : -1;
 };
 
