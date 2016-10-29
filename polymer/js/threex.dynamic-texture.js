@@ -176,10 +176,10 @@ THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
     context.fillStyle = 'black';
     context.font = font;
 
-    var currentWidth = canvas.width ;
+    var currentWidth = canvas.width;
     var size = context.measureText(text);
-    var width = size.width + 10;
-    return currentWidth < size.width ? width : -1;
+    var newWidth = size.width + 2 * THREEx.margin ;
+    return currentWidth < newWidth ? newWidth : -1;
 };
 
 /**
