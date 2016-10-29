@@ -4,6 +4,18 @@ var THREEx = THREEx || {};
 //		Constructor							//
 //////////////////////////////////////////////////////////////////////////////////
 
+
+//////////////////////////////////////////////////////////////////////////////////
+//		Default Settings					//
+//////////////////////////////////////////////////////////////////////////////////
+THREEx.margin = 75;
+THREEx.lineHeight = 50;
+THREEx.align = 'left';
+THREEx.center = false;
+THREEx.fillStyle = 'black';
+THREEx.font = "bold " + (0.2 * 512) + "px Arial";
+THREEx.linebreak = "; ";
+
 /**
  * create a dynamic texture with a underlying canvas
  *
@@ -75,20 +87,20 @@ THREEx.DynamicTexture.prototype.drawText = function (text, x, y, fillStyle, cont
 };
 
 THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
-    var linebreak = "; ";
     var context = this.context;
     var canvas = this.canvas;
 
     options = options || {};
     var text = options.text;
     var params = {
-        margin: options.margin !== undefined ? options.margin : 75,
-        lineHeight: options.lineHeight !== undefined ? options.lineHeight : 50,
-        align: options.align !== undefined ? options.align : 'left',
-        center: options.center !== undefined ? options.center : false,
-        fillStyle: options.fillStyle !== undefined ? options.fillStyle : 'black',
-        font: options.font !== undefined ? options.font : "bold " + (0.2 * 512) + "px Arial",
+        margin: options.margin !== undefined ? options.margin : THREEx.margin,
+        lineHeight: options.lineHeight !== undefined ? options.lineHeight : THREEx.lineHeight,
+        align: options.align !== undefined ? options.align : THREEx.align,
+        center: options.center !== undefined ? options.center : THREEx.center,
+        fillStyle: options.fillStyle !== undefined ? options.fillStyle : THREEx.fillStyle,
+        font: options.font !== undefined ? options.font : THREEx.font
     };
+
     // sanity check
     console.assert(typeof(text) === 'string');
 
@@ -102,7 +114,7 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
         // y = canvas.height - y * 2;
     }
 
-    var splittedText = text.split(linebreak);
+    var splittedText = text.split(THREEx.linebreak);
     splittedText.forEach(function (text) {
         while (text.length > 0) {
             // compute the text for specifically this line
@@ -156,7 +168,6 @@ THREEx.DynamicTexture.prototype.drawTextCooked = function (options) {
 THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
     var context = this.context;
     var canvas = this.canvas;
-    var margin = 75;
 
     // sanity check
     console.assert(typeof(text) === 'string');
@@ -165,9 +176,9 @@ THREEx.DynamicTexture.prototype.computeWidth = function (text, font) {
     context.fillStyle = 'black';
     context.font = font;
 
-    var currentWidth = canvas.width + 2 * margin;
+    var currentWidth = canvas.width ;
     var size = context.measureText(text);
-    var width = size.width + 2 * margin + 10;
+    var width = size.width + 10;
     return currentWidth < size.width ? width : -1;
 };
 
