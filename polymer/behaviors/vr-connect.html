@@ -10,9 +10,9 @@
         observers: ['_handleResizeConnect(width)'],
 
         attached: function() {
-            this.obj.on('mousedown', this._handleClickConnectButton.bind(this));
+            this.getThreeJS().on('mousedown', this._handleClickConnectButton.bind(this));
             this.ConnectBehavior = {
-                fromID: this._getPolymerElement(this.obj.id).id,
+                fromID: this._getPolymerElement(this.getThreeJS().id).id,
                 mesh: null,
                 mouseover: this.onMouseOver.bind(this),
                 mouseout: this.onMouseOut.bind(this),
@@ -43,7 +43,7 @@
         },
 
         _removeConnectButton: function() {
-            this.obj.remove(this.ConnectBehavior.mesh);
+            this.getThreeJS().remove(this.ConnectBehavior.mesh);
         },
 
         _changeConnectButtonPosition(mesh) {
@@ -75,7 +75,7 @@
 
             mesh.name = 'connect';
             this._changeConnectButtonPosition(mesh);
-            this.obj.add(mesh);
+            this.getThreeJS().add(mesh);
             return mesh;
         },
 
@@ -132,20 +132,20 @@
         _registerAllElementsListener: function() {
             var cb = this.ConnectBehavior;
             cb.allElements.forEach(function(element) {
-                if(element.id != cb.fromID) { element.obj.on('mousedown', cb.connect); }
+                if(element.id != cb.fromID) { element.getThreeJS().on('mousedown', cb.connect); }
             });
         },
 
         _deregisterAllElementsListener: function() {
             var cb = this.ConnectBehavior;
             cb.allElements.forEach(function(element) {
-                if(element.id != cb.fromID) { element.obj.off('mousedown', cb.connect); }
+                if(element.id != cb.fromID) { element.getThreeJS().off('mousedown', cb.connect); }
             });
         },
 
         _getPolymerElement: function(id) {
              return Polymer.dom(this.parentNode).children.filter(function(element) {
-                return (element.obj && element.obj.id == id);
+                return (element.getThreeJS() && element.getThreeJS().id == id);
             })[0];
         }
 
