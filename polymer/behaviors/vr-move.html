@@ -16,7 +16,7 @@
         },
 
         ready: function() {
-            this.obj.on('mousedown', this.onMouseDown.bind(this));
+            this.getThreeJS().on('mousedown', this.onMouseDown.bind(this));
         },
 
         onMouseDown: function(event) {
