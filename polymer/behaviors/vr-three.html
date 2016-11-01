@@ -1,8 +1,14 @@
 <script>
     window.VrBehaviors = window.VrBehaviors || {};
     VrBehaviors.ThreeBehavior = {
-        created: function() {
-            this.obj = new THREE.Group();
+        properties: {
+            obj: {
+                type: Object,
+                readOnly: true,
+                value: function() {
+                    return new THREE.Group();
+                }
+            }
         }
     };
 </script>

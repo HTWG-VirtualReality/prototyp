@@ -109,11 +109,8 @@
             return maxWidth / 10;
         },
 
-        created: function () {
-            this.obj.on('click', this.onClick.bind(this));
-        },
-
         ready: function () {
+            this.obj.on('click', this.onClick.bind(this));
             this.obj.position.setX(this.xPos);
             this.obj.position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
