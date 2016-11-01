@@ -42,11 +42,11 @@ change the implementation of GeneralConnection.
             // add event listener for resizing
             this._handleListener(cb.fromObj.addEventListener.bind(cb.fromObj));
             this._handleListener(cb.toObj.addEventListener.bind(cb.toObj));
-            this.obj.on('mousedown', cb.mousedown);
+            this.getThreeJS().on('mousedown', cb.mousedown);
 
             // add Polymer children to three js group
             Polymer.dom(this.root).children.forEach(function (node) {
-                if(node.nodeName != "VR-PLACING") this.obj.add(node.obj);
+                if(node.nodeName != "VR-PLACING") this.getThreeJS().add(node.obj);
             }.bind(this));
         },
 
@@ -62,12 +62,12 @@ change the implementation of GeneralConnection.
 
         _removeOldConnection: function() {
             removeAllChildren(this.$.line);
-            removeAllGroups(this.obj.children);
+            removeAllGroups(this.getThreeJS().children);
 
             function removeAllGroups(children) {
                 children.forEach(function(child) {
                     if(child instanceof THREE.Group) {
-                        removeAllGroups(child.children)
+                        removeAllGroups(child.children);
                         child.parent.remove(child);
                     }
                 });
@@ -87,11 +87,11 @@ change the implementation of GeneralConnection.
             var connection = gc.render(this._getPlacings());
 
             // set startpoint
-            this.obj.position.setX(connection.coord.x);
-            this.obj.position.setY(connection.coord.y);
+            this.getThreeJS().position.setX(connection.coord.x);
+            this.getThreeJS().position.setY(connection.coord.y);
 
             // set angle
-            this.obj.rotation.z = connection.angle || 0;
+            this.getThreeJS().rotation.z = connection.angle || 0;
 
             // points to polyline
             connection.lines.forEach(function(point) {
@@ -103,7 +103,7 @@ change the implementation of GeneralConnection.
 
             // add placings
             connection.placingObjs.forEach(function(placingObj) {
-                this.obj.add(placingObj);
+                this.getThreeJS().add(placingObj);
             }.bind(this));
         },
 
@@ -117,7 +117,7 @@ change the implementation of GeneralConnection.
             var cb = this.ConnectionBehavior;
             this._handleListener(cb.fromObj.removeEventListener.bind(cb.fromObj));
             this._handleListener(cb.toObj.removeEventListener.bind(cb.toObj));
-            this.obj.off('mousedown', cb.mousedown);
+            this.getThreeJS().off('mousedown', cb.mousedown);
 
             if(this.parentNode === null) return; // TODO: quick fix
             Polymer.dom(this.parentNode).removeChild(this);
