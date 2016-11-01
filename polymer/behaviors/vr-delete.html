@@ -1,6 +1,8 @@
+<link rel="import" href="vr-three.html">
+
 <script>
     window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.DeleteBehavior = {
+    VrBehaviors.DeleteBehavior = [VrBehaviors.ThreeBehavior, {
 
         observers: ['_handleResizeDelete(width)'],
         attached: function() {
@@ -90,5 +92,5 @@
             Polymer.dom(this.parentNode).removeChild(this);
         }
 
-    };
+    }];
 </script>

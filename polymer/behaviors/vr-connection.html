@@ -1,3 +1,5 @@
+<link rel="import" href="vr-three.html">
+
 <!--
 This behavior contains the complete logic for all kinds of connections.
 You propably don't need to change anything in this file. If you want to change
@@ -7,7 +9,7 @@ change the implementation of GeneralConnection.
 
 <script>
     window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.ConnectionBehavior = {
+    VrBehaviors.ConnectionBehavior = [VrBehaviors.ThreeBehavior, {
 
         properties: {
             from: String,
@@ -138,5 +140,5 @@ change the implementation of GeneralConnection.
             // change color of line
             this.$.line.obj.material.color.set(this.highlighted? 0xFF0000 : 0x000000);
         }
-    };
+    }];
 </script>

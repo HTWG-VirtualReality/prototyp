@@ -1,6 +1,8 @@
+<link rel="import" href="vr-three.html">
+
 <script>
     window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.ResizeBehavior = {
+    VrBehaviors.ResizeBehavior = [VrBehaviors.ThreeBehavior, {
 
         properties: {
             minWidth: {
@@ -163,5 +165,5 @@
             action('mouseup', reset);
             action('mouseout', reset);
         }
-    };
+    }];
 </script>

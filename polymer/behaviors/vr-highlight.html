@@ -1,6 +1,8 @@
+<link rel="import" href="vr-three.html">
+
 <script>
     window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.HighlightBehavior = {
+    VrBehaviors.HighlightBehavior = [VrBehaviors.ThreeBehavior, {
         ready: function() {
             var self = this;
             self.highlighted = false;
@@ -29,5 +31,5 @@
                 }
             }
         }
-    };
+    }];
 </script>

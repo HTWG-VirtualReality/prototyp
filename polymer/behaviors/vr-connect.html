@@ -1,10 +1,11 @@
 <link rel="import" href="../elements/vr-connection-aggregation.html">
 <link rel="import" href="../elements/vr-connection-association.html">
 <link rel="import" href="../elements/vr-connection-inheritance.html">
+<link rel="import" href="vr-three.html">
 
 <script>
     window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.ConnectBehavior = {
+    VrBehaviors.ConnectBehavior = [VrBehaviors.ThreeBehavior, {
 
         observers: ['_handleResizeConnect(width)'],
 
@@ -148,5 +149,5 @@
             })[0];
         }
 
-    };
+    }];
 </script>
