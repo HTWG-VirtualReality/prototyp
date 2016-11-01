@@ -10,7 +10,7 @@
             var COLOR_NORMAL = 0x000000;
             var COLOR_HIGHLIGHTED = 0xff0000;
 
-            this.obj.on('mousedown', function() {
+            this.getThreeJS().on('mousedown', function() {
                 var boxes = Polymer.dom(this.root).children.filter(function(node) {
                     return (node.nodeName == "VR-BOX");
                 });
