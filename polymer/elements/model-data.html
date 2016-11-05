@@ -1,0 +1,141 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../bower_components/iron-form/iron-form.html">
+<link rel="import" href="../bower_components/paper-input/paper-input.html">
+<link rel="import" href="../bower_components/paper-button/paper-button.html">
+<link rel="import" href="../bower_components/paper-toast/paper-toast.html">
+<link rel="import" href="../bower_components/paper-card/paper-card.html">
+
+<dom-module id="model-data">
+    <style>
+        paper-card {
+            width: 470px;
+            display: block;
+            margin: auto;
+            margin-top: 25px;
+
+            --paper-card-header: {
+                border-bottom: 1px solid #e8e8e8;
+            }
+        }
+
+        paper-button {
+            background: cornflowerblue;
+            color: white;
+            margin: auto;
+            width: 100%;
+        }
+    </style>
+
+    <template>
+        <paper-toast id="toast" text="{{toastMsg}}"></paper-toast>
+
+        <!-- Login -->
+        <paper-card heading="Login">
+            <div class="card-content">
+                <form is="iron-form" id="login" method="POST"
+                      action="http://localhost:9000/auth/authenticate/userpass"
+                      content-type="application/x-www-form-urlencoded"
+                      on-iron-form-response="_loginSuccess"
+                      on-iron-form-error="_loginError">
+                    <paper-input name="username" label="name" required></paper-input>
+                    <paper-input type="password" name="password" label="password" required></paper-input>
+                </form>
+            </div>
+            <div class="card-actions">
+                <paper-button on-tap="_doLogin">Login</paper-button>
+            </div>
+        </paper-card>
+
+        <!-- Token -->
+        <iron-ajax id="token" method="POST"
+                   url="http://localhost:9000/oauth/accessTokenLocal"
+                   content-type="application/x-www-form-urlencoded"
+                   body="client_id=modigen-browser-app1&grant_type=implicit"
+                   on-response="_handleToken"
+                   on-error="_tokenError">
+        </iron-ajax>
+
+        <paper-card heading="Token">
+            <div class="card-content">
+                <pre>{{tokenJSON}}</pre>
+            </div>
+            <div class="card-actions">
+                <paper-button on-tap="_getToken">get token</paper-button>
+            </div>
+        </paper-card>
+
+        <!-- Models -->
+        <iron-ajax id="models" method="GET"
+                   url="http://localhost:9000/models"
+                   on-response="_handleModels"
+                   on-error="_modelsError">
+        </iron-ajax>
+
+        <paper-card heading="Models">
+            <div class="card-content">
+                <pre>{{modelsJSON}}</pre>
+            </div>
+            <div class="card-actions">
+                <paper-button on-tap="_getModels">get models</paper-button>
+            </div>
+        </paper-card>
+
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "model-data",
+
+        ready: function () {
+            console.log('model-data')
+        },
+
+        _doLogin: function () {
+            this.$.login.submit();
+        },
+
+        _loginSuccess: function () {
+            this.toastMsg = "Successfully logged in";
+            this.$.toast.open();
+        },
+
+        _loginError: function () {
+            this.toastMsg = "Login failed";
+            this.$.toast.open();
+        },
+
+        _getToken: function () {
+            this.token = null;
+            this.tokenJSON = null;
+            this.$.token.generateRequest();
+        },
+
+        _handleToken: function (event, request) {
+            this.token = request.response.access_token;
+            this.tokenJSON = JSON.stringify(request.response, null, 2);
+        },
+
+        _tokenError: function () {
+            this.toastMsg = "Failed to receive token";
+            this.$.toast.open();
+        },
+
+        _getModels: function () {
+            this.$.models.headers.authorization = "Bearer " + this.token;
+            this.$.models.generateRequest();
+        },
+
+        _handleModels: function (event, request) {
+            this.models = request.response;
+            this.modelsJSON = JSON.stringify(this.models, null, 2);
+        },
+
+        _modelsError: function () {
+            this.toastMsg = "Failed to receive models";
+            this.$.toast.open();
+        }
+
+    });
+</script>
