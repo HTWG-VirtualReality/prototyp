@@ -5,6 +5,10 @@
 <link rel="import" href="../bower_components/paper-button/paper-button.html">
 <link rel="import" href="../bower_components/paper-toast/paper-toast.html">
 <link rel="import" href="../bower_components/paper-card/paper-card.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animated-pages.html">
+<link rel="import" href="../bower_components/neon-animation/neon-animatable.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-left-animation.html">
+<link rel="import" href="../bower_components/neon-animation/animations/slide-from-right-animation.html">
 
 <dom-module id="model-data">
     <style>
@@ -19,35 +23,21 @@
             }
         }
 
+        paper-card.big {
+            width: 800px;
+        }
+
         paper-button {
             background: cornflowerblue;
             color: white;
             margin: auto;
+            margin-top: 10px;
             width: 100%;
         }
     </style>
 
     <template>
-        <paper-toast id="toast" text="{{toastMsg}}"></paper-toast>
-
-        <!-- Login -->
-        <paper-card heading="Login">
-            <div class="card-content">
-                <form is="iron-form" id="login" method="POST"
-                      action="http://localhost:9000/auth/authenticate/userpass"
-                      content-type="application/x-www-form-urlencoded"
-                      on-iron-form-response="_loginSuccess"
-                      on-iron-form-error="_loginError">
-                    <paper-input name="username" label="name" required></paper-input>
-                    <paper-input type="password" name="password" label="password" required></paper-input>
-                </form>
-            </div>
-            <div class="card-actions">
-                <paper-button on-tap="_doLogin">Login</paper-button>
-            </div>
-        </paper-card>
-
-        <!-- Token -->
+        <!-- Token Request -->
         <iron-ajax id="token" method="POST"
                    url="http://localhost:9000/oauth/accessTokenLocal"
                    content-type="application/x-www-form-urlencoded"
@@ -56,30 +46,83 @@
                    on-error="_tokenError">
         </iron-ajax>
 
-        <paper-card heading="Token">
-            <div class="card-content">
-                <pre>{{tokenJSON}}</pre>
-            </div>
-            <div class="card-actions">
-                <paper-button on-tap="_getToken">get token</paper-button>
-            </div>
-        </paper-card>
-
-        <!-- Models -->
+        <!-- Models Request -->
         <iron-ajax id="models" method="GET"
                    url="http://localhost:9000/models"
                    on-response="_handleModels"
                    on-error="_modelsError">
         </iron-ajax>
 
-        <paper-card heading="Models">
-            <div class="card-content">
-                <pre>{{modelsJSON}}</pre>
-            </div>
-            <div class="card-actions">
-                <paper-button on-tap="_getModels">get models</paper-button>
-            </div>
-        </paper-card>
+        <!-- Specific Model Request -->
+        <iron-ajax id="model" method="GET"
+                   on-response="_handleModel"
+                   on-error="_modelError">
+        </iron-ajax>
+
+        <paper-toast id="toast" text="{{toastMsg}}"></paper-toast>
+
+        <neon-animated-pages selected="{{page}}"
+                             entry-animation="slide-from-right-animation"
+                             exit-animation="slide-left-animation">
+            <!-- Login -->
+            <neon-animatable>
+                <paper-card heading="Login">
+                    <div class="card-content">
+                        <form is="iron-form" id="login" method="POST"
+                              action="http://localhost:9000/auth/authenticate/userpass"
+                              content-type="application/x-www-form-urlencoded"
+                              on-iron-form-response="_loginSuccess"
+                              on-iron-form-error="_loginError">
+                            <paper-input name="username" label="name" required></paper-input>
+                            <paper-input type="password" name="password" label="password" required></paper-input>
+                        </form>
+                    </div>
+                    <div class="card-actions">
+                        <paper-button on-tap="_doLogin">Login</paper-button>
+                    </div>
+                </paper-card>
+            </neon-animatable>
+
+            <!-- Token -->
+            <neon-animatable>
+                <paper-card heading="Token">
+                    <div class="card-content">
+                        <pre>{{tokenJSON}}</pre>
+                    </div>
+                    <div class="card-actions">
+                        <paper-button on-tap="_getToken">get token</paper-button>
+                        <paper-button on-tap="_nextPage" disabled="{{_showNext(token)}}">next</paper-button>
+                    </div>
+                </paper-card>
+            </neon-animatable>
+
+            <!-- Models -->
+            <neon-animatable>
+                <paper-card class="big" heading="Models">
+                    <div class="card-content">
+                        <pre>{{modelsJSON}}</pre>
+                    </div>
+                    <div class="card-actions">
+                        <paper-button on-tap="_getModels">get models</paper-button>
+                        <paper-button on-tap="_nextPage" disabled="{{_showNext(models)}}">next</paper-button>
+                    </div>
+                </paper-card>
+            </neon-animatable>
+
+            <!-- Specific Model -->
+            <neon-animatable>
+                <paper-card class="big" heading="Specific model">
+                    <div class="card-content">
+                        <paper-input label="Model ID" value="{{modelId}}"></paper-input>
+                        <pre>{{modelJSON}}</pre>
+                    </div>
+                    <div class="card-actions">
+                        <paper-button on-tap="_getModel">get model</paper-button>
+                        <paper-button on-tap="_prevPage">prev</paper-button>
+                    </div>
+                </paper-card>
+            </neon-animatable>
+        </neon-animated-pages>
 
     </template>
 </dom-module>
@@ -88,8 +131,35 @@
     Polymer({
         is: "model-data",
 
+        properties: {
+            page: {
+                type: Number,
+                value: 0
+            },
+            token: {
+                type: String,
+                value: null
+            },
+            models: {
+                type: Array,
+                value: null
+            }
+        },
+
         ready: function () {
             console.log('model-data')
+        },
+
+        _nextPage: function () {
+            this.page++;
+        },
+
+        _prevPage: function () {
+            this.page--;
+        },
+
+        _showNext: function (property) {
+            return property == null;
         },
 
         _doLogin: function () {
@@ -99,6 +169,7 @@
         _loginSuccess: function () {
             this.toastMsg = "Successfully logged in";
             this.$.toast.open();
+            this._nextPage();
         },
 
         _loginError: function () {
@@ -107,8 +178,6 @@
         },
 
         _getToken: function () {
-            this.token = null;
-            this.tokenJSON = null;
             this.$.token.generateRequest();
         },
 
@@ -134,6 +203,24 @@
 
         _modelsError: function () {
             this.toastMsg = "Failed to receive models";
+            this.$.toast.open();
+        },
+
+        _getModel: function () {
+            this.model = null;
+            this.modelJSON = null;
+            this.$.model.url = "http://localhost:9000/models/" + this.modelId;
+            this.$.model.headers.authorization = "Bearer " + this.token;
+            this.$.model.generateRequest();
+        },
+
+        _handleModel: function (event, request) {
+            this.model = request.response;
+            this.modelJSON = JSON.stringify(this.model, null, 2);
+        },
+
+        _modelError: function () {
+            this.toastMsg = "Failed to receive model: " + this.modelId;
             this.$.toast.open();
         }
 
