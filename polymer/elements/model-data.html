@@ -43,20 +43,23 @@
                    content-type="application/x-www-form-urlencoded"
                    body="client_id=modigen-browser-app1&grant_type=implicit"
                    on-response="_handleToken"
-                   on-error="_tokenError">
+                   on-error="_tokenError"
+                   with-credentials>
         </iron-ajax>
 
         <!-- Models Request -->
         <iron-ajax id="models" method="GET"
                    url="http://localhost:9000/models"
                    on-response="_handleModels"
-                   on-error="_modelsError">
+                   on-error="_modelsError"
+                   with-credentials>
         </iron-ajax>
 
         <!-- Specific Model Request -->
         <iron-ajax id="model" method="GET"
                    on-response="_handleModel"
-                   on-error="_modelError">
+                   on-error="_modelError"
+                   with-credentials>
         </iron-ajax>
 
         <paper-toast id="toast" text="{{toastMsg}}"></paper-toast>
@@ -72,7 +75,8 @@
                               action="http://localhost:9000/auth/authenticate/userpass"
                               content-type="application/x-www-form-urlencoded"
                               on-iron-form-response="_loginSuccess"
-                              on-iron-form-error="_loginError">
+                              on-iron-form-error="_loginError"
+                              with-credentials>
                             <paper-input name="username" label="name" required></paper-input>
                             <paper-input type="password" name="password" label="password" required></paper-input>
                         </form>
