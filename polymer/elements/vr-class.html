@@ -66,9 +66,9 @@
         },
 
         _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3, classType) {
-            if (this.obj) {
-                this.obj.position.setX(xPos);
-                this.obj.position.setY(yPos);
+            if (this.getThreeJS()) {
+                this.getThreeJS().position.setX(xPos);
+                this.getThreeJS().position.setY(yPos);
 
                 // compute width for fitting the text
                 var newWidth = this._computeWidth();
@@ -108,15 +108,15 @@
         },
 
         ready: function () {
-            this.obj.on('click', this.onClick.bind(this));
-            this.obj.position.setX(this.xPos);
-            this.obj.position.setY(this.yPos);
+            this.getThreeJS().on('click', this.onClick.bind(this));
+            this.getThreeJS().position.setX(this.xPos);
+            this.getThreeJS().position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
         },
 
         attached: function () {
             this._getChildren().forEach(function (box) {
-                this.obj.add(box.obj);
+                this.getThreeJS().add(box.getThreeJS());
             }.bind(this));
         },
 
