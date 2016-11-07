@@ -7,6 +7,7 @@
     <title>Package Diagram</title>
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
+    <script src="bower_components/underscore/underscore-min.js"></script>
 
     <!-- main scene -->
     <link rel="import" href="elements/vr-scene.html">
@@ -45,8 +46,8 @@
               text2="-creaditCardNumber:String"
               text3="+getCreditRaiting(creditRaiting:String)"></vr-class>
 
-    <vr-connection-extends from="#customer" to="#corporatecustomer"></vr-connection-extends>
-    <vr-connection-extends from="#customer" to="#personalcustomer"></vr-connection-extends>
+    <vr-connection-association from="#customer" to="#corporatecustomer"></vr-connection-association>
+    <vr-connection-association from="#customer" to="#personalcustomer"></vr-connection-association>
 
 </vr-scene>
 </body>
