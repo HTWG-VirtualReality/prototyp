@@ -20,7 +20,7 @@
             function iterateBoxes(boxes) {
                 self.highlighted = !self.highlighted;
                 boxes.forEach(function (node){
-                    node.obj.children.forEach(function(element) {
+                    node.getThreeJS().children.forEach(function(element) {
                         toggleHighlighting(element);
                     });
                 });
