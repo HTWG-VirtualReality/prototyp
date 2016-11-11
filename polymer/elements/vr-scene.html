@@ -89,14 +89,14 @@
 
             function observe(nodes) {
                 nodes.addedNodes.forEach(function (node) {
-                    if (node.obj) {
-                        self.group.add(node.obj);
+                    if (node.getThreeJS) {
+                        self.group.add(node.getThreeJS());
                     }
                 });
 
                 nodes.removedNodes.forEach(function (node) {
-                    if (node.obj) {
-                        self.group.remove(node.obj);
+                    if (node.getThreeJS) {
+                        self.group.remove(node.getThreeJS());
                     }
                 });
             }

@@ -30,7 +30,8 @@
             }
 
             var geometry = new THREE.Geometry();
-            this.getThreeJS().add(new THREE.Line(geometry, material));
+            this.line = new THREE.Line(geometry, material);
+            this.getThreeJS().add(this.line);
 
             Polymer.dom(this.$.point).observeNodes(function (points) {
                 // flag to change geometry dynamically
