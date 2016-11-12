@@ -1,4 +1,5 @@
 <link rel="import" href="vr-three.html">
+<link rel="import" href="../elements/vr-box.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
@@ -12,7 +13,7 @@
 
             this.getThreeJS().on('mousedown', function() {
                 var boxes = Polymer.dom(this.root).children.filter(function(node) {
-                    return (node.nodeName == "VR-BOX");
+                    return (node instanceof VrElement.Box);
                 });
                 iterateBoxes(boxes);
             }.bind(self));

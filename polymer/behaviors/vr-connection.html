@@ -1,4 +1,5 @@
 <link rel="import" href="vr-three.html">
+<link rel="import" href="../elements/vr-placing.html">
 
 <!--
 This behavior contains the complete logic for all kinds of connections.
@@ -46,7 +47,9 @@ change the implementation of GeneralConnection.
 
             // add Polymer children to three js group
             Polymer.dom(this.root).children.forEach(function (node) {
-                if(node.nodeName != "VR-PLACING") this.getThreeJS().add(node.getThreeJS());
+                if(!(node instanceof VrElement.Placing)) {
+                    this.getThreeJS().add(node.getThreeJS());
+                }
             }.bind(this));
         },
 
@@ -109,7 +112,7 @@ change the implementation of GeneralConnection.
 
         _getPlacings: function() {
             return Polymer.dom(this.root).children.filter(function(node) {
-                return node.nodeName == "VR-PLACING";
+                return (node instanceof VrElement.Placing);
             })
         },
 
