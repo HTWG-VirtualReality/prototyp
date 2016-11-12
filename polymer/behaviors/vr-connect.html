@@ -145,7 +145,7 @@
 
         _getPolymerElement: function(id) {
              return Polymer.dom(this.parentNode).children.filter(function(element) {
-                return (element.getThreeJS() && element.getThreeJS().id == id);
+                return (element.getThreeJS && element.getThreeJS().id == id);
             })[0];
         }
 
