@@ -1,6 +1,8 @@
+<link rel="import" href="vr-three.html">
+
 <script>
     window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.DeleteBehavior = {
+    VrBehaviors.DeleteBehavior = [VrBehaviors.ThreeBehavior, {
 
         observers: ['_handleResizeDelete(width)'],
         attached: function() {
@@ -12,7 +14,7 @@
                 mousedown: this.delete.bind(this)
             };
 
-            this.obj.on('mousedown', this._handleClickDeleteButton.bind(this));
+            this.getThreeJS().on('mousedown', this._handleClickDeleteButton.bind(this));
         },
 
         _handleClickDeleteButton: function(event) {
@@ -23,7 +25,7 @@
                 //destroy delete button and eventlistener
                 var mesh = this.DeleteBehavior.mesh;
                 this._handleDeleteListener(mesh.on.bind(mesh));
-                this.obj.remove(mesh);
+                this.getThreeJS().remove(mesh);
             } else {
                 //create delete button and eventlistener
                 var mesh = this._initializeDeleteButton();
@@ -47,7 +49,7 @@
                 mesh.position.x = width/2 + padding;
                 mesh.position.y = padding;
             }
-            mesh.rotation.y = (90 * (Math.PI/180))- this.obj.rotation.z;
+            mesh.rotation.y = (90 * (Math.PI/180))- this.getThreeJS().rotation.z;
         },
 
         _handleDeleteListener: function(func) {
@@ -71,7 +73,7 @@
             mesh.position.setZ(15);
             this._changeDeleteButtonPosition(mesh);
             this.DeleteBehavior.mesh = mesh;
-            this.obj.add(mesh);
+            this.getThreeJS().add(mesh);
             return mesh;
         },
 
@@ -90,5 +92,5 @@
             Polymer.dom(this.parentNode).removeChild(this);
         }
 
-    };
+    }];
 </script>

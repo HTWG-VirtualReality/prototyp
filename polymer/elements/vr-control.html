@@ -1,6 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-move.html">
-<link rel="import" href="../behaviors/vr-three.html">
 <link rel="import" href="./vr-box.html">
 
 <dom-module id="vr-control">
@@ -32,7 +31,6 @@
         },
 
         behaviors: [
-            VrBehaviors.ThreeBehavior,
             VrBehaviors.MoveBehavior
         ],
 
@@ -40,9 +38,9 @@
             '_updateClass(xPos, yPos, width, height, depth)'
         ],
         _updateClass: function (xPos, yPos, width, height, depth) {
-            if (this.obj) {
-                this.obj.position.setX(xPos);
-                this.obj.position.setY(yPos);
+            if (this.getThreeJS()) {
+                this.getThreeJS().position.setX(xPos);
+                this.getThreeJS().position.setY(yPos);
                 if (this.boxItems) {
                     var properties = this._getBoxItemProperties(width, height, depth);
                     this.splice('boxItems', 0, 4, properties[0], properties[1], properties[2], properties[3]);
@@ -51,16 +49,16 @@
         },
 
         ready: function() {
-            this.obj.position.setX(this.xPos);
-            this.obj.position.setY(this.yPos);
+            this.getThreeJS().position.setX(this.xPos);
+            this.getThreeJS().position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth);
         },
 
         attached: function () {
             var self = this;
             this._getChildren().forEach(function(box) {
-                self.obj.add(box.obj);
-                box.obj.on('click', function() {
+                self.getThreeJS().add(box.getThreeJS());
+                box.getThreeJS().on('click', function() {
                     self.onClickBox(box);
                 });
             });
