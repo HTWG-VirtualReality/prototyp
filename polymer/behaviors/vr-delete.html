@@ -1,8 +1,8 @@
 <link rel="import" href="vr-three.html">
 
 <script>
-    window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.DeleteBehavior = [VrBehaviors.ThreeBehavior, {
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.DeleteBehavior = [VrBehavior.ThreeBehavior, {
 
         observers: ['_handleResizeDelete(width)'],
         attached: function() {
@@ -42,7 +42,7 @@
         _changeDeleteButtonPosition(mesh) {
             var padding = 10;
             var width = this.width ? this.width : 0;
-            if(this.behaviors.indexOf(VrBehaviors.ConnectionBehavior) != -1) {
+            if(this.behaviors.indexOf(VrBehavior.ConnectionBehavior) != -1) {
                 mesh.position.x = padding;
                 mesh.position.y = width + padding;
             } else {
