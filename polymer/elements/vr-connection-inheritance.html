@@ -21,7 +21,8 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.ConnectionInheritance = Polymer({
         is: "vr-connection-inheritance",
 
         behaviors: [

@@ -9,7 +9,8 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.Polygon = Polymer({
         is: "vr-polygon",
 
         behaviors: [

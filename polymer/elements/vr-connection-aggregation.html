@@ -21,7 +21,8 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.ConnectionAggregation = Polymer({
         is: "vr-connection-aggregation",
 
         behaviors: [

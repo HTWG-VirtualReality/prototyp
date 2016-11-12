@@ -2,7 +2,8 @@
 <link rel="import" href="../behaviors/vr-three.html">
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.ControlPanel = Polymer({
         is: "vr-controlpanel",
 
         properties: {

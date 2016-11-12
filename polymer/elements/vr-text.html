@@ -4,7 +4,8 @@
 
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.Text = Polymer({
         is: "vr-text",
 
         behaviors: [
@@ -69,6 +70,5 @@
             var cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
             this.getThreeJS().add(cube);
         }
-
     });
 </script>

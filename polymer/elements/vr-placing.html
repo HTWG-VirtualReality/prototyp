@@ -6,7 +6,8 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.Placing = Polymer({
         is: "vr-placing",
 
         properties: {
@@ -14,6 +15,5 @@
             angle: Number,
             radius: Number
         }
-
     });
 </script>

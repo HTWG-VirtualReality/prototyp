@@ -13,7 +13,8 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.Package = Polymer({
         is: "vr-package",
 
         properties: {
@@ -174,6 +175,5 @@
                 this.gui = null;
             }
         }
-
     });
 </script>

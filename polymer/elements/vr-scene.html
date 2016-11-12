@@ -37,7 +37,8 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.Scene = Polymer({
         is: "vr-scene",
 
         behaviors: [

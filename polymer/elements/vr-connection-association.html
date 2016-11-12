@@ -24,7 +24,8 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.ConnectionAssociation = Polymer({
         is: "vr-connection-association",
 
         behaviors: [
