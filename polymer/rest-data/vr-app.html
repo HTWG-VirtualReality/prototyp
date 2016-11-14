@@ -44,6 +44,7 @@
                 if (element.mClass == "Class") {
                     dynEle = document.createElement("vr-class");
                     dynEle.id = element.id;
+                    dynEle.text1 = element.id;
                     // TODO: get position from fetched data
                     dynEle.xPos = Math.floor((Math.random() * 500) + 1);
                 }
