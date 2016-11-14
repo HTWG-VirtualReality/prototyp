@@ -1,8 +1,22 @@
 <script>
-    window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.ThreeBehavior = {
-        created: function() {
-            this.obj = new THREE.Group();
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.ThreeJS = {
+        properties: {
+            obj: {
+                type: Object,
+                readOnly: true,
+                value: function() {
+                    return new THREE.Group();
+                }
+            }
+        },
+
+        /**
+         * Returns main THREE.Group instance of polymer-element
+         * @returns THREE.Group
+         */
+        getThreeJS: function() {
+            return this.obj;
         }
     };
 </script>

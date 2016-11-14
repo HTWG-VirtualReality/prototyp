@@ -1,16 +1,19 @@
+<link rel="import" href="vr-three.html">
+<link rel="import" href="../elements/vr-box.html">
+
 <script>
-    window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.HighlightBehavior = {
-        created: function() {
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.Highlight = [VrBehavior.ThreeJS, {
+        ready: function() {
             var self = this;
             self.highlighted = false;
 
             var COLOR_NORMAL = 0x000000;
             var COLOR_HIGHLIGHTED = 0xff0000;
 
-            this.obj.on('mousedown', function() {
+            this.getThreeJS().on('mousedown', function() {
                 var boxes = Polymer.dom(this.root).children.filter(function(node) {
-                    return (node.nodeName == "VR-BOX");
+                    return (node instanceof VrElement.Box);
                 });
                 iterateBoxes(boxes);
             }.bind(self));
@@ -18,7 +21,7 @@
             function iterateBoxes(boxes) {
                 self.highlighted = !self.highlighted;
                 boxes.forEach(function (node){
-                    node.obj.children.forEach(function(element) {
+                    node.getThreeJS().children.forEach(function(element) {
                         toggleHighlighting(element);
                     });
                 });
@@ -29,5 +32,5 @@
                 }
             }
         }
-    };
+    }];
 </script>

@@ -1,12 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../behaviors/vr-three.html">
 <link rel="import" href="../behaviors/vr-connection.html">
 <link rel="import" href="./vr-placing.html">
 <link rel="import" href="./vr-point.html">
 <link rel="import" href="./vr-polyline.html">
 <link rel="import" href="./vr-text.html">
-
-<script src="../js/general-connection.js"></script>
 
 <dom-module id="vr-connection-association">
     <template>
@@ -25,13 +22,13 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.ConnectionAssociation = Polymer({
         is: "vr-connection-association",
 
         behaviors: [
-            VrBehaviors.ThreeBehavior,
-            VrBehaviors.ConnectionBehavior,
-            VrBehaviors.DeleteBehavior
+            VrBehavior.Connection,
+            VrBehavior.Delete
         ]
     });
 </script>

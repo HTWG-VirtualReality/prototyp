@@ -1,9 +1,11 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../behaviors/vr-three.html">
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
 <script src="../js/threex.dynamic-texture.js"></script>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.Box = Polymer({
         is: "vr-box",
 
         properties: {
@@ -42,6 +44,10 @@
             }
         },
 
+        behaviors: [
+            VrBehavior.ThreeJS
+        ],
+
         observers: [
             'updateBox(xPos, yPos, width, height, depth, text, image)'
         ],
@@ -55,18 +61,18 @@
         },
 
         updateBox: function (xPos, yPos, width, height, depth, text, image) {
-            if (this.obj) {
-                this.obj.remove(this.cube);
-                this.obj.remove(this.wireframe);
+            if (this.getThreeJS().children.length > 0) {
+                this.getThreeJS().remove(this.cube);
+                this.getThreeJS().remove(this.wireframe);
 
                 this._createBox(width, height, depth, text, image);
                 this.wireframe.material.color.set(0xff0000);
 
-                this.obj.position.setX(xPos);
-                this.obj.position.setY(yPos);
+                this.getThreeJS().position.setX(xPos);
+                this.getThreeJS().position.setY(yPos);
 
-                this.obj.add(this.cube);
-                this.obj.add(this.wireframe);
+                this.getThreeJS().add(this.cube);
+                this.getThreeJS().add(this.wireframe);
             }
         },
 
@@ -83,11 +89,10 @@
             // creating cube and wireframe
             this._createBox(this.width, this.height, this.depth, this.text, this.image);
 
-            this.obj = new THREE.Group();
-            this.obj.position.setX(this.xPos);
-            this.obj.position.setY(this.yPos);
-            this.obj.add(this.cube);
-            this.obj.add(this.wireframe);
+            this.getThreeJS().position.setX(this.xPos);
+            this.getThreeJS().position.setY(this.yPos);
+            this.getThreeJS().add(this.cube);
+            this.getThreeJS().add(this.wireframe);
         },
 
         _createBox: function (width, height, depth, text, image) {

@@ -1,12 +1,16 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../behaviors/vr-three.html">
 <script src="../js/threex.dynamic-texture.js"></script>
 
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.Text = Polymer({
         is: "vr-text",
 
-        behaviors: [VrBehaviors.ThreeBehavior],
+        behaviors: [
+            VrBehavior.ThreeJS
+        ],
 
         properties: {
             x: {
@@ -40,8 +44,8 @@
         },
 
         _render: function() {
-            this.obj.position.setX(this.x);
-            this.obj.position.setY(this.y);
+            this.getThreeJS().position.setX(this.x);
+            this.getThreeJS().position.setY(this.y);
 
             // init all sides of cube
             var materials = [];
@@ -64,8 +68,7 @@
 
             var geometry = new THREE.BoxGeometry(this.width, this.height, 1);
             var cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(materials));
-            this.obj.add(cube);
+            this.getThreeJS().add(cube);
         }
-
     });
 </script>

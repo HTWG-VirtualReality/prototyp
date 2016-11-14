@@ -1,6 +1,8 @@
+<link rel="import" href="vr-three.html">
+
 <script>
-    window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.ResizeBehavior = {
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.Resize = [VrBehavior.ThreeJS, {
 
         properties: {
             minWidth: {
@@ -42,7 +44,7 @@
             var group = this._createGroup();
             this._initiateMeshes(group);
 
-            this.obj.on('mousedown', function() {
+            this.getThreeJS().on('mousedown', function() {
                 group.children.forEach(function (element) {
                     element.material.opacity = (element.material.opacity === 1) ? 0 : 1;
                 })
@@ -65,7 +67,7 @@
 
         _onPropertyChange: function(width, height) {
             var self = this;
-            self.obj.children.forEach(function(element){
+            self.getThreeJS().children.forEach(function(element){
                 if (element.name === 'resize') {
                     self._updateMeshes(element);
                 }
@@ -75,7 +77,7 @@
         _createGroup: function() {
             var group = new THREE.Group();
             group.name = 'resize';
-            this.obj.add(group);
+            this.getThreeJS().add(group);
             return group;
         },
 
@@ -163,5 +165,5 @@
             action('mouseup', reset);
             action('mouseout', reset);
         }
-    };
+    }];
 </script>

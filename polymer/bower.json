@@ -11,7 +11,7 @@
     "tests"
   ],
   "dependencies": {
-    "polymer": "Polymer/polymer#~1.4.0",
+    "polymer": "^1.5.0",
     "threejs": "r77",
     "threex.domevents": "*",
     "dat.gui": "v0.5",

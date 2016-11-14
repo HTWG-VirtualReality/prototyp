@@ -1,6 +1,11 @@
+<!--
+ Don't use this behavior alone. See it as an abstract class or a scala trait
+ because there are two functions that need to be implemented.
+-->
+
 <script>
-    window.VrBehaviors = window.VrBehaviors || {};
-    VrBehaviors.NewBehavior = {
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.New = {
         ready: function() {
             var self = this;
             var dom = self.renderer.domElement;
@@ -42,9 +47,12 @@
             function create(event) {
                 var width = 40;
                 group = new THREE.Group();
-                group.add(createBox(width, -width - 2, 'Interface',  'interface'));
-                group.add(createBox(width, 0, 'Class', 'class'));
-                group.add(createBox(width, width + 2, 'Abstract', 'abstract'));
+
+                var entries = self.getEntries();
+                for(var i = 0; i < entries.length; i++) {
+                  // TODO: better calculation
+                  group.add(createBox(width, (width + 2) * i, entries[i], entries[i].toLowerCase()));
+                }
 
                 position = getPositionInThreeScene(event);
                 group.position.setX(position.x);
@@ -73,7 +81,7 @@
                 group.on('mousedown', function(e) {
                     e.origDomEvent.stopImmediatePropagation();
                     e.stopPropagation();
-                    self.push('classItems', {id: 'class-' + (counter++), xPos: position.x, yPos: position.y, classType: type});
+                    counter = self.pushNewElement(counter, position, text);
                     onMouseUp(null);
                 });
                 return group;
@@ -92,6 +100,14 @@
                     map: dynamicTexture.texture
                 });
             }
-        }
+        },
+
+        // Override this function in generated behavior
+        // returns array that contains strings of the element names
+        getEntries: function() { return []; },
+
+        // Override this function in generated behavior
+        // returns new counter value
+        pushNewElement: function(counter, position, text) { return counter; }
     };
 </script>

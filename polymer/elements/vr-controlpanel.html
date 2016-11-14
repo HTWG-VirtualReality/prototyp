@@ -1,7 +1,9 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../behaviors/vr-three.html">
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.ControlPanel = Polymer({
         is: "vr-controlpanel",
 
         properties: {
@@ -23,19 +25,22 @@
             }
         },
 
+        behaviors: [
+            VrBehavior.ThreeJS
+        ],
+
         ready: function() {
             function addMesh(shape, depth, color) {
                 var extrudeSettings = {amount: depth, bevelEnabled: false};
                 var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
                 var mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color: color}));
-                mod.obj.add(mesh);
+                mod.getThreeJS().add(mesh);
             }
 
             var mod = this;
-            mod.obj = new THREE.Group();
-            mod.obj.position.x = this.width/2;
-            mod.obj.position.y = -this.height/2;
-            mod.obj.position.z =  20;
+            mod.getThreeJS().position.x = this.width/2;
+            mod.getThreeJS().position.y = -this.height/2;
+            mod.getThreeJS().position.z =  20;
 
             var shape = new THREE.Shape();
             shape.absellipse (this.x, this.y, this.width/2, this.height/2, 0, Math.PI*2);

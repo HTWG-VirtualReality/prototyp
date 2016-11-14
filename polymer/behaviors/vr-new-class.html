@@ -1,0 +1,18 @@
+<!-- This file should be generated -->
+<link rel="import" href="../behaviors/vr-new.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.NewClass = [VrBehavior.New, {
+        getEntries: function() {
+          return ["Interface", "Class", "Abstract"];
+        },
+
+        pushNewElement: function(counter, position, text) {
+          counter += 1
+          // classItems must be part off vr-scene.html
+          this.push('classItems', {id: 'class-' + counter, xPos: position.x, yPos: position.y, classType: text.toLowerCase()});
+          return counter;
+        }
+    }];
+</script>

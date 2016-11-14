@@ -4,9 +4,11 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-zoom.html">
 <link rel="import" href="../behaviors/vr-axis-control.html">
-<link rel="import" href="../behaviors/vr-new.html">
+
+<link rel="import" href="../behaviors/vr-new-class.html">
 <link rel="import" href="../behaviors/vr-touch.html">
 <link rel="import" href="../behaviors/vr-webvr.html">
+<link rel="import" href="../behaviors/vr-scene.html">
 <link rel="import" href="./vr-class.html">
 
 
@@ -37,15 +39,17 @@
 </dom-module>
 
 <script>
-    Polymer({
+    window.VrElement = window.VrElement || {};
+    VrElement.Scene = Polymer({
         is: "vr-scene",
 
         behaviors: [
-            VrBehaviors.TouchBehavoir,
-            VrBehaviors.ZoomBehavior,
-            VrBehaviors.AxisControlBehavior,
-            VrBehaviors.NewBehavior,
-            VrBehaviors.WebvrBehavior
+            VrBehavior.Touch,
+            VrBehavior.Zoom,
+            VrBehavior.AxisControl,
+            VrBehavior.NewClass,
+            VrBehavior.Webvr,
+            VrBehavior.Scene
         ],
 
         properties: {
@@ -55,28 +59,6 @@
                     return [];
                 }
             }
-        },
-
-        created: function() {
-            var self = this;
-            self.renderer = self._createRenderer();
-            self.camera = self._createCamera();
-            self.scene = new THREE.Scene();
-            self._initiateThreeEvents();
-            self.group = self._createGroup();
-            self.scene.add(self.camera);
-            self.scene.add(self.group);
-        },
-
-        _initiateThreeEvents: function() {
-            var self = this;
-            var domEvents = new THREEx.DomEvents(self.camera, self.renderer.domElement);
-            THREE.Object3D.prototype.on = function(eventName, callback, useCapture) {
-                domEvents.bind(this, eventName, callback, useCapture || false);
-            };
-            THREE.Object3D.prototype.off = function(eventName, callback, useCapture) {
-                domEvents.unbind(this, eventName, callback, useCapture || false);
-            };
         },
 
         ready: function () {
@@ -89,45 +71,19 @@
 
             function observe(nodes) {
                 nodes.addedNodes.forEach(function (node) {
-                    if (node.obj) {
-                        self.group.add(node.obj);
+                    if (node.getThreeJS) {
+                        self.group.add(node.getThreeJS());
                     }
                 });
 
                 nodes.removedNodes.forEach(function (node) {
-                    if (node.obj) {
-                        self.group.remove(node.obj);
+                    if (node.getThreeJS) {
+                        self.group.remove(node.getThreeJS());
                     }
                 });
             }
 
             self._render();
-        },
-
-        _createRenderer: function () {
-            var renderer = new THREE.WebGLRenderer({antialias: true});
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            renderer.setPixelRatio(window.devicePixelRatio);
-            renderer.setClearColor(0xf0f0f0);
-            return renderer;
-        },
-
-        _createCamera: function () {
-            var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
-            camera.add(new THREE.PointLight(0xffffff));
-            return camera;
-        },
-
-        _createGroup: function () {
-            var group = new THREE.Group();
-            group.position.setZ(-300);
-            return group;
-        },
-
-        _render: function () {
-            requestAnimationFrame(this._render.bind(this));
-            this.controls.update(); //WebvrBehavior
-            this.effect.render(this.scene, this.camera);
         }
 
     });
