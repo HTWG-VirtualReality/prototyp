@@ -22,15 +22,15 @@
       },
       {
         "id": "b8213c2f-aa8f-4ddf-9bdf-e0bee6863525",
-        "mReference": "TransitionPlace",
+        "mReference": "ClassClass",
         "source": {
           "class": [
-            "a5cbbf7e-41ec-4016-a0c4-5b15b419eac5"
+            "e468ec97-1ad3-4ef4-8cf7-feaee3e9363f"
           ]
         },
         "target": {
           "class": [
-            "e468ec97-1ad3-4ef4-8cf7-feaee3e9363f"
+            "cfd6887f-3547-4545-88eb-6aa22765a7f0"
           ]
         },
         "attributes": {}
