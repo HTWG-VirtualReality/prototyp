@@ -1,0 +1,66 @@
+<link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../elements/vr-scene.html">
+<link rel="import" href="../elements/vr-class.html">
+<link rel="import" href="../elements/vr-connection-inheritance.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<dom-module id="vr-app">
+    <style>
+        ::shadow body {
+            margin: 0;
+            overflow: hidden;
+        }
+    </style>
+
+    <template>
+        <vr-scene id="scene">
+
+        </vr-scene>
+
+        <iron-ajax
+                auto
+                url="data.json"
+                handle-as="json"
+                on-response="_response">
+        </iron-ajax>
+    </template>
+</dom-module>
+
+<script>
+    Polymer({
+        is: "vr-app",
+
+        _response: function (event, request) {
+            this._createModel(request.response.model);
+        },
+
+        _createModel: function (model) {
+            console.log('creating model...');
+            var self = this;
+
+            model.elements.forEach(function (element) {
+                var dynEle;
+
+                if (element.mClass == "Class") {
+                    dynEle = document.createElement("vr-class");
+                    dynEle.id = element.id;
+                    dynEle.text1 = element.id;
+                    // TODO: get position from fetched data
+                    dynEle.xPos = Math.floor((Math.random() * 500) + 1);
+                }
+                else if (element.mReference != undefined) {
+                    dynEle = document.createElement("vr-connection-inheritance");
+                    dynEle.id = element.id;
+                    dynEle.from = "#" + element.source.class;
+                    dynEle.to = "#" + element.target.class;
+                }
+
+                if (dynEle != undefined) {
+                    Polymer.dom(self.$.scene).appendChild(dynEle);
+                    Polymer.dom.flush();
+                }
+            });
+        }
+
+    })
+</script>

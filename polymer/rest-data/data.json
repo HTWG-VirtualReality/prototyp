@@ -1,0 +1,58 @@
+{
+  "id": "6d7ac9cf-26cc-48dd-a2d2-de58b1b6cebe",
+  "metaModelId": "53095f2c-6eb6-4026-92a7-afa581b015a1",
+  "created": "2016-10-25T15:26:27.401",
+  "updated": "2016-11-05T15:16:39.053",
+  "model": {
+    "name": "webvr",
+    "elements": [
+      {
+        "id": "e468ec97-1ad3-4ef4-8cf7-feaee3e9363f",
+        "mClass": "Class",
+        "outputs": {},
+        "inputs": {},
+        "attributes": {}
+      },
+      {
+        "id": "cfd6887f-3547-4545-88eb-6aa22765a7f0",
+        "mClass": "Class",
+        "outputs": {},
+        "inputs": {},
+        "attributes": {}
+      },
+      {
+        "id": "b8213c2f-aa8f-4ddf-9bdf-e0bee6863525",
+        "mReference": "ClassClass",
+        "source": {
+          "class": [
+            "e468ec97-1ad3-4ef4-8cf7-feaee3e9363f"
+          ]
+        },
+        "target": {
+          "class": [
+            "cfd6887f-3547-4545-88eb-6aa22765a7f0"
+          ]
+        },
+        "attributes": {}
+      }
+    ],
+    "uiState": "{}"
+  },
+  "links": [
+    {
+      "rel": "update",
+      "href": "http://localhost:9000/models/6d7ac9cf-26cc-48dd-a2d2-de58b1b6cebe",
+      "method": "PUT"
+    },
+    {
+      "rel": "meta_model",
+      "href": "http://localhost:9000/metamodels/53095f2c-6eb6-4026-92a7-afa581b015a1",
+      "method": "GET"
+    },
+    {
+      "rel": "remove",
+      "href": "http://localhost:9000/models/6d7ac9cf-26cc-48dd-a2d2-de58b1b6cebe",
+      "method": "DELETE"
+    }
+  ]
+}

@@ -10,7 +10,7 @@
 <link rel="import" href="../bower_components/neon-animation/animations/slide-left-animation.html">
 <link rel="import" href="../bower_components/neon-animation/animations/slide-from-right-animation.html">
 
-<dom-module id="model-data">
+<dom-module id="rest-app">
     <style>
         paper-card {
             width: 470px;
@@ -133,7 +133,7 @@
 
 <script>
     Polymer({
-        is: "model-data",
+        is: "rest-app",
 
         properties: {
             page: {
@@ -148,10 +148,6 @@
                 type: Array,
                 value: null
             }
-        },
-
-        ready: function () {
-            console.log('model-data')
         },
 
         _nextPage: function () {
