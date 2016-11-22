@@ -1,3 +1,5 @@
+<link rel="stylesheet" href="../style/stylesheet.css">
+
 <script src="../bower_components/threejs/build/three.min.js"></script>
 <script src="../bower_components/threex.domevents/threex.domevents.js"></script>
 
@@ -14,24 +16,15 @@
 
 <dom-module id="vr-scene">
     <template>
-        <style>
-            button {
-                position: fixed;
-                top: 0;
-                left: 0;
-                padding: 10px;
-                z-index: 1;
-                background: white;
-            }
-        </style>
-
-        <button on-click="_enterVR">Enter VR (WebVR/Mobile only)</button>
+        <button class="top-left" on-click="_enterVR">Enter VR (WebVR/Mobile only)</button>
+        <button class="bottom-right" on-click="_resetPose">Reset Pose</button>
 
         <content id="content" select="*"></content>
 
         <div id="classItems">
             <template is="dom-repeat" items="{{classItems}}" strip-whitespace>
-                <vr-class id="{{item.id}}" x-pos="{{item.xPos}}" y-pos="{{item.yPos}}" class-type="{{item.classType}}"></vr-class>
+                <vr-class id="{{item.id}}" x-pos="{{item.xPos}}" y-pos="{{item.yPos}}"
+                          class-type="{{item.classType}}"></vr-class>
             </template>
         </div>
 
@@ -55,7 +48,7 @@
         properties: {
             classItems: {
                 type: Array,
-                value: function() {
+                value: function () {
                     return [];
                 }
             }
