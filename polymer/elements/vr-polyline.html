@@ -32,7 +32,6 @@
 
             var geometry = new THREE.Geometry();
             this.line = new THREE.Line(geometry, material);
-            this.getThreeJS().add(this.line);
 
             Polymer.dom(this.$.point).observeNodes(function (points) {
                 // flag to change geometry dynamically
@@ -50,6 +49,10 @@
                 // it's needed to create a dashed line
                 geometry.computeLineDistances();
             });
+        },
+
+        getThreeJS: function() {
+            return this.line;
         }
 
     });
