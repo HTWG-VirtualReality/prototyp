@@ -22,6 +22,10 @@
             height: {
                 type: Number,
                 value: 0
+            },
+            depth: {
+                type: Number,
+                value: 10
             }
         },
 
@@ -30,20 +34,36 @@
         ],
 
         ready: function() {
-            function addMesh(shape, depth, color) {
+            function createMesh(shape, depth) {
                 var extrudeSettings = {amount: depth, bevelEnabled: false};
                 var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
-                var mesh = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color: color}));
-                mod.getThreeJS().add(mesh);
+                var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+                return new THREE.Mesh(geometry, material);
             }
 
-            var mod = this;
-            mod.getThreeJS().position.x = this.width/2;
-            mod.getThreeJS().position.y = -this.height/2;
+            function createWireFrame(shape, depth) {
+                var points = shape.createPointsGeometry();
+                var geometry = new THREE.Geometry();
+                geometry.vertices = points.vertices;
+                geometry.verticesNeedUpdate = true;
+                var material = new THREE.LineBasicMaterial({color: 0x000000, linewidth: 1});
+
+                var line = new THREE.Line(geometry, material);
+                line.position.z = depth;
+
+                var group = new THREE.Group();
+                group.add(line);
+                group.add(new THREE.Line(geometry, material));
+                return group;
+            }
+
+            this.getThreeJS().position.x = this.width/2;
+            this.getThreeJS().position.y = -this.height/2;
 
             var shape = new THREE.Shape();
-            shape.absellipse (this.x, this.y, this.width/2, this.height/2, 0, Math.PI*2);
-            addMesh(shape, 20, 0x4E33D4);
+            shape.absellipse(this.x, this.y, this.width/2, this.height/2, 0, Math.PI*2);
+            this.getThreeJS().add(createMesh(shape, this.depth));
+            this.getThreeJS().add(createWireFrame(shape, this.depth));
         }
     });
 </script>
