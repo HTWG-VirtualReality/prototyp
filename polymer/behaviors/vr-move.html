@@ -7,16 +7,20 @@
         properties: {
             xPos: {
                 type: Number,
-                value: 0
+                value: 0,
+                observer: '_changeXPosition'
             },
             yPos: {
                 type: Number,
-                value: 0
+                value: 0,
+                observer: '_changeYPosition'
             }
         },
 
         ready: function () {
             this.getThreeJS().on('mousedown', this.onMouseDown.bind(this));
+            this.getThreeJS().position.setX(this.xPos);
+            this.getThreeJS().position.setY(this.yPos);
         },
 
         onMouseDown: function (event) {
@@ -76,6 +80,18 @@
                 self.yPos += movement.y;
 
                 dom.removeEventListener('touchend', touchEnd);
+            }
+        },
+
+        _changeXPosition: function(value) {
+            if (this.getThreeJS()) {
+                this.getThreeJS().position.setX(value);
+            }
+        },
+
+        _changeYPosition: function(value) {
+            if (this.getThreeJS()) {
+                this.getThreeJS().position.setY(value);
             }
         }
     }];

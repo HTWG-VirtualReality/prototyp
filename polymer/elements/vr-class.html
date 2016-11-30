@@ -68,9 +68,6 @@
 
         _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3, classType) {
             if (this.getThreeJS()) {
-                this.getThreeJS().position.setX(xPos);
-                this.getThreeJS().position.setY(yPos);
-
                 // compute width for fitting the text
                 var newWidth = this._computeWidth();
                 if (newWidth > 0) {
@@ -110,8 +107,6 @@
 
         ready: function () {
             this.getThreeJS().on('click', this.onClick.bind(this));
-            this.getThreeJS().position.setX(this.xPos);
-            this.getThreeJS().position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
         },
 
