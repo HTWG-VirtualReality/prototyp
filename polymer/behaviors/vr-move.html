@@ -1,21 +1,8 @@
-<link rel="import" href="vr-three.html">
+<link rel="import" href="vr-positioner.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Move = [VrBehavior.ThreeJS, {
-
-        properties: {
-            xPos: {
-                type: Number,
-                value: 0,
-                observer: '_changeXPosition'
-            },
-            yPos: {
-                type: Number,
-                value: 0,
-                observer: '_changeYPosition'
-            }
-        },
+    VrBehavior.Move = [VrBehavior.Positioner, {
 
         ready: function () {
             function onMouseDown(event) {
@@ -78,20 +65,6 @@
 
             var self = this;
             this.getThreeJS().on('mousedown', onMouseDown);
-            this.getThreeJS().position.setX(this.xPos);
-            this.getThreeJS().position.setY(this.yPos);
-        },
-
-        _changeXPosition: function(value) {
-            if (this.getThreeJS()) {
-                this.getThreeJS().position.setX(value);
-            }
-        },
-
-        _changeYPosition: function(value) {
-            if (this.getThreeJS()) {
-                this.getThreeJS().position.setY(value);
-            }
         }
     }];
 </script>

@@ -1,0 +1,37 @@
+<link rel="import" href="vr-three.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.Positioner = [VrBehavior.ThreeJS, {
+
+        properties: {
+            xPos: {
+                type: Number,
+                value: 0,
+                observer: '_changeXPosition'
+            },
+            yPos: {
+                type: Number,
+                value: 0,
+                observer: '_changeYPosition'
+            }
+        },
+
+        _changeXPosition: function(value) {
+            if (this.getThreeJS()) {
+                this.getThreeJS().position.setX(value);
+            }
+        },
+
+        _changeYPosition: function(value) {
+            if (this.getThreeJS()) {
+                this.getThreeJS().position.setY(value);
+            }
+        },
+
+        ready: function () {
+            this.getThreeJS().position.setX(this.xPos);
+            this.getThreeJS().position.setY(this.yPos);
+        }
+    }];
+</script>
