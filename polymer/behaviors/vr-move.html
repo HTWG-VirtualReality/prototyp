@@ -18,69 +18,68 @@
         },
 
         ready: function () {
-            this.getThreeJS().on('mousedown', this.onMouseDown.bind(this));
-            this.getThreeJS().position.setX(this.xPos);
-            this.getThreeJS().position.setY(this.yPos);
-        },
-
-        onMouseDown: function (event) {
-            event.origDomEvent.stopImmediatePropagation();
-            var self = this;
-            var dom = event.origDomEvent.target;
-            var position = {
-                x: event.origDomEvent.clientX,
-                y: event.origDomEvent.clientY
-            };
-
-            // handling move in vr via touch
-            this.handleTouchMove(dom);
-
-            // handling move not in vr via mouse
-            dom.addEventListener('mousemove', onMouseMove);
-            dom.addEventListener('mouseup', reset);
-            dom.addEventListener('mouseout', reset);
-
-            function onMouseMove(e) {
-                // calculate new position of element
-                self.xPos += e.clientX - position.x;
-                self.yPos -= e.clientY - position.y;
-
-                // update position
-                position.x = e.clientX;
-                position.y = e.clientY;
-            }
-
-            function reset() {
-                dom.removeEventListener('mousemove', onMouseMove);
-                dom.removeEventListener('mouseup', reset);
-                dom.removeEventListener('mouseout', reset);
-            }
-        },
-
-        handleTouchMove: function (dom) {
-            var self = this;
-            var camera = VrBehavior.Scene.camera;
-            var startDirection = camera.getWorldDirection();
-
-            dom.addEventListener('touchend', touchEnd);
-
-            function touchEnd() {
-                var endDirection = camera.getWorldDirection();
-                var movement = {
-                    x: endDirection.x - startDirection.x,
-                    y: endDirection.y - startDirection.y
+            function onMouseDown(event) {
+                event.origDomEvent.stopImmediatePropagation();
+                var dom = event.origDomEvent.target;
+                var position = {
+                    x: event.origDomEvent.clientX,
+                    y: event.origDomEvent.clientY
                 };
 
-                // TODO: improve calculation, may could not work on other zoom level
-                movement.x *= 400;
-                movement.y *= 400;
+                // handling move in vr via touch
+                handleTouchMove(dom);
 
-                // update position
-                self.xPos += movement.x;
-                self.yPos += movement.y;
+                // handling move not in vr via mouse
+                dom.addEventListener('mousemove', onMouseMove);
+                dom.addEventListener('mouseup', reset);
+                dom.addEventListener('mouseout', reset);
 
-                dom.removeEventListener('touchend', touchEnd);
+                function onMouseMove(e) {
+                    // calculate new position of element
+                    self.xPos += e.clientX - position.x;
+                    self.yPos -= e.clientY - position.y;
+
+                    // update position
+                    position.x = e.clientX;
+                    position.y = e.clientY;
+                }
+
+                function reset() {
+                    dom.removeEventListener('mousemove', onMouseMove);
+                    dom.removeEventListener('mouseup', reset);
+                    dom.removeEventListener('mouseout', reset);
+                }
             }
+
+            function handleTouchMove(dom) {
+                var camera = VrBehavior.Scene.camera;
+                var startDirection = camera.getWorldDirection();
+
+                dom.addEventListener('touchend', touchEnd);
+
+                function touchEnd() {
+                    var endDirection = camera.getWorldDirection();
+                    var movement = {
+                        x: endDirection.x - startDirection.x,
+                        y: endDirection.y - startDirection.y
+                    };
+
+                    // TODO: improve calculation, may could not work on other zoom level
+                    movement.x *= 400;
+                    movement.y *= 400;
+
+                    // update position
+                    self.xPos += movement.x;
+                    self.yPos += movement.y;
+
+                    dom.removeEventListener('touchend', touchEnd);
+                }
+            }
+
+            var self = this;
+            this.getThreeJS().on('mousedown', onMouseDown);
+            this.getThreeJS().position.setX(this.xPos);
+            this.getThreeJS().position.setY(this.yPos);
         },
 
         _changeXPosition: function(value) {
