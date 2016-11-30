@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../behaviors/vr-three.html">
+<link rel="import" href="../behaviors/vr-positioner.html">
 <script src="../js/threex.dynamic-texture.js"></script>
 
 
@@ -9,18 +9,10 @@
         is: "vr-text",
 
         behaviors: [
-            VrBehavior.ThreeJS
+            VrBehavior.Positioner
         ],
 
         properties: {
-            x: {
-                type: Number,
-                value: 0
-            },
-            y: {
-                type: Number,
-                value: 0
-            },
             height: {
                 type: Number,
                 value: 10
@@ -44,9 +36,6 @@
         },
 
         _render: function() {
-            this.getThreeJS().position.setX(this.x);
-            this.getThreeJS().position.setY(this.y);
-
             // init all sides of cube
             var materials = [];
             var material = new THREE.MeshBasicMaterial({color: 0xf0f0f0});

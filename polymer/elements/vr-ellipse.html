@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../behaviors/vr-three.html">
+<link rel="import" href="../behaviors/vr-positioner.html">
 
 <script>
     window.VrElement = window.VrElement || {};
@@ -7,14 +7,6 @@
         is: "vr-ellipse",
 
         properties: {
-            x: {
-                type: Number,
-                value: 0
-            },
-            y: {
-                type: Number,
-                value: 0
-            },
             width: {
                 type: Number,
                 value: 0
@@ -30,7 +22,7 @@
         },
 
         behaviors: [
-            VrBehavior.ThreeJS
+            VrBehavior.Positioner
         ],
 
         ready: function() {
@@ -57,11 +49,8 @@
                 return group;
             }
 
-            this.getThreeJS().position.x = this.width/2;
-            this.getThreeJS().position.y = -this.height/2;
-
             var shape = new THREE.Shape();
-            shape.absellipse(this.x, this.y, this.width/2, this.height/2, 0, Math.PI*2);
+            shape.absellipse(0, 0, this.width/2, this.height/2, 0, Math.PI*2);
             this.getThreeJS().add(createMesh(shape, this.depth));
             this.getThreeJS().add(createWireFrame(shape, this.depth));
         }

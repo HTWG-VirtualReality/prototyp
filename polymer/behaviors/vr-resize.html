@@ -1,8 +1,8 @@
-<link rel="import" href="vr-three.html">
+<link rel="import" href="vr-positioner.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Resize = [VrBehavior.ThreeJS, {
+    VrBehavior.Resize = [VrBehavior.Positioner, {
 
         properties: {
             minWidth: {
@@ -152,6 +152,9 @@
 
             if (userData.vertical == 'top') {
                 this.yPos += position.y - event.clientY;
+            }
+            if (userData.side == 'left') {
+                this.xPos -= position.x - event.clientX;
             }
         },
 

@@ -40,8 +40,6 @@
         ],
         _updateClass: function (xPos, yPos, width, height, depth) {
             if (this.getThreeJS()) {
-                this.getThreeJS().position.setX(xPos);
-                this.getThreeJS().position.setY(yPos);
                 if (this.boxItems) {
                     var properties = this._getBoxItemProperties(width, height, depth);
                     this.splice('boxItems', 0, 4, properties[0], properties[1], properties[2], properties[3]);
@@ -50,8 +48,6 @@
         },
 
         ready: function() {
-            this.getThreeJS().position.setX(this.xPos);
-            this.getThreeJS().position.setY(this.yPos);
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth);
         },
 

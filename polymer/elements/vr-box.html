@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../behaviors/vr-three.html">
+<link rel="import" href="../behaviors/vr-positioner.html">
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
 <script src="../js/threex.dynamic-texture.js"></script>
 
@@ -9,14 +9,6 @@
         is: "vr-box",
 
         properties: {
-            xPos: {
-                type: Number,
-                value: 0
-            },
-            yPos: {
-                type: Number,
-                value: 0
-            },
             width: {
                 type: Number,
                 value: 50
@@ -45,7 +37,7 @@
         },
 
         behaviors: [
-            VrBehavior.ThreeJS
+            VrBehavior.Positioner
         ],
 
         observers: [
@@ -68,9 +60,6 @@
                 this._createBox(width, height, depth, text, image);
                 this.wireframe.material.color.set(0xff0000);
 
-                this.getThreeJS().position.setX(xPos);
-                this.getThreeJS().position.setY(yPos);
-
                 this.getThreeJS().add(this.cube);
                 this.getThreeJS().add(this.wireframe);
             }
@@ -88,9 +77,6 @@
 
             // creating cube and wireframe
             this._createBox(this.width, this.height, this.depth, this.text, this.image);
-
-            this.getThreeJS().position.setX(this.xPos);
-            this.getThreeJS().position.setY(this.yPos);
             this.getThreeJS().add(this.cube);
             this.getThreeJS().add(this.wireframe);
         },

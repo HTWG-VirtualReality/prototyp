@@ -1,5 +1,5 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../behaviors/vr-three.html">
+<link rel="import" href="../behaviors/vr-positioner.html">
 
 <script>
     window.VrElement = window.VrElement || {};
@@ -7,14 +7,6 @@
         is: "vr-controlpanel",
 
         properties: {
-            x: {
-                type: Number,
-                value: 0
-            },
-            y: {
-                type: Number,
-                value: 0
-            },
             width: {
                 type: Number,
                 value: 0
@@ -26,7 +18,7 @@
         },
 
         behaviors: [
-            VrBehavior.ThreeJS
+            VrBehavior.Positioner
         ],
 
         ready: function() {
@@ -38,8 +30,6 @@
             }
 
             var mod = this;
-            mod.getThreeJS().position.x = this.width/2;
-            mod.getThreeJS().position.y = -this.height/2;
             mod.getThreeJS().position.z =  20;
 
             var shape = new THREE.Shape();
