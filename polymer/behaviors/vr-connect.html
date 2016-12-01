@@ -67,7 +67,7 @@
         _initializeConnectButton: function() {
             var width = 10;
             var geometry = new THREE.CylinderGeometry(width, width, 10, 32);
-            var texture = new THREE.TextureLoader().load( 'images/arrow.png' );
+            var texture = new THREE.TextureLoader().load( '../images/arrow.png' );
             var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
             var mesh = new THREE.Mesh(geometry, material);
             mesh.rotateX(90 * (Math.PI/180));
