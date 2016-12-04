@@ -9,15 +9,6 @@
             '_onPropertyChange(width, height)'
         ],
 
-        ready: function() {
-            if(!this.width || this.width < this.minWidth) {
-                this.width = this.minWidth;
-            }
-            if(!this.height || this.height < this.minHeight) {
-                this.height = this.minHeight;
-            }
-        },
-
         attached: function() {
             var group = this._createGroup();
             this._initiateMeshes(group);
@@ -120,20 +111,19 @@
         },
 
         _updateDimension: function(userData, position, event) {
-            var newWidth = this.width + this._getValueChange(userData.side == 'left', position.x, event.clientX);
-            var newHeight = this.height + this._getValueChange(userData.vertical == 'top', position.y, event.clientY);
-
-            if(newWidth >= this.minWidth) {
-                this.width = newWidth;
+            function isTop(userData) {
+                return userData.vertical == 'top';
             }
-            if(newHeight >= this.minHeight) {
-                this.height = newHeight;
+            function isLeft(userData) {
+                return userData.side == 'left';
             }
+            this.width += this._getValueChange(isLeft(userData), position.x, event.clientX);
+            this.height += this._getValueChange(isTop(userData), position.y, event.clientY);
 
-            if (userData.vertical == 'top') {
+            if (isTop(userData)) {
                 this.yPos += position.y - event.clientY;
             }
-            if (userData.side == 'left') {
+            if (isLeft(userData)) {
                 this.xPos -= position.x - event.clientX;
             }
         },
