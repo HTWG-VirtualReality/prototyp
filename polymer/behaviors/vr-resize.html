@@ -1,31 +1,9 @@
 <link rel="import" href="vr-positioner.html">
+<link rel="import" href="vr-size.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Resize = [VrBehavior.Positioner, {
-
-        properties: {
-            minWidth: {
-              type: Number,
-              value: 50,
-              readOnly: true
-            },
-            minHeight: {
-              type: Number,
-              value: 60,
-              readOnly: true
-            },
-            width: {
-                type: Number
-            },
-            height: {
-                type: Number
-            },
-            depth: {
-                type: Number,
-                value: 10
-            }
-        },
+    VrBehavior.Resize = [VrBehavior.Positioner, VrBehavior.Size, {
 
         observers: [
             '_onPropertyChange(width, height)'
@@ -67,11 +45,13 @@
 
         _onPropertyChange: function(width, height) {
             var self = this;
-            self.getThreeJS().children.forEach(function(element){
-                if (element.name === 'resize') {
-                    self._updateMeshes(element);
-                }
-            });
+            if (self.getThreeJS()) {
+                self.getThreeJS().children.forEach(function(element){
+                    if (element.name === 'resize') {
+                        self._updateMeshes(element);
+                    }
+                });
+            }
         },
 
         _createGroup: function() {
