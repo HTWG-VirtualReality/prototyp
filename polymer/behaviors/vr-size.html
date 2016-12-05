@@ -1,0 +1,48 @@
+<link rel="import" href="vr-three.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.Size = [VrBehavior.ThreeJS, {
+        properties: {
+            minWidth: {
+                type: Number,
+                value: 50,
+                readOnly: true
+            },
+            minHeight: {
+                type: Number,
+                value: 50,
+                readOnly: true
+            },
+            width: {
+                type: Number,
+                value: 0,
+                reflectToAttribute: true,
+                observer: '_changeWidth'
+            },
+            height: {
+                type: Number,
+                value: 0,
+                reflectToAttribute: true,
+                observer: '_changeHeight'
+            },
+            depth: {
+                type: Number,
+                value: 10,
+                readOnly: true
+            }
+        },
+
+        _changeWidth: function(value) {
+            if (value < this.minWidth) {
+                this.width = this.minWidth;
+            }
+        },
+
+        _changeHeight: function(value) {
+            if (value < this.minHeight) {
+                this.height = this.minHeight;
+            }
+        }
+    }];
+</script>

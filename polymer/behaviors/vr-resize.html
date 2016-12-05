@@ -1,44 +1,13 @@
 <link rel="import" href="vr-positioner.html">
+<link rel="import" href="vr-size.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Resize = [VrBehavior.Positioner, {
-
-        properties: {
-            minWidth: {
-              type: Number,
-              value: 50,
-              readOnly: true
-            },
-            minHeight: {
-              type: Number,
-              value: 60,
-              readOnly: true
-            },
-            width: {
-                type: Number
-            },
-            height: {
-                type: Number
-            },
-            depth: {
-                type: Number,
-                value: 10
-            }
-        },
+    VrBehavior.Resize = [VrBehavior.Positioner, VrBehavior.Size, {
 
         observers: [
             '_onPropertyChange(width, height)'
         ],
-
-        ready: function() {
-            if(!this.width || this.width < this.minWidth) {
-                this.width = this.minWidth;
-            }
-            if(!this.height || this.height < this.minHeight) {
-                this.height = this.minHeight;
-            }
-        },
 
         attached: function() {
             var group = this._createGroup();
@@ -67,11 +36,13 @@
 
         _onPropertyChange: function(width, height) {
             var self = this;
-            self.getThreeJS().children.forEach(function(element){
-                if (element.name === 'resize') {
-                    self._updateMeshes(element);
-                }
-            });
+            if (self.getThreeJS()) {
+                self.getThreeJS().children.forEach(function(element){
+                    if (element.name === 'resize') {
+                        self._updateMeshes(element);
+                    }
+                });
+            }
         },
 
         _createGroup: function() {
@@ -106,17 +77,16 @@
         },
 
         _updateMeshes: function (group) {
-            var width = 3;
-            var padding = width/1.5;
-            this._updateMeshPosition(group.children[0], padding, padding);
-            this._updateMeshPosition(group.children[1], padding, this.height - padding);
-            this._updateMeshPosition(group.children[2], this.width - padding, this.height - padding);
-            this._updateMeshPosition(group.children[3], this.width - padding, padding);
+            var padding = 0;
+            this._updateMeshPosition(group.children[0], -padding, this.height + padding);
+            this._updateMeshPosition(group.children[1], -padding, -padding);
+            this._updateMeshPosition(group.children[2], this.width + padding, -padding);
+            this._updateMeshPosition(group.children[3], this.width + padding, this.height + padding);
         },
 
         _updateMeshPosition: function(element, x, y) {
-            element.position.x = x - (this.width/2);
-            element.position.y = y - this.height;
+            element.position.x = x;
+            element.position.y = -y;
         },
 
         _handleResize: function (event, object) {
@@ -140,26 +110,26 @@
         },
 
         _updateDimension: function(userData, position, event) {
-            var newWidth = this.width + this._getValueChange(userData.side == 'left', position.x, event.clientX);
-            var newHeight = this.height + this._getValueChange(userData.vertical == 'top', position.y, event.clientY);
+            function isTop() {
+                return userData.vertical == 'top';
+            }
+            function isLeft() {
+                return userData.side == 'left';
+            }
+            function calculate(cond, event, position) {
+                return cond ? (position - event) : (event - position);
+            }
 
-            if(newWidth >= this.minWidth) {
-                this.width = newWidth;
-            }
-            if(newHeight >= this.minHeight) {
-                this.height = newHeight;
-            }
+            console.log(userData);
+            this.width += calculate(isLeft(), event.clientX, position.x);
+            this.height += calculate(isTop(), event.clientY, position.y);
 
-            if (userData.vertical == 'top') {
-                this.yPos += position.y - event.clientY;
-            }
-            if (userData.side == 'left') {
+            if (isLeft()) {
                 this.xPos -= position.x - event.clientX;
             }
-        },
-
-        _getValueChange: function(userData, position, client) {
-            return userData ? position - client : client - position;
+            if (isTop()) {
+                this.yPos += position.y - event.clientY;
+            }
         },
 
         _handleEventListener: function(add, dom, throttle, reset) {
