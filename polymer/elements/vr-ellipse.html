@@ -1,6 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-resize.html">
 <link rel="import" href="../behaviors/vr-move.html">
+<link rel="import" href="../behaviors/vr-move.html">
 
 <script>
     window.VrElement = window.VrElement || {};
@@ -10,6 +11,7 @@
         behaviors: [
             VrBehavior.Resize,
             VrBehavior.Move,
+            VrBehavior.Highlight,
         ],
 
         observers: [
@@ -23,6 +25,7 @@
             }
             function createWireFrame(depth) {
                 var material = new THREE.LineBasicMaterial({color: 0x000000, linewidth: 1});
+                self.addHighlight(material);
 
                 var line = new THREE.Line(undefined, material);
                 line.position.z = depth;
@@ -33,6 +36,7 @@
                 return group;
             }
 
+            var self = this;
             this.mesh = createMesh();
             this.getThreeJS().add(this.mesh);
             this.wireFrame = createWireFrame(this.depth);
