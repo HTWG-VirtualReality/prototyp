@@ -1,0 +1,110 @@
+<link rel="import" href="vr-three.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.Look = [VrBehavior.ThreeJS, {
+
+        observers: ['_handleResizeLook(width)'],
+        attached: function() {
+            // this object is needed because of the eventlistener
+            this.LookBehavior = {
+                mesh: null,
+                mouseover: this.onMouseOver.bind(this),
+                mouseout: this.onMouseOut.bind(this),
+                mousedown: this.look.bind(this)
+            };
+
+            this.getThreeJS().on('mousedown', this._handleClickLookButton.bind(this));
+        },
+
+        _handleClickLookButton: function(event) {
+            event.stopPropagation();
+            event.origDomEvent.stopImmediatePropagation();
+
+            if(!this.highlighted) {
+                //destroy look button and eventlistener
+                var mesh = this.LookBehavior.mesh;
+                this._handleLookListener(mesh.on.bind(mesh));
+                this.getThreeJS().remove(mesh);
+            } else {
+                //create look button and eventlistener
+                var mesh = this._initializeLookButton();
+                this._handleLookListener(mesh.on.bind(mesh));
+            }
+        },
+
+        _handleResizeLook: function(width) {
+            // only execute when element is highlighted
+            if(!this.highlighted) return;
+            this._changeLookButtonPosition(this.LookBehavior.mesh);
+        },
+
+        _changeLookButtonPosition: function(mesh) {
+            var padding = 7;
+            var width = this.width ? this.width : 0;
+            mesh.position.x = - width / 2 - padding;
+            mesh.position.y = padding;
+        },
+
+        _handleLookListener: function(func) {
+            func('mouseover', this.LookBehavior.mouseover);
+            func('mouseout', this.LookBehavior.mouseout);
+            func('mousedown', this.LookBehavior.mousedown);
+        },
+
+        _initializeLookButton: function() {
+            var width = 10;
+            var geometry = new THREE.CylinderGeometry(width, width, 5, 32);
+            var texture = new THREE.TextureLoader().load( '../images/crosshair.png' );
+            var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.rotateX(90 * (Math.PI/180));
+            mesh.rotateY(45 * (Math.PI/180));
+            mesh.name = 'look';
+            mesh.position.setZ(15);
+            this._changeLookButtonPosition(mesh);
+            this.LookBehavior.mesh = mesh;
+            this.getThreeJS().add(mesh);
+            return mesh;
+        },
+
+        onMouseOver: function(event) {
+            event.target.material.color.set(0xFF0000);
+        },
+
+        onMouseOut: function(event) {
+            event.target.material.color.set(0xFFFFFF);
+        },
+
+        look: function() {
+            var camera = VrBehavior.Scene.camera;
+            var obj = this.getThreeJS();
+
+            if(camera.position.x < obj.position.x) {
+                moveRight();
+            }
+            else if(camera.position.x > obj.position.x) {
+                moveLeft();
+            }
+
+            function moveRight() {
+                setTimeout(function () {
+                    camera.position.x += 3;
+                    if (camera.position.x <= obj.position.x) {
+                        moveRight();
+                    }
+                }, 10);
+            }
+
+            function moveLeft() {
+                setTimeout(function () {
+                    camera.position.x -= 3;
+                    if (camera.position.x >= obj.position.x) {
+                        moveLeft();
+                    }
+                }, 10);
+            }
+        }
+
+    }];
+</script>
