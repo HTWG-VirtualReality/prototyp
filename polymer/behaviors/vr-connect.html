@@ -103,16 +103,10 @@
             this._executeCancel();
             var fromID = this.ConnectBehavior.fromID;
             var toID = this._getPolymerElement(event.target.id).id;
-            Polymer.dom(this.parentNode).appendChild(createNewConnectionNode(toID));
-
-            function createNewConnectionNode(toID) {
-                // Dirty workaround to avoid error message from vr-connection
-                // that from and to are not defined.
-                var wrapper = document.createElement("div");
-                wrapper.innerHTML = "<vr-connection-inheritance from=\"#" + fromID
-                    + "\" to=\"#" + toID + "\"></vr-connection-inheritance>";
-                return wrapper.firstChild;
-            }
+            var connection = new VrElement.ConnectionInheritance();
+            connection.from = "#" + fromID;
+            connection.to = "#" + toID;
+            Polymer.dom(this.parentNode).appendChild(connection);
         },
 
         cancel: function(event) {
