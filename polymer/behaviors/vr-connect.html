@@ -46,7 +46,7 @@
             this.getThreeJS().remove(this.ConnectBehavior.mesh);
         },
 
-        _changeConnectButtonPosition(mesh) {
+        _changeConnectButtonPosition: function(mesh) {
             var padding = 10;
             mesh.position.x = this.width / 2 + padding;
             mesh.position.y = -(this.height + padding);
@@ -67,7 +67,7 @@
         _initializeConnectButton: function() {
             var width = 10;
             var geometry = new THREE.CylinderGeometry(width, width, 10, 32);
-            var texture = new THREE.TextureLoader().load( 'images/arrow.png' );
+            var texture = new THREE.TextureLoader().load( '../images/arrow.png' );
             var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
             var mesh = new THREE.Mesh(geometry, material);
             mesh.rotateX(90 * (Math.PI/180));
@@ -103,16 +103,10 @@
             this._executeCancel();
             var fromID = this.ConnectBehavior.fromID;
             var toID = this._getPolymerElement(event.target.id).id;
-            Polymer.dom(this.parentNode).appendChild(createNewConnectionNode(toID));
-
-            function createNewConnectionNode(toID) {
-                // Dirty workaround to avoid error message from vr-connection
-                // that from and to are not defined.
-                var wrapper = document.createElement("div");
-                wrapper.innerHTML = "<vr-connection-inheritance from=\"#" + fromID
-                    + "\" to=\"#" + toID + "\"></vr-connection-inheritance>";
-                return wrapper.firstChild;
-            }
+            var connection = new VrElement.ConnectionInheritance();
+            connection.from = "#" + fromID;
+            connection.to = "#" + toID;
+            Polymer.dom(this.parentNode).appendChild(connection);
         },
 
         cancel: function(event) {

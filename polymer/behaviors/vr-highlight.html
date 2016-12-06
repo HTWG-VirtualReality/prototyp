@@ -4,22 +4,47 @@
 <script>
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.Highlight = [VrBehavior.ThreeJS, {
+
+        properties: {
+            highlight: {
+                type: Array,
+                value: [],
+                readOnly: true
+            },
+
+            highlighted: {
+                type: Boolean,
+                value: false
+            },
+
+            highlight_color: {
+                type: String,
+                value: "ff0000",
+                readOnly: true
+            }
+        },
+
         ready: function() {
             var self = this;
-            self.highlighted = false;
+            var originalColor = {};
 
             var COLOR_NORMAL = 0x000000;
             var COLOR_HIGHLIGHTED = 0xff0000;
 
             this.getThreeJS().on('mousedown', function() {
+                self.highlighted = !self.highlighted;
                 var boxes = Polymer.dom(this.root).children.filter(function(node) {
                     return (node instanceof VrElement.Box);
                 });
                 iterateBoxes(boxes);
+
+                self.highlight.forEach(function(material) {
+                    var color = getColor(material);
+                    material.color.set(parseInt("0x" + color));
+                })
             }.bind(self));
 
             function iterateBoxes(boxes) {
-                self.highlighted = !self.highlighted;
                 boxes.forEach(function (node){
                     node.getThreeJS().children.forEach(function(element) {
                         toggleHighlighting(element);
@@ -31,6 +56,23 @@
                     element.material.color.set(self.highlighted ? COLOR_HIGHLIGHTED : COLOR_NORMAL);
                 }
             }
+            function getColor(material) {
+                if (self.highlighted) {
+                    originalColor[material.uuid] = material.color.getHexString();
+                    return self.highlight_color;
+                }
+                return originalColor[material.uuid]
+            }
+        },
+
+        addHighlight: function(material) {
+            if (!(material instanceof THREE.Material)) {
+                throw new Error('material must be instance of `THREE.Material`');
+            }
+            if (!material.color) {
+                throw new Error('material must have color attribute');
+            }
+            this.highlight.push(material);
         }
     }];
 </script>

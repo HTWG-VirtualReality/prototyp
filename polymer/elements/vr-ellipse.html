@@ -1,58 +1,75 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../behaviors/vr-positioner.html">
+<link rel="import" href="../behaviors/vr-resize.html">
+<link rel="import" href="../behaviors/vr-move.html">
+<link rel="import" href="../behaviors/vr-move.html">
 
 <script>
     window.VrElement = window.VrElement || {};
     VrElement.Ellipse = Polymer({
         is: "vr-ellipse",
 
-        properties: {
-            width: {
-                type: Number,
-                value: 0
-            },
-            height: {
-                type: Number,
-                value: 0
-            },
-            depth: {
-                type: Number,
-                value: 10
-            }
-        },
-
         behaviors: [
-            VrBehavior.Positioner
+            VrBehavior.Resize,
+            VrBehavior.Move,
+            VrBehavior.Highlight,
+        ],
+
+        observers: [
+            '_updateEllipseSize(width, height, depth)'
         ],
 
         ready: function() {
-            function createMesh(shape, depth) {
-                var extrudeSettings = {amount: depth, bevelEnabled: false};
-                var geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+            function createMesh() {
                 var material = new THREE.MeshBasicMaterial({color: 0xffffff});
-                return new THREE.Mesh(geometry, material);
+                return new THREE.Mesh(undefined, material);
             }
-
-            function createWireFrame(shape, depth) {
-                var points = shape.createPointsGeometry();
-                var geometry = new THREE.Geometry();
-                geometry.vertices = points.vertices;
-                geometry.verticesNeedUpdate = true;
+            function createWireFrame(depth) {
                 var material = new THREE.LineBasicMaterial({color: 0x000000, linewidth: 1});
+                self.addHighlight(material);
 
-                var line = new THREE.Line(geometry, material);
+                var line = new THREE.Line(undefined, material);
                 line.position.z = depth;
 
                 var group = new THREE.Group();
                 group.add(line);
-                group.add(new THREE.Line(geometry, material));
+                group.add(new THREE.Line(undefined, material));
                 return group;
             }
 
-            var shape = new THREE.Shape();
-            shape.absellipse(0, 0, this.width/2, this.height/2, 0, Math.PI*2);
-            this.getThreeJS().add(createMesh(shape, this.depth));
-            this.getThreeJS().add(createWireFrame(shape, this.depth));
+            var self = this;
+            this.mesh = createMesh();
+            this.getThreeJS().add(this.mesh);
+            this.wireFrame = createWireFrame(this.depth);
+            this.getThreeJS().add(this.wireFrame);
+
+            this._updateEllipseSize(this.width, this.height, this.depth)
+        },
+
+        _updateEllipseSize: function(width, height, depth) {
+            function updateMesh(shape, depth) {
+                var extrudeSettings = {amount: depth, bevelEnabled: false};
+                self.mesh.geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
+                self.mesh.updateMorphTargets();
+            }
+
+            function updateWireFrame(shape) {
+                var points = shape.createPointsGeometry();
+                var geometry = new THREE.Geometry();
+                geometry.vertices = points.vertices;
+                geometry.verticesNeedUpdate = true;
+
+                self.wireFrame.children.forEach(function(element) {
+                    element.geometry = geometry;
+                });
+            }
+
+            if (this.getThreeJS() && this.mesh) {
+                var self = this;
+                var shape = new THREE.Shape();
+                shape.absellipse(width/2, -height/2, width/2, height/2, 0, Math.PI*2);
+                updateMesh(shape, depth);
+                updateWireFrame(shape);
+            }
         }
     });
 </script>
