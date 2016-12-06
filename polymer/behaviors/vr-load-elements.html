@@ -1,0 +1,167 @@
+<link rel="import" href="vr-three.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.LoadElements = [VrBehavior.ThreeJS, {
+
+        attached: function () {
+            var self = this;
+            var token = null;
+
+            _login();
+
+            function _login() {
+                // TODO @t1m1
+                const params = {
+                    username: '',
+                    password: ''
+                };
+
+                var loginAttributes = {
+                    method: 'POST',
+                    url: 'http://localhost:9000/auth/authenticate/userpass',
+                    contentType: 'application/x-www-form-urlencoded',
+                    body: 'client_id=modigen-browser-app1&grant_type=implicit',
+                    params: JSON.stringify(params),
+                    id: 'login',
+                    withCredentials: true,
+                    success: _onLoginSuccess,
+                    failure: _onFailure
+                };
+
+                self._createRequest(loginAttributes);
+            }
+
+            function _onLoginSuccess() {
+                var accessTokenAttributes = {
+                    method: 'POST',
+                    url: 'http://localhost:9000/oauth/accessTokenLocal',
+                    contentType: 'application/x-www-form-urlencoded',
+                    body: 'client_id=modigen-browser-app1&grant_type=implicit',
+                    id: 'token',
+                    withCredentials: true,
+                    success: _onTokenSuccess,
+                    failure: _onFailure
+                };
+
+                self._createRequest(accessTokenAttributes);
+            }
+
+            function _onTokenSuccess(event) {
+                token = event.detail.xhr.response.token_type + ' ' + event.detail.xhr.response.access_token;
+                _getModels();
+            }
+
+            function _getModels() {
+                var allModelsAttributes = {
+                    method: 'GET',
+                    url: 'http://localhost:9000/models',
+                    id: 'models',
+                    withCredentials: true,
+                    headers: {'authorization': token},
+                    success: _onModelsSuccess,
+                    failure: _onFailure
+                };
+
+                self._createRequest(allModelsAttributes);
+            }
+
+            function _onModelsSuccess(event) {
+
+                if (event.detail.xhr.response.length !== 0) {
+
+                    // TODO @t1m1 - get ID from URL
+                    var id = event.detail.xhr.response[0].id;
+
+                    var modelAttributes = {
+                        id: 'model',
+                        method: 'GET',
+                        url: 'http://localhost:9000/models/' + id,
+                        withCredentials: true,
+                        headers: {'authorization': token},
+                        success: _onModelSuccess,
+                        failure: _onFailure
+                    };
+
+                    self._createRequest(modelAttributes);
+                } else {
+                    console.log('No model in local db available')
+                }
+            }
+
+            function _onModelSuccess(event) {
+                // get ui-state
+                var model = JSON.parse(event.detail.xhr.response.model.uiState);
+                var counter = 0;
+
+                model.cells.forEach(function (element) {
+                    counter = self.pushNewElement(counter, element.position, element.mClass.toLowerCase());
+                });
+            }
+
+            function _onFailure(error) {
+                console.log(error);
+            }
+        },
+
+        _createRequest: function (attributes) {
+            var element = document.createElement("iron-ajax");
+
+            element.setAttribute('id', attributes.id);
+            element.setAttribute('method', attributes.method);
+            element.setAttribute('url', attributes.url);
+            element.setAttribute('with-credentials', attributes.withCredentials);
+
+            if ('body' in attributes) {
+                element.setAttribute('body', attributes.body);
+            }
+
+            if ('params' in attributes) {
+                element.setAttribute('params', attributes.params)
+            }
+
+            if ('contentType' in attributes) {
+                element.setAttribute('content-type', attributes.contentType);
+            }
+
+            if ('headers' in attributes) {
+                element.headers = attributes.headers;
+            }
+            element.addEventListener('iron-ajax-response', attributes.success);
+            element.addEventListener('iron-ajax-error', attributes.failure);
+
+            element.generateRequest();
+        },
+
+        pushNewElement: function (counter, position, text) {
+            counter += 1;
+            // classItems must be part off vr-scene.html
+            switch (text) {
+
+                case "transition":
+                    this.push('transitionItems', {
+                        id: 'transition-' + counter,
+                        xPos: position.x,
+                        yPos: position.y,
+                        classType: text.toLowerCase()
+                    });
+                    break;
+
+                case "place":
+                    this.push('placeItems', {
+                        id: 'place-' + counter,
+                        xPos: position.x,
+                        yPos: position.y,
+                        classType: text.toLowerCase()
+                    });
+                    break;
+
+                default:
+                    console.error("No valid element found! Caution generated Code.");
+                    counter -= 1;
+            }
+            return counter;
+        }
+    }];
+</script>
