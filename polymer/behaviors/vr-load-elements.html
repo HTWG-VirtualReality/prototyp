@@ -53,10 +53,9 @@
             function _onModelSuccess(event) {
                 // get ui-state
                 var model = JSON.parse(event.detail.xhr.response.model.uiState);
-                var counter = 0;
 
                 model.cells.forEach(function (element) {
-                    counter = self.pushNewElement(counter, element.position, element.mClass.toLowerCase());
+                    self.pushNewElement(element.id, element.position, element.mClass.toLowerCase());
                 });
             }
 
@@ -94,14 +93,13 @@
             element.generateRequest();
         },
 
-        pushNewElement: function (counter, position, text) {
-            counter += 1;
+        pushNewElement: function (elementId, position, text) {
             // classItems must be part off vr-scene.html
             switch (text) {
 
                 case "transition":
                     this.push('transitionItems', {
-                        id: 'transition-' + counter,
+                        id: elementId,
                         xPos: position.x,
                         yPos: position.y,
                         classType: text.toLowerCase()
@@ -110,7 +108,7 @@
 
                 case "place":
                     this.push('placeItems', {
-                        id: 'place-' + counter,
+                        id: elementId,
                         xPos: position.x,
                         yPos: position.y,
                         classType: text.toLowerCase()
@@ -119,9 +117,7 @@
 
                 default:
                     console.error("No valid element found! Caution generated Code.");
-                    counter -= 1;
             }
-            return counter;
         }
     }];
 </script>
