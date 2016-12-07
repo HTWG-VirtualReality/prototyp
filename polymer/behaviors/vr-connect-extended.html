@@ -2,25 +2,29 @@
 <link rel="import" href="vr-connect.html">
 
 <script>
-     window.VrBehavior = window.VrBehavior || {};
-     VrBehavior.ConnectExtended = [VrBehavior.Connect, {
-         getEntries: function() {
-             return ["connection-association", "connection-inheritance", "connection-aggregation"];
-         },
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.ConnectExtended = [VrBehavior.Connect, {
+        connectionMap: {
+            connectionAssociation: function(connection) {
+                this.ConnectBehavior.scene.push('connectionAssociationItems', connection)
+            },
+            connectionInheritance: function(connection) {
+                this.ConnectBehavior.scene.push('connectionInheritanceItems', connection)
+            },
+            connectionAggregation: function(connection) {
+                this.ConnectBehavior.scene.push('connectionAggregationItems', connection)
+            }
+        },
 
-         pushNewConnection: function(type, connection) {
-             switch(type) {
-                case "connection-association":
-                    this.ConnectBehavior.scene.push('connectionAssociationItems', connection);
-                    break;
-                case "connection-inheritance":
-                    this.ConnectBehavior.scene.push('connectionInheritanceItems', connection);
-                    break;
-                case "connection-aggregation":
-                    this.ConnectBehavior.scene.push('connectionAggregationItems', connection);
-                    break;
-                default:
-                    console.error("No valid connection found!");
+        getEntries: function() {
+            return Object.keys(this.connectionMap);
+        },
+
+        pushNewConnection: function(type, connection) {
+            if(type in this.connectionMap) {
+                (this.connectionMap[type].bind(this))(connection)
+            } else {
+                console.error("No valid connection found!");
             }
          }
      }];
