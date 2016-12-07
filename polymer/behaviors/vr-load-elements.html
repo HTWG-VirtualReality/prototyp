@@ -15,10 +15,9 @@
             _login();
 
             function _login() {
-                // load credentials from file 'credentials.json'
+                // load cre     dentials from file 'credentials.json'
                 var myCredentials = JSON.parse(credentials);
 
-                debugger;
                 if (!(myCredentials.username === '') || !(myCredentials.password === '')) {
                     var loginAttributes = {
                         method: 'POST',
