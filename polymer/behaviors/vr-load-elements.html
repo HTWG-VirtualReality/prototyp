@@ -9,31 +9,9 @@
             var self = this;
             var token = null;
 
-            _login();
+            getToken();
 
-            function _login() {
-                // TODO @t1m1
-                const params = {
-                    username: '',
-                    password: ''
-                };
-
-                var loginAttributes = {
-                    method: 'POST',
-                    url: 'http://localhost:9000/auth/authenticate/userpass',
-                    contentType: 'application/x-www-form-urlencoded',
-                    body: 'client_id=modigen-browser-app1&grant_type=implicit',
-                    params: JSON.stringify(params),
-                    id: 'login',
-                    withCredentials: true,
-                    success: _onLoginSuccess,
-                    failure: _onFailure
-                };
-
-                self._createRequest(loginAttributes);
-            }
-
-            function _onLoginSuccess() {
+            function getToken() {
                 var accessTokenAttributes = {
                     method: 'POST',
                     url: 'http://localhost:9000/oauth/accessTokenLocal',
@@ -50,44 +28,26 @@
 
             function _onTokenSuccess(event) {
                 token = event.detail.xhr.response.token_type + ' ' + event.detail.xhr.response.access_token;
-                _getModels();
+
+                // get model id from href
+                var href = window.location.href;
+                var modelId = href.substr(href.lastIndexOf('/') + 1, href.length);
+
+                _getModel(modelId);
             }
 
-            function _getModels() {
-                var allModelsAttributes = {
+            function _getModel(modelId) {
+                var modelAttributes = {
+                    id: 'model',
                     method: 'GET',
-                    url: 'http://localhost:9000/models',
-                    id: 'models',
+                    url: 'http://localhost:9000/models/' + modelId,
                     withCredentials: true,
                     headers: {'authorization': token},
-                    success: _onModelsSuccess,
+                    success: _onModelSuccess,
                     failure: _onFailure
                 };
 
-                self._createRequest(allModelsAttributes);
-            }
-
-            function _onModelsSuccess(event) {
-
-                if (event.detail.xhr.response.length !== 0) {
-
-                    // TODO @t1m1 - get ID from URL
-                    var id = event.detail.xhr.response[0].id;
-
-                    var modelAttributes = {
-                        id: 'model',
-                        method: 'GET',
-                        url: 'http://localhost:9000/models/' + id,
-                        withCredentials: true,
-                        headers: {'authorization': token},
-                        success: _onModelSuccess,
-                        failure: _onFailure
-                    };
-
-                    self._createRequest(modelAttributes);
-                } else {
-                    console.log('No model in local db available')
-                }
+                self._createRequest(modelAttributes);
             }
 
             function _onModelSuccess(event) {
@@ -101,7 +61,7 @@
             }
 
             function _onFailure(error) {
-                console.log(error);
+                console.error(error);
             }
         },
 
