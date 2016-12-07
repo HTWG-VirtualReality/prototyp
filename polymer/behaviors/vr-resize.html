@@ -131,8 +131,6 @@
                 return cond ? (position - event) : (event - position);
             }
 
-            console.log(this.resizeHorizontal);
-
             if (this.resizeHorizontal == 1) {
                 this.width += calculate(isLeft(), event.clientX, position.x);
             }

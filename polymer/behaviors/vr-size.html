@@ -4,25 +4,33 @@
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.Size = [VrBehavior.ThreeJS, {
         properties: {
-            minWidth: {
-                type: Number,
-                value: 50
-            },
             minHeight: {
                 type: Number,
-                value: 50
+                value: 0
             },
-            width: {
+            minWidth: {
                 type: Number,
-                value: 0,
-                reflectToAttribute: true,
-                observer: '_changeWidth'
+                value: 0
+            },
+            maxHeight: {
+                type: Number,
+                value: -1
+            },
+            maxWidth: {
+                type: Number,
+                value: -1
             },
             height: {
                 type: Number,
                 value: 0,
                 reflectToAttribute: true,
                 observer: '_changeHeight'
+            },
+            width: {
+                type: Number,
+                value: 0,
+                reflectToAttribute: true,
+                observer: '_changeWidth'
             },
             depth: {
                 type: Number,
@@ -34,11 +42,17 @@
             if (value < this.minWidth) {
                 this.width = this.minWidth;
             }
+            if (value > this.maxWidth && this.maxWidth >= 0) {
+                this.width = this.maxWidth;
+            }
         },
 
         _changeHeight: function(value) {
             if (value < this.minHeight) {
                 this.height = this.minHeight;
+            }
+            if (value > this.maxHeight && this.maxHeight >= 0) {
+                this.height = this.maxHeight;
             }
         }
     }];
