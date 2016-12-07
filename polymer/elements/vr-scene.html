@@ -13,6 +13,8 @@
 <link rel="import" href="../behaviors/vr-scene.html">
 <link rel="import" href="./vr-class.html">
 <link rel="import" href="./vr-connection-inheritance.html">
+<link rel="import" href="./vr-connection-aggregation.html">
+<link rel="import" href="./vr-connection-association.html">
 
 
 <dom-module id="vr-scene">
@@ -31,6 +33,12 @@
             <!-- For connections -->
             <template is="dom-repeat" items="{{connectionInheritanceItems}}" strip-whitespace>
                 <vr-connection-inheritance from="#{{item.from}}" to="#{{item.to}}"></vr-connection-inheritance>
+            </template>
+            <template is="dom-repeat" items="{{connectionAssociationItems}}" strip-whitespace>
+                <vr-connection-association from="#{{item.from}}" to="#{{item.to}}"></vr-connection-association>
+            </template>
+            <template is="dom-repeat" items="{{connectionAggregationItems}}" strip-whitespace>
+                <vr-connection-aggregation from="#{{item.from}}" to="#{{item.to}}"></vr-connection-aggregation>
             </template>
         </div>
     </template>
@@ -56,6 +64,14 @@
                 value: function () { return []; }
             },
             connectionInheritanceItems: {
+                type: Array,
+                value: function () { return [] }
+            },
+            connectionAssociationItems: {
+                type: Array,
+                value: function () { return [] }
+            },
+            connectionAggregationItems: {
                 type: Array,
                 value: function () { return [] }
             }

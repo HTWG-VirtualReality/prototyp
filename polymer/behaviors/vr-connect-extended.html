@@ -1,0 +1,27 @@
+<!-- This file should be generated -->
+<link rel="import" href="vr-connect.html">
+
+<script>
+     window.VrBehavior = window.VrBehavior || {};
+     VrBehavior.ConnectExtended = [VrBehavior.Connect, {
+         getEntries: function() {
+             return ["connection-association", "connection-inheritance", "connection-aggregation"];
+         },
+
+         pushNewConnection: function(type, connection) {
+             switch(type) {
+                case "connection-association":
+                    this.ConnectBehavior.scene.push('connectionAssociationItems', connection);
+                    break;
+                case "connection-inheritance":
+                    this.ConnectBehavior.scene.push('connectionInheritanceItems', connection);
+                    break;
+                case "connection-aggregation":
+                    this.ConnectBehavior.scene.push('connectionAggregationItems', connection);
+                    break;
+                default:
+                    console.error("No valid connection found!");
+            }
+         }
+     }];
+</script>

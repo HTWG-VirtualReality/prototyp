@@ -10,7 +10,7 @@
             this.getThreeJS().on('mousedown', this._handleClickConnectButton.bind(this));
             this.ConnectBehavior = {
                 fromID: this._getPolymerElement(this.getThreeJS().id).id,
-                mesh: null,
+                meshes: null,
                 mouseover: this.onMouseOver.bind(this),
                 mouseout: this.onMouseOut.bind(this),
                 click: this.handleOnClick.bind(this),
@@ -25,56 +25,75 @@
         _handleClickConnectButton: function() {
             if(this.highlighted) {
                 //create Connect button and eventlistener
-                this.ConnectBehavior.mesh = this._initializeConnectButton();
-                this._registerConnectListener(this.ConnectBehavior.mesh);
+                this.ConnectBehavior.meshes = this._initializeConnectButton();
+                this._registerConnectListener(this.ConnectBehavior.meshes);
             } else {
                 //destroy Connect button and eventlistener
                 if(this.ConnectBehavior.connectActive) this._executeCancel();
-                this._deregisterConnectListener(this.ConnectBehavior.mesh);
+                this._deregisterConnectListener(this.ConnectBehavior.meshes);
                 this._removeConnectButton();
             }
         },
 
         _handleResizeConnect: function(width) {
             if(!this.highlighted) return;
-            this._changeConnectButtonPosition(this.ConnectBehavior.mesh);
+            this.ConnectBehavior.meshes.forEach(function(mesh, index) {
+                this._changeConnectButtonPosition(mesh, index);
+            }.bind(this));
         },
 
         _removeConnectButton: function() {
-            this.getThreeJS().remove(this.ConnectBehavior.mesh);
+            this.ConnectBehavior.meshes.forEach(function(mesh) {
+                this.getThreeJS().remove(mesh);
+            }.bind(this));
         },
 
-        _changeConnectButtonPosition: function(mesh) {
+        _changeConnectButtonPosition: function(mesh, index) {
             var padding = 10;
-            mesh.position.x = this.width / 2 + padding;
+            // TODO: create better calculation
+            mesh.position.x = (this.width / 2 + padding) + (padding * 2.5 * index);
             mesh.position.y = -(this.height + padding);
         },
 
-        _registerConnectListener: function(mesh) {
-            mesh.on('mouseover', this.ConnectBehavior.mouseover);
-            mesh.on('mouseout', this.ConnectBehavior.mouseout);
-            mesh.on('mousedown', this.ConnectBehavior.click);
+        _registerConnectListener: function(meshes) {
+            meshes.forEach(function(mesh) {
+                mesh.on('mouseover', this.ConnectBehavior.mouseover);
+                mesh.on('mouseout', this.ConnectBehavior.mouseout);
+                mesh.on('mousedown', this.ConnectBehavior.click);
+            }.bind(this));
         },
 
-        _deregisterConnectListener: function(mesh) {
-            mesh.off('mouseover', this.ConnectBehavior.mouseover);
-            mesh.off('mouseout', this.ConnectBehavior.mouseout);
-            mesh.off('mousedown', this.ConnectBehavior.click);
+        _deregisterConnectListener: function(meshes) {
+            meshes.forEach(function(mesh) {
+                mesh.off('mouseover', this.ConnectBehavior.mouseover);
+                mesh.off('mouseout', this.ConnectBehavior.mouseout);
+                mesh.off('mousedown', this.ConnectBehavior.click);
+            }.bind(this));
         },
 
         _initializeConnectButton: function() {
+            var self = this;
+
             var width = 10;
             var geometry = new THREE.CylinderGeometry(width, width, 10, 32);
             var texture = new THREE.TextureLoader().load( '../images/arrow.png' );
-            var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
-            var mesh = new THREE.Mesh(geometry, material);
-            mesh.rotateX(90 * (Math.PI/180));
-            mesh.rotateY(45 * (Math.PI/180));
 
-            mesh.name = 'connect';
-            this._changeConnectButtonPosition(mesh);
-            this.getThreeJS().add(mesh);
-            return mesh;
+            return this.getEntries().map(function(type, index) {
+                return createMesh(type, index);
+            });
+
+            function createMesh(type, index) {
+                var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
+                var mesh = new THREE.Mesh(geometry, material);
+                mesh.rotateX(90 * (Math.PI/180));
+                mesh.rotateY(45 * (Math.PI/180));
+                mesh.name = type;
+
+                self._changeConnectButtonPosition(mesh, index);
+                self.getThreeJS().add(mesh);
+
+                return mesh;
+            }
         },
 
         onMouseOver: function(event) {
@@ -89,28 +108,23 @@
             event.stopPropagation();
             event.origDomEvent.stopImmediatePropagation();
             this.ConnectBehavior.connectActive = true;
-            this.ConnectBehavior.allElements = (getAllElements.bind(this))();
-            this._deregisterConnectListener(this.ConnectBehavior.mesh);
-            this.ConnectBehavior.mesh.on('mousedown', this.ConnectBehavior.cancel);
+            this._deregisterConnectListener(this.ConnectBehavior.meshes);
+            this.ConnectBehavior.meshes.forEach(function(mesh) {
+                mesh.on('mousedown', this.ConnectBehavior.cancel);
+            }.bind(this));
             event.target.material.color.set(0xFF0000);
-            this._registerAllElementsListener();
 
-            function getAllElements() {
-                return Polymer.dom(this.parentNode).children.filter(function(element) {
-                    return element.tagName !== "TEMPLATE";
-                });
-            }
+            this._registerAllElementsListener(event.target.name);
         },
 
-        connect: function(event) {
-            this._executeCancel();
-            var fromID = this.ConnectBehavior.fromID;
-            var toID = this._getPolymerElement(event.target.id).id;
-
-            this.ConnectBehavior.scene.push('connectionInheritanceItems', {
-                from: fromID,
-                to: toID
-            });
+        connect: function(type) {
+            return function(event) {
+                this._executeCancel();
+                this.pushNewConnection(type, {
+                    from: this.ConnectBehavior.fromID,
+                    to: this._getPolymerElement(event.target.id).id
+                });
+            }
         },
 
         cancel: function(event) {
@@ -121,17 +135,35 @@
 
         _executeCancel: function() {
             this.ConnectBehavior.connectActive = false;
-            this.ConnectBehavior.mesh.material.color.set(0xFFFFFF);
+            this.ConnectBehavior.meshes.forEach(function(mesh) {
+                mesh.material.color.set(0xFFFFFF);
+            });
+            // deregister all listeners
             this._deregisterAllElementsListener();
-            this.ConnectBehavior.mesh.off('mousedown', this.ConnectBehavior.cancel);
-            this._registerConnectListener(this.ConnectBehavior.mesh);
+            this.ConnectBehavior.meshes.forEach(function(mesh) {
+                mesh.off('mousedown', this.ConnectBehavior.cancel);
+            }.bind(this));
+            // register connect listener
+            this._registerConnectListener(this.ConnectBehavior.meshes);
         },
 
-        _registerAllElementsListener: function() {
+        _registerAllElementsListener: function(connection) {
             var cb = this.ConnectBehavior;
+
+            // setup registration
+            cb.allElements = (getAllElements.bind(this))();
+            cb.connect = this.connect(connection).bind(this)
+
+            // register listener
             cb.allElements.forEach(function(element) {
                 if(element.id != cb.fromID) { element.getThreeJS().on('mousedown', cb.connect); }
             });
+
+            function getAllElements() {
+                return Polymer.dom(this.parentNode).children.filter(function(element) {
+                    return element.tagName !== "TEMPLATE";
+                });
+            }
         },
 
         _deregisterAllElementsListener: function() {
@@ -145,7 +177,13 @@
              return Polymer.dom(this.parentNode).children.filter(function(element) {
                 return (element.getThreeJS && element.getThreeJS().id == id);
             })[0];
-        }
+        },
 
+        // Override this function in generated behavior
+        // returns array that contains strings of the connection names
+        getConnectionTypes: function() { return []; },
+
+        // Override this function in generated behavior
+        pushNewConnection: function(type, connection) { /*nothing*/ }
     }];
 </script>
