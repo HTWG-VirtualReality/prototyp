@@ -5,6 +5,17 @@
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.Resize = [VrBehavior.Positioner, VrBehavior.Size, {
 
+        properties: {
+            resizeVertical: {
+                type: Number,
+                value: 1
+            },
+            resizeHorizontal: {
+                type: Number,
+                value: 1
+            }
+        },
+
         observers: [
             '_onPropertyChange(width, height)'
         ],
@@ -120,14 +131,19 @@
                 return cond ? (position - event) : (event - position);
             }
 
-            console.log(userData);
-            this.width += calculate(isLeft(), event.clientX, position.x);
-            this.height += calculate(isTop(), event.clientY, position.y);
+            console.log(this.resizeHorizontal);
 
-            if (isLeft()) {
+            if (this.resizeHorizontal == 1) {
+                this.width += calculate(isLeft(), event.clientX, position.x);
+            }
+            if (this.resizeVertical == 1) {
+                this.height += calculate(isTop(), event.clientY, position.y);
+            }
+
+            if (isLeft() && this.resizeHorizontal == 1) {
                 this.xPos -= position.x - event.clientX;
             }
-            if (isTop()) {
+            if (isTop() && this.resizeVertical == 1) {
                 this.yPos += position.y - event.clientY;
             }
         },
