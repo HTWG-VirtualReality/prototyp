@@ -12,6 +12,7 @@
 <link rel="import" href="../behaviors/vr-webvr.html">
 <link rel="import" href="../behaviors/vr-scene.html">
 <link rel="import" href="./vr-class.html">
+<link rel="import" href="./vr-connection-inheritance.html">
 
 
 <dom-module id="vr-scene">
@@ -21,13 +22,17 @@
 
         <content id="content" select="*"></content>
 
-        <div id="classItems">
+        <div id="itemsContent">
             <template is="dom-repeat" items="{{classItems}}" strip-whitespace>
                 <vr-class id="{{item.id}}" x-pos="{{item.xPos}}" y-pos="{{item.yPos}}"
                           class-type="{{item.classType}}"></vr-class>
             </template>
-        </div>
 
+            <!-- For connections -->
+            <template is="dom-repeat" items="{{connectionInheritanceItems}}" strip-whitespace>
+                <vr-connection-inheritance from="#{{item.from}}" to="#{{item.to}}"></vr-connection-inheritance>
+            </template>
+        </div>
     </template>
 </dom-module>
 
@@ -48,9 +53,11 @@
         properties: {
             classItems: {
                 type: Array,
-                value: function () {
-                    return [];
-                }
+                value: function () { return []; }
+            },
+            connectionInheritanceItems: {
+                type: Array,
+                value: function () { return [] }
             }
         },
 
@@ -60,7 +67,7 @@
 
             // observe nodes that will added to this element
             Polymer.dom(self.$.content).observeNodes(observe);
-            Polymer.dom(self.$.classItems).observeNodes(observe);
+            Polymer.dom(self.$.itemsContent).observeNodes(observe);
 
             function observe(nodes) {
                 nodes.addedNodes.forEach(function (node) {

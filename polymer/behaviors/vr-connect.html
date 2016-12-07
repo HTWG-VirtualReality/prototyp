@@ -1,6 +1,3 @@
-<link rel="import" href="../elements/vr-connection-aggregation.html">
-<link rel="import" href="../elements/vr-connection-association.html">
-<link rel="import" href="../elements/vr-connection-inheritance.html">
 <link rel="import" href="vr-three.html">
 
 <script>
@@ -20,7 +17,8 @@
                 cancel: this.cancel.bind(this),
                 connect: this.connect.bind(this),
                 allElements: null,
-                connectActive: false
+                connectActive: false,
+                scene: document.querySelector("vr-scene")
             };
         },
 
@@ -91,22 +89,28 @@
             event.stopPropagation();
             event.origDomEvent.stopImmediatePropagation();
             this.ConnectBehavior.connectActive = true;
-            this.ConnectBehavior.allElements = Polymer.dom(this.parentNode).children.slice(0);
-
+            this.ConnectBehavior.allElements = (getAllElements.bind(this))();
             this._deregisterConnectListener(this.ConnectBehavior.mesh);
             this.ConnectBehavior.mesh.on('mousedown', this.ConnectBehavior.cancel);
             event.target.material.color.set(0xFF0000);
             this._registerAllElementsListener();
+
+            function getAllElements() {
+                return Polymer.dom(this.parentNode).children.filter(function(element) {
+                    return element.tagName !== "TEMPLATE";
+                });
+            }
         },
 
         connect: function(event) {
             this._executeCancel();
             var fromID = this.ConnectBehavior.fromID;
             var toID = this._getPolymerElement(event.target.id).id;
-            var connection = new VrElement.ConnectionInheritance();
-            connection.from = "#" + fromID;
-            connection.to = "#" + toID;
-            Polymer.dom(this.parentNode).appendChild(connection);
+
+            this.ConnectBehavior.scene.push('connectionInheritanceItems', {
+                from: fromID,
+                to: toID
+            });
         },
 
         cancel: function(event) {
