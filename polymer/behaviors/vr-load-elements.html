@@ -1,6 +1,9 @@
 <link rel="import" href="vr-three.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
 
+<!-- credentials for zeta -->
+<script type="text/javascript" src="../credentials.json"></script>
+
 <script>
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.LoadElements = [VrBehavior.ThreeJS, {
@@ -12,25 +15,28 @@
             _login();
 
             function _login() {
-                // TODO @t1m1
-                const params = {
-                    username: '',
-                    password: ''
-                };
+                // load credentials from file 'credentials.json'
+                var myCredentials = JSON.parse(credentials);
 
-                var loginAttributes = {
-                    method: 'POST',
-                    url: 'http://localhost:9000/auth/authenticate/userpass',
-                    contentType: 'application/x-www-form-urlencoded',
-                    body: 'client_id=modigen-browser-app1&grant_type=implicit',
-                    params: JSON.stringify(params),
-                    id: 'login',
-                    withCredentials: true,
-                    success: _onLoginSuccess,
-                    failure: _onFailure
-                };
+                debugger;
+                if (!(myCredentials.username === '') || !(myCredentials.password === '')) {
+                    var loginAttributes = {
+                        method: 'POST',
+                        url: 'http://localhost:9000/auth/authenticate/userpass',
+                        contentType: 'application/x-www-form-urlencoded',
+                        body: 'client_id=modigen-browser-app1&grant_type=implicit',
+                        params: JSON.stringify(myCredentials),
+                        id: 'login',
+                        withCredentials: true,
+                        success: _onLoginSuccess,
+                        failure: _onFailure
+                    };
 
-                self._createRequest(loginAttributes);
+                    self._createRequest(loginAttributes);
+                } else {
+                    console.error("missing credentials in file credentials.json");
+                }
+
             }
 
             function _onLoginSuccess() {
