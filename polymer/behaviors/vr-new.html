@@ -81,6 +81,7 @@
                 group.on('mousedown', function(e) {
                     e.origDomEvent.stopImmediatePropagation();
                     e.stopPropagation();
+                    if(position === null) { return; }
                     counter = self.pushNewElement(counter, position, text);
                     onMouseUp(null);
                 });

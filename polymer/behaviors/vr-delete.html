@@ -42,12 +42,15 @@
         _changeDeleteButtonPosition(mesh) {
             var padding = 10;
             var width = this.width ? this.width : 0;
-            if(this.behaviors.indexOf(VrBehavior.Connection) != -1) {
-                mesh.position.x = padding;
-                mesh.position.y = width + padding;
-            } else {
+
+            // not really safe but since all behaviors extend threejs it
+            // is the only way
+            if(this.ConnectBehavior) {
                 mesh.position.x = width/2 + padding;
                 mesh.position.y = padding;
+            } else {
+                mesh.position.x = padding;
+                mesh.position.y = width + padding;
             }
             mesh.rotation.y = (90 * (Math.PI/180))- this.getThreeJS().rotation.z;
         },
