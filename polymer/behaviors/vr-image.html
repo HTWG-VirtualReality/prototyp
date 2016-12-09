@@ -1,0 +1,30 @@
+<link rel="import" href="vr-front-side.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.Image = [VrBehavior.FrontSide, {
+        properties: {
+            image: {
+                type: String,
+                value: null
+            }
+        },
+
+        attached: function() {
+            if (!this.image) {
+                return;
+            }
+
+            var texture = new THREE.Texture();
+            new THREE.ImageLoader().load(this.image, function(event) {
+                texture.image = event;
+                texture.needsUpdate = true;
+            });
+
+            this.frontSide.forEach(function(material) {
+                material.map = texture;
+                material.needsUpdate = true;
+            });
+        }
+    }];
+</script>
