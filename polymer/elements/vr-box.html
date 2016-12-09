@@ -1,6 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-positioner.html">
 <link rel="import" href="../behaviors/vr-size.html">
+<link rel="import" href="../behaviors/vr-image.html">
+
 
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
 <script src="../js/threex.dynamic-texture.js"></script>
@@ -18,30 +20,18 @@
             textCenter: {
                 type: Boolean,
                 value: false
-            },
-            image: {
-                type: String,
-                value: 'none',
-                observer: '_boxImage'
             }
         },
 
         behaviors: [
             VrBehavior.Positioner,
             VrBehavior.Size,
+            VrBehavior.Image
         ],
 
         observers: [
             'updateBox(xPos, yPos, width, height, depth, text, image)'
         ],
-
-        _boxImage: function (newValue) {
-            var validTypes = ['create', 'delete', 'move', 'edit'];
-            if (validTypes.indexOf(newValue) === -1) {
-                // set default value
-                this.classType = 'none';
-            }
-        },
 
         updateBox: function (xPos, yPos, width, height, depth, text, image) {
             if (this.getThreeJS().children.length > 0) {
@@ -85,24 +75,11 @@
                 center: this.textCenter
             });
 
-
-            var frontSideElement;
-
-            if(image === 'create') {
-                frontSideElement = new THREE.TextureLoader().load( 'images/create.png' );
-            } else if(image === 'delete') {
-                frontSideElement = new THREE.TextureLoader().load( 'images/delete.png' );
-            } else if(image === 'edit') {
-                frontSideElement = new THREE.TextureLoader().load( 'images/edit.png' );
-            } else if(image === 'move') {
-                frontSideElement = new THREE.TextureLoader().load( 'images/move.png' );
-            } else {
-                frontSideElement = dynamicTexture.texture
+            this.materials[front] =  new THREE.MeshBasicMaterial();
+            if(image == null) {
+                this.materials[front].map = dynamicTexture.texture
             }
-
-            this.materials[front] =  new THREE.MeshBasicMaterial({
-                map: frontSideElement
-            });
+            this.registerFrontSide(this.materials[front]);
 
             // create box and wireframe
             var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth));
