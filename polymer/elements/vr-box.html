@@ -1,5 +1,7 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-positioner.html">
+<link rel="import" href="../behaviors/vr-size.html">
+
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
 <script src="../js/threex.dynamic-texture.js"></script>
 
@@ -9,18 +11,6 @@
         is: "vr-box",
 
         properties: {
-            width: {
-                type: Number,
-                value: 50
-            },
-            height: {
-                type: Number,
-                value: 50
-            },
-            depth: {
-                type: Number,
-                value: 50
-            },
             text: {
                 type: String,
                 value: ''
@@ -37,7 +27,8 @@
         },
 
         behaviors: [
-            VrBehavior.Positioner
+            VrBehavior.Positioner,
+            VrBehavior.Size,
         ],
 
         observers: [
