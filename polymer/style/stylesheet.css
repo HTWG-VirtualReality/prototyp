@@ -16,13 +16,24 @@ button {
     left: 0;
 }
 
-.bottom-right{
-    position: absolute;
-    right:    0;
-    bottom:   0;
+.save {
+    display: block;
+    color: black;
+    border-color: rgb(136, 136, 136);
 }
+
+.bottom-right {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
 @media (max-width: 800px) {
     button {
         display: block;
+    }
+
+    .save {
+        display: none;
     }
 }
