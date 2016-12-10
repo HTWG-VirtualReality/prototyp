@@ -1,0 +1,81 @@
+<link rel="import" href="vr-three.html">
+<link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.Save = [VrBehavior.ThreeJS, {
+
+        _save: function () {
+            var self = this;
+            var token = null;
+
+            getToken();
+
+            function getToken() {
+                var accessTokenAttributes = {
+                    method: 'POST',
+                    url: 'http://localhost:9000/oauth/accessTokenLocal',
+                    contentType: 'application/x-www-form-urlencoded',
+                    body: 'client_id=modigen-browser-app1&grant_type=implicit',
+                    id: 'token',
+                    withCredentials: true,
+                    success: _onTokenSuccess,
+                    failure: _onFailure
+                };
+
+                self._createRequest(accessTokenAttributes);
+            }
+
+            function _onTokenSuccess(event) {
+                token = event.detail.xhr.response.token_type + ' ' + event.detail.xhr.response.access_token;
+
+                // get model id from href
+                var href = window.location.href;
+                var modelId = href.substr(href.lastIndexOf('/') + 1, href.length);
+
+                _getModel(modelId);
+            }
+
+            function _getModel(modelId) {
+                var modelAttributes = {
+                    id: 'model',
+                    method: 'GET',
+                    url: 'http://localhost:9000/models/' + modelId,
+                    withCredentials: true,
+                    headers: {'authorization': token},
+                    success: _onModelSuccess,
+                    failure: _onFailure
+                };
+
+                self._createRequest(modelAttributes);
+            }
+
+            function _onModelSuccess() {
+                var model = JSON.parse(event.detail.xhr.response.model.uiState);
+
+                model.cells.forEach(function (element) {
+                });
+
+                var elements = Polymer.dom(this.parentNode).children.filter(function (element) {
+                    return element;
+                });
+
+                debugger;
+
+                // TODO get all elements
+                // TODO update properties of elements
+                // TODO PUT into database
+            }
+
+            function _onSaveSuccess(event) {
+                debugger;
+                // get ui-state
+            }
+
+            function _onFailure(error) {
+                console.error(error);
+            }
+        },
+
+    }];
+</script>
