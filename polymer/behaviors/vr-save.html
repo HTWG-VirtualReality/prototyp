@@ -9,6 +9,10 @@
             var self = this;
             var token = null;
 
+            // get model id from href
+            var href = window.location.href;
+            var modelId = href.substr(href.lastIndexOf('/') + 1, href.length);
+
             getToken();
 
             function getToken() {
@@ -29,14 +33,10 @@
             function _onTokenSuccess(event) {
                 token = event.detail.xhr.response.token_type + ' ' + event.detail.xhr.response.access_token;
 
-                // get model id from href
-                var href = window.location.href;
-                var modelId = href.substr(href.lastIndexOf('/') + 1, href.length);
-
-                _getModel(modelId);
+                _getModel();
             }
 
-            function _getModel(modelId) {
+            function _getModel() {
                 var modelAttributes = {
                     id: 'model',
                     method: 'GET',
@@ -54,10 +54,12 @@
                 // update position
                 old.position.x = modified.xPos;
                 old.position.y = modified.yPos;
+                return old;
             }
 
             function _onModelSuccess(event) {
-                var model = JSON.parse(event.detail.xhr.response.model.uiState);
+                var response = event.detail.xhr.response;
+                var model = JSON.parse(response.model.uiState);
                 var elements = document.querySelector('div#classItems').children;
 
                 for (var i = 0; i < elements.length; i++) {
@@ -65,19 +67,35 @@
                         var index = findIndexOfElement(model.cells, elements[i].id);
 
                         if (index !== -1) {
-                            updateElement(model.cells[index], elements[i]);
+                            model.cells[index] = updateElement(model.cells[index], elements[i]);
                         } else {
                             // TODO createNewElement(elements[i]);
                         }
                     }
                 }
 
-                // back to string
-                event.detail.xhr.response.model.uiState = JSON.stringify(model);
+                // TODO delete element from model
 
+
+                // back to string
+                response.model.uiState = JSON.stringify(model);
+                var myResponse = JSON.stringify(response.model);
                 debugger;
-                // TODO PUT 'event' into database
-                // TODO delete element
+
+                var updateModelAttributes = {
+                    method: 'PUT',
+                    url: 'http://localhost:9000/models/' + modelId + '/definition',
+                    contentType: 'application/json', // charset=UTF-8
+                    body: myResponse,
+                    id: 'update',
+                    headers: {'authorization': token},
+                    withCredentials: true,
+                    success: _onSaveSuccess,
+                    failure: _onFailure
+                };
+
+                self._createRequest(updateModelAttributes);
+
             }
 
             function findIndexOfElement(allElements, elementId) {
@@ -88,8 +106,7 @@
             }
 
             function _onSaveSuccess(event) {
-                debugger;
-                // get ui-state
+                alert("Success, model saved!!");
             }
 
             function _onFailure(error) {
