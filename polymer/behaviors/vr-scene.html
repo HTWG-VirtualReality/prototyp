@@ -45,6 +45,7 @@
         _createGroup: function () {
             var group = new THREE.Group();
             if(navigator.userAgent.match(/iPhone/i)) {
+                // is iphone
                 group.position.setZ(-230);
             } else {
                 group.position.setZ(-300);
