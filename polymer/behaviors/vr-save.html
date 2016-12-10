@@ -50,21 +50,41 @@
                 self._createRequest(modelAttributes);
             }
 
-            function _onModelSuccess() {
+            function updateElement(old, modified) {
+                // update position
+                old.position.x = modified.xPos;
+                old.position.y = modified.yPos;
+            }
+
+            function _onModelSuccess(event) {
                 var model = JSON.parse(event.detail.xhr.response.model.uiState);
+                var elements = document.querySelector('div#classItems').children;
 
-                model.cells.forEach(function (element) {
-                });
+                for (var i = 0; i < elements.length; i++) {
+                    if (elements[i].tagName.indexOf("VR-") !== -1) {
+                        var index = findIndexOfElement(model.cells, elements[i].id);
 
-                var elements = Polymer.dom(this.parentNode).children.filter(function (element) {
-                    return element;
-                });
+                        if (index !== -1) {
+                            updateElement(model.cells[index], elements[i]);
+                        } else {
+                            // TODO createNewElement(elements[i]);
+                        }
+                    }
+                }
+
+                // back to string
+                event.detail.xhr.response.model.uiState = JSON.stringify(model);
 
                 debugger;
+                // TODO PUT 'event' into database
+                // TODO delete element
+            }
 
-                // TODO get all elements
-                // TODO update properties of elements
-                // TODO PUT into database
+            function findIndexOfElement(allElements, elementId) {
+                return allElements.map(function (e) {
+                    return e.id;
+                }).indexOf(elementId);
+
             }
 
             function _onSaveSuccess(event) {
