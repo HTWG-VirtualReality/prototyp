@@ -62,10 +62,12 @@
                 var model = JSON.parse(response.model.uiState);
                 var elements = document.querySelector('div#classItems').children;
 
+                var currentElements = [];
+
                 for (var i = 0; i < elements.length; i++) {
                     if (elements[i].tagName.indexOf("VR-") !== -1) {
                         var index = findIndexOfElement(model.cells, elements[i].id);
-
+                        currentElements.push(elements[i].id);
                         if (index !== -1) {
                             model.cells[index] = updateElement(model.cells[index], elements[i]);
                         } else {
@@ -74,13 +76,16 @@
                     }
                 }
 
-                // TODO delete element from model
-
+                // check if element from database is deleted
+                for (var j = 0; j < model.cells.length; j++) {
+                    if (currentElements.indexOf(model.cells[j].id) === -1) {
+                        model.cells.splice(j, 1);
+                    }
+                }
 
                 // back to string
                 response.model.uiState = JSON.stringify(model);
                 var myResponse = JSON.stringify(response.model);
-                debugger;
 
                 var updateModelAttributes = {
                     method: 'PUT',
