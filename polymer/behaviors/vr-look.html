@@ -53,7 +53,12 @@
         },
 
         _initializeLookButton: function() {
-            var width = 10;
+            var width;
+            if (navigator.userAgent.match(/iPhone/i)) {
+                width = 20;
+            } else {
+                width = 10;
+            }
             var geometry = new THREE.CylinderGeometry(width, width, 5, 32);
             var texture = new THREE.TextureLoader().load( '../images/crosshair.png' );
             var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
