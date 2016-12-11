@@ -2,6 +2,7 @@
 <link rel="import" href="../behaviors/vr-positioner.html">
 <link rel="import" href="../behaviors/vr-size.html">
 <link rel="import" href="../behaviors/vr-image.html">
+<link rel="import" href="../behaviors/vr-text.html">
 
 
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
@@ -12,21 +13,11 @@
     VrElement.Box = Polymer({
         is: "vr-box",
 
-        properties: {
-            text: {
-                type: String,
-                value: ''
-            },
-            textCenter: {
-                type: Boolean,
-                value: false
-            }
-        },
-
         behaviors: [
             VrBehavior.Positioner,
             VrBehavior.Size,
-            VrBehavior.Image
+            VrBehavior.Image,
+            VrBehavior.Text
         ],
 
         observers: [
@@ -66,19 +57,7 @@
             // sides of the box
             var left = 0, right = 1, bottom = 2, top = 3, front = 4, back = 5;
 
-            // create text
-            var dynamicTexture = new THREEx.DynamicTexture(width * 10, height * 10);
-            dynamicTexture.texture.minFilter = THREE.NearestFilter;
-            dynamicTexture.clear('white').drawTextCooked({
-                text: text,
-                font: "64px Verdana",
-                center: this.textCenter
-            });
-
             this.materials[front] =  new THREE.MeshBasicMaterial();
-            if(image == null) {
-                this.materials[front].map = dynamicTexture.texture
-            }
             this.registerFrontSide(this.materials[front]);
 
             // create box and wireframe
