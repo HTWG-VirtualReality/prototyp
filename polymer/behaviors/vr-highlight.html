@@ -6,12 +6,17 @@
     VrBehavior.Highlight = [VrBehavior.ThreeJS, {
 
         properties: {
-            highlight: {
+            _highlight_elements: {
                 type: Array,
                 value: function() {
                     return [];
                 },
                 readOnly: true
+            },
+
+            highlight: {
+                type: Number,
+                value: 1
             },
 
             highlighted: {
@@ -34,13 +39,17 @@
             var COLOR_HIGHLIGHTED = 0xff0000;
 
             this.getThreeJS().on('mousedown', function() {
+                if (self.highlight != 1) {
+                    return;
+                }
+
                 self.highlighted = !self.highlighted;
                 var boxes = Polymer.dom(this.root).children.filter(function(node) {
                     return (node instanceof VrElement.Box);
                 });
                 iterateBoxes(boxes);
 
-                self.highlight.forEach(function(material) {
+                self._highlight_elements.forEach(function(material) {
                     var color = getColor(material);
                     material.color.set(parseInt("0x" + color));
                 })
@@ -74,7 +83,7 @@
             if (!material.color) {
                 throw new Error('material must have color attribute');
             }
-            this.highlight.push(material);
+            this._highlight_elements.push(material);
         }
     }];
 </script>
