@@ -1,0 +1,37 @@
+<link rel="import" href="vr-front-side.html">
+<link rel="import" href="vr-size.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.Text = [VrBehavior.FrontSide, VrBehavior.Size ,{
+        properties: {
+            text: {
+                type: String,
+                value: null
+            },
+            textCenter: {
+                type: Boolean,
+                value: false
+            }
+        },
+
+        attached: function() {
+            if (!this.text) {
+                return;
+            }
+
+            var dynamicTexture = new THREEx.DynamicTexture(this.width * 10, this.height * 10);
+            dynamicTexture.texture.minFilter = THREE.NearestFilter;
+            dynamicTexture.clear('white').drawTextCooked({
+                text: this.text,
+                font: "64px Verdana",
+                center: this.textCenter
+            });
+
+            this.frontSide.forEach(function(material) {
+                material.map = dynamicTexture.texture;
+                material.needsUpdate = true;
+            });
+        }
+    }];
+</script>

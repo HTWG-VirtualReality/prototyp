@@ -1,5 +1,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-positioner.html">
+<link rel="import" href="../behaviors/vr-size.html">
+<link rel="import" href="../behaviors/vr-image.html">
+<link rel="import" href="../behaviors/vr-text.html">
+
+
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
 <script src="../js/threex.dynamic-texture.js"></script>
 
@@ -8,49 +13,16 @@
     VrElement.Box = Polymer({
         is: "vr-box",
 
-        properties: {
-            width: {
-                type: Number,
-                value: 50
-            },
-            height: {
-                type: Number,
-                value: 50
-            },
-            depth: {
-                type: Number,
-                value: 50
-            },
-            text: {
-                type: String,
-                value: ''
-            },
-            textCenter: {
-                type: Boolean,
-                value: false
-            },
-            image: {
-                type: String,
-                value: 'none',
-                observer: '_boxImage'
-            }
-        },
-
         behaviors: [
-            VrBehavior.Positioner
+            VrBehavior.Positioner,
+            VrBehavior.Size,
+            VrBehavior.Image,
+            VrBehavior.Text
         ],
 
         observers: [
             'updateBox(xPos, yPos, width, height, depth, text, image)'
         ],
-
-        _boxImage: function (newValue) {
-            var validTypes = ['create', 'delete', 'move', 'edit'];
-            if (validTypes.indexOf(newValue) === -1) {
-                // set default value
-                this.classType = 'none';
-            }
-        },
 
         updateBox: function (xPos, yPos, width, height, depth, text, image) {
             if (this.getThreeJS().children.length > 0) {
@@ -85,33 +57,8 @@
             // sides of the box
             var left = 0, right = 1, bottom = 2, top = 3, front = 4, back = 5;
 
-            // create text
-            var dynamicTexture = new THREEx.DynamicTexture(width * 10, height * 10);
-            dynamicTexture.texture.minFilter = THREE.NearestFilter;
-            dynamicTexture.clear('white').drawTextCooked({
-                text: text,
-                font: "64px Verdana",
-                center: this.textCenter
-            });
-
-
-            var frontSideElement;
-
-            if(image === 'create') {
-                frontSideElement = new THREE.TextureLoader().load( 'images/create.png' );
-            } else if(image === 'delete') {
-                frontSideElement = new THREE.TextureLoader().load( 'images/delete.png' );
-            } else if(image === 'edit') {
-                frontSideElement = new THREE.TextureLoader().load( 'images/edit.png' );
-            } else if(image === 'move') {
-                frontSideElement = new THREE.TextureLoader().load( 'images/move.png' );
-            } else {
-                frontSideElement = dynamicTexture.texture
-            }
-
-            this.materials[front] =  new THREE.MeshBasicMaterial({
-                map: frontSideElement
-            });
+            this.materials[front] =  new THREE.MeshBasicMaterial();
+            this.registerFrontSide(this.materials[front]);
 
             // create box and wireframe
             var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth));
