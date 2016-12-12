@@ -1,9 +1,10 @@
 <link rel="import" href="vr-positioner.html">
 <link rel="import" href="vr-size.html">
+<link rel="import" href="vr-highlight.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Resize = [VrBehavior.Positioner, VrBehavior.Size, {
+    VrBehavior.Resize = [VrBehavior.Positioner, VrBehavior.Size, VrBehavior.Highlight, {
 
         properties: {
             resizeVertical: {
@@ -21,6 +22,10 @@
         ],
 
         attached: function() {
+            if (!this.highlight) {
+                return
+            }
+
             var group = this._createGroup();
             this._initiateMeshes(group);
 

@@ -1,11 +1,15 @@
-<link rel="import" href="vr-three.html">
+<link rel="import" href="vr-highlight.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Look = [VrBehavior.ThreeJS, {
+    VrBehavior.Look = [VrBehavior.Highlight, {
 
         observers: ['_handleResizeLook(width)'],
         attached: function() {
+            if (!this.highlight) {
+                return;
+            }
+
             // this object is needed because of the eventlistener
             this.LookBehavior = {
                 mesh: null,
@@ -24,8 +28,10 @@
             if(!this.highlighted) {
                 //destroy look button and eventlistener
                 var mesh = this.LookBehavior.mesh;
-                this._handleLookListener(mesh.on.bind(mesh));
-                this.getThreeJS().remove(mesh);
+                if (mesh) {
+                    this._handleLookListener(mesh.on.bind(mesh));
+                    this.getThreeJS().remove(mesh);
+                }
             } else {
                 //create look button and eventlistener
                 var mesh = this._initializeLookButton();

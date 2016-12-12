@@ -1,11 +1,15 @@
-<link rel="import" href="vr-three.html">
+<link rel="import" href="vr-highlight.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Delete = [VrBehavior.ThreeJS, {
+    VrBehavior.Delete = [VrBehavior.Highlight, {
 
         observers: ['_handleResizeDelete(width)'],
         attached: function() {
+            if (!this.highlight) {
+                return;
+            }
+
             // this object is needed because of the eventlistener
             this.DeleteBehavior = {
                 mesh: null,
@@ -24,8 +28,10 @@
             if(!this.highlighted) {
                 //destroy delete button and eventlistener
                 var mesh = this.DeleteBehavior.mesh;
-                this._handleDeleteListener(mesh.on.bind(mesh));
-                this.getThreeJS().remove(mesh);
+                if (mesh) {
+                    this._handleDeleteListener(mesh.on.bind(mesh));
+                    this.getThreeJS().remove(mesh);
+                }
             } else {
                 //create delete button and eventlistener
                 var mesh = this._initializeDeleteButton();

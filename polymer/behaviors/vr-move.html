@@ -1,12 +1,17 @@
 <link rel="import" href="vr-positioner.html">
+<link rel="import" href="vr-highlight.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Move = [VrBehavior.Positioner, {
+    VrBehavior.Move = [VrBehavior.Positioner, VrBehavior.Highlight, {
 
         ready: function () {
             function onMouseDown(event) {
                 event.origDomEvent.stopImmediatePropagation();
+                if (!this.highlight) {
+                    return;
+                }
+
                 var dom = event.origDomEvent.target;
                 var position = {
                     x: event.origDomEvent.clientX,

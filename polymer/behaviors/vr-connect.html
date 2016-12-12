@@ -1,12 +1,16 @@
-<link rel="import" href="vr-three.html">
+<link rel="import" href="vr-highlight.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Connect = [VrBehavior.ThreeJS, {
+    VrBehavior.Connect = [VrBehavior.Highlight, {
 
         observers: ['_handleResizeConnect(width)'],
 
         attached: function() {
+            if (!this.highlight) {
+                return;
+            }
+
             this.getThreeJS().on('mousedown', this._handleClickConnectButton.bind(this));
             this.ConnectBehavior = {
                 fromID: this._getPolymerElement(this.getThreeJS().id).id,
@@ -30,8 +34,10 @@
             } else {
                 //destroy Connect button and eventlistener
                 if(this.ConnectBehavior.connectActive) this._executeCancel();
-                this._deregisterConnectListener(this.ConnectBehavior.meshes);
-                this._removeConnectButton();
+                if (this.ConnectBehavior.meshes) {
+                    this._deregisterConnectListener(this.ConnectBehavior.meshes);
+                    this._removeConnectButton();
+                }
             }
         },
 
