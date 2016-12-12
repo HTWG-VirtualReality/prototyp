@@ -7,12 +7,12 @@
 
         properties: {
             resizeVertical: {
-                type: Number,
-                value: 1
+                type: Boolean,
+                value: false
             },
             resizeHorizontal: {
-                type: Number,
-                value: 1
+                type: Boolean,
+                value: false
             }
         },
 
@@ -131,17 +131,17 @@
                 return cond ? (position - event) : (event - position);
             }
 
-            if (this.resizeHorizontal == 1) {
+            if (this.resizeHorizontal) {
                 this.width += calculate(isLeft(), event.clientX, position.x);
             }
-            if (this.resizeVertical == 1) {
+            if (this.resizeVertical) {
                 this.height += calculate(isTop(), event.clientY, position.y);
             }
 
-            if (isLeft() && this.resizeHorizontal == 1) {
+            if (isLeft() && this.resizeHorizontal) {
                 this.xPos -= position.x - event.clientX;
             }
-            if (isTop() && this.resizeVertical == 1) {
+            if (isTop() && this.resizeVertical) {
                 this.yPos += position.y - event.clientY;
             }
         },
