@@ -5,10 +5,21 @@
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.Move = [VrBehavior.Positioner, VrBehavior.Highlight, {
 
+        properties: {
+            moveVertical: {
+                type: Boolean,
+                value: false
+            },
+            moveHorizontal: {
+                type: Boolean,
+                value: false
+            }
+        },
+
         ready: function () {
             function onMouseDown(event) {
                 event.origDomEvent.stopImmediatePropagation();
-                if (!this.highlight) {
+                if (!self.highlight || !self.moveVertical && !self.moveHorizontal) {
                     return;
                 }
 
@@ -27,10 +38,7 @@
                 dom.addEventListener('mouseout', reset);
 
                 function onMouseMove(e) {
-                    // calculate new position of element
-                    self.xPos += e.clientX - position.x;
-                    self.yPos -= e.clientY - position.y;
-
+                    updateElementPosition(e.clientX - position.x, position.y - e.clientY);
                     // update position
                     position.x = e.clientX;
                     position.y = e.clientY;
@@ -57,14 +65,17 @@
                     };
 
                     // TODO: improve calculation, may could not work on other zoom level
-                    movement.x *= 400;
-                    movement.y *= 400;
-
-                    // update position
-                    self.xPos += movement.x;
-                    self.yPos += movement.y;
+                    updateElementPosition(movement.x * 400, movement.y * 400);
 
                     dom.removeEventListener('touchend', touchEnd);
+                }
+            }
+            function updateElementPosition(xDiff, yDiff) {
+                if (self.moveHorizontal) {
+                    self.xPos += xDiff;
+                }
+                if (self.moveVertical) {
+                    self.yPos += yDiff;
                 }
             }
 
