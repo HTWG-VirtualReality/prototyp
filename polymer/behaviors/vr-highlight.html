@@ -15,8 +15,8 @@
             },
 
             highlight: {
-                type: Number,
-                value: 1
+                type: Boolean,
+                value: false
             },
 
             highlighted: {
@@ -39,7 +39,7 @@
             var COLOR_HIGHLIGHTED = 0xff0000;
 
             this.getThreeJS().on('mousedown', function() {
-                if (self.highlight != 1) {
+                if (!self.highlight) {
                     return;
                 }
 
