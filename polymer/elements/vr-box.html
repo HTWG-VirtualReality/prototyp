@@ -3,7 +3,7 @@
 <link rel="import" href="../behaviors/vr-size.html">
 <link rel="import" href="../behaviors/vr-image.html">
 <link rel="import" href="../behaviors/vr-text.html">
-
+<link rel="import" href="../behaviors/vr-highlight.html">
 
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
 <script src="../js/threex.dynamic-texture.js"></script>
@@ -17,7 +17,8 @@
             VrBehavior.Positioner,
             VrBehavior.Size,
             VrBehavior.Image,
-            VrBehavior.Text
+            VrBehavior.Text,
+            VrBehavior.Highlight
         ],
 
         observers: [
@@ -25,7 +26,7 @@
         ],
 
         updateBox: function (xPos, yPos, width, height, depth, text, image) {
-            if (this.getThreeJS().children.length > 0) {
+            if (this.getThreeJS()) {
                 this.getThreeJS().remove(this.cube);
                 this.getThreeJS().remove(this.wireframe);
 
@@ -51,6 +52,7 @@
             this._createBox(this.width, this.height, this.depth, this.text, this.image);
             this.getThreeJS().add(this.cube);
             this.getThreeJS().add(this.wireframe);
+            this.addHighlight(this.wireframe.material);
         },
 
         _createBox: function (width, height, depth, text, image) {
@@ -65,14 +67,6 @@
             this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
             this.wireframe = new THREE.BoxHelper(this.cube);
             this.wireframe.material.color.set(0x000000);
-        },
-
-        highlight: function () {
-            if (this.wireframe.material.color.r == 0) {
-                this.wireframe.material.color.set(0xff0000);
-            } else {
-                this.wireframe.material.color.set(0x000000);
-            }
         }
 
     });
