@@ -7,6 +7,7 @@ VrSizeDatastruct = function(min, max, percentage) {
         if(exists(min)) { result = calculate(min, result, comp(greater)); }
         if(exists(max)) { result = calculate(max, result, comp(smaller)); }
 
+        //return negate(result);
         return result;
 
         function calculate(sizeObj, currentResult, func) {
@@ -33,5 +34,7 @@ VrSizeDatastruct = function(min, max, percentage) {
         function smaller(a,b) { return (a<b) ? a : b; }
         function greater(a,b) { return (a>b) ? a : b; }
         function exists(value) { return value !== null && value !== undefined && value !== {}; }
+        // TODO: not neccessary
+        //function negate(result) { return {width: result.width * -1, height: result.height * -1}; }
     }
 }

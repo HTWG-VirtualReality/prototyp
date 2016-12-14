@@ -111,9 +111,9 @@
         ready: function () {
             // setUp size information => gets generated
             this.sizeInformations = [
-                VrSizeDatastruct({height: 25}, {height: 25}, {width: 1}),
+                VrSizeDatastruct(null, null, {height: 0.3, width: 1}),
                 VrSizeDatastruct(null, null, {height: 0.3, width:1}),
-                VrSizeDatastruct(null, null, {height: 0.3, width:1})
+                VrSizeDatastruct(null, null, {height: 0.4, width:1})
             ]
             this.getThreeJS().on('click', this.onClick.bind(this));
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
@@ -140,14 +140,14 @@
             return this.sizeInformations.map(function (element, i){
                 var position = {x: 0, y: y};
                 var size = element(width, height);
-                y += size.height;
+                y -= size.height;
                 return createProperties(position, size, texts[i]);
             });
 
             function createProperties(position, size, text) {
                 return {
                     x: position.x,
-                    y: position.y,
+                    y: position.y - (size.height/2), // (size.height/2) to set y in center
                     width: size.width,
                     height: size.height,
                     depth: size.depth || 10,
