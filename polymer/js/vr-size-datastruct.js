@@ -1,6 +1,6 @@
 // datastruct for size
 VrSizeDatastruct = function(min, max, percentage) {
-    this.calculateNewSize = function (width, height) {
+    return function (width, height) {
         var result = { width: 0, height: 0};
 
         if(exists(percentage)) { result = calculate(percentage, result, calc(width,height,multiply)); };
