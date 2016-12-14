@@ -7,6 +7,8 @@
 <link rel="import" href="../behaviors/vr-highlight.html">
 <link rel="import" href="./vr-box.html">
 
+<script src="../js/vr-size-datastruct.js"></script>
+
 <dom-module id="vr-class">
     <template>
         <template is="dom-repeat" items="{{boxItems}}">
@@ -107,6 +109,12 @@
         },
 
         ready: function () {
+            // setUp size information => gets generated
+            this.sizeInformations = [
+                new VrSizeDatastruct({height: 25}, {height: 25}, {width: 1}),
+                new VrSizeDatastruct(null, null, {height: 0.3, width:1}),
+                new VrSizeDatastruct(null, null, {height: 0.3, width:1})
+            ]
             this.getThreeJS().on('click', this.onClick.bind(this));
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
         },
@@ -126,65 +134,27 @@
 
         _getBoxItemProperties: function (width, height, depth, text1, text2, text3, classType) {
             /* Hopefully not so Magic Calculation */
+            var texts = [text1, text2, text3];
+            var y = 0;
 
-            // calculate box heights
-            // TODO: texture erstellung auslagern
-            var dynamicTexture = new THREEx.DynamicTexture(this.width * 10, this.height * 10);
-            dynamicTexture.texture.minFilter = THREE.NearestFilter;
-            var heightBox1 = 25; // fix default height for first box
-            var heightBox2 = dynamicTexture.computeHeight(text2, "64px Verdana") / 10;
-            var heightBox3 = dynamicTexture.computeHeight(text3, "64px Verdana") / 10;
+            return this.sizeInformations.map(function (element, i){
+                var position = {x: 0, y: y};
+                var size = element.calculateNewSize(width, height);
+                y += size.height;
+                return createProperties(position, size, texts[i]);
+            });
 
-            // calculate total height
-            var sumHeight = heightBox1 + heightBox2 + heightBox3;
-            if (sumHeight < height) {
-                heightBox3 += height - sumHeight;
-            } else {
-                this.height = sumHeight;
-            }
-
-            // calculate y pos
-            var yValueBox1 = -(heightBox1 / 2);
-            var yValueBox2 = -(heightBox1 + heightBox2 / 2);
-            var yValueBox3 = -(heightBox1 + heightBox2 + heightBox3 / 2);
-
-            if (classType === 'abstract') {
-                text1 = '<<abstract>>; ' + text1
-            } else if (classType === 'interface') {
-                text1 = '<<interface>>; ' + text1
-            }
-
-            var properties = [
-                {
-                    x: 0,
-                    y: yValueBox1,
-                    width: width,
-                    height: heightBox1,
-                    depth: depth,
-                    text: text1,
-                    textCenter: true
-                },
-                {
-                    x: 0,
-                    y: yValueBox2,
-                    width: width,
-                    height: heightBox2,
-                    depth: depth,
-                    text: text2,
-                    textCenter: false
-                },
-                {
-                    x: 0,
-                    y: yValueBox3,
-                    width: width,
-                    height: heightBox3,
-                    depth: depth,
-                    text: text3,
-                    textCenter: false
+            function createProperties(position, size, text) {
+                return {
+                    x: position.x,
+                    y: position.y,
+                    width: size.width,
+                    height: size.height,
+                    depth: size.depth || 10,
+                    text: text.str,
+                    textCenter: text.textCenter
                 }
-            ];
-
-            return properties;
+            }
         },
 
         // simple on click => triggered in vr-scene.html
