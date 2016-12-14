@@ -133,7 +133,6 @@
         },
 
         _getBoxItemProperties: function (width, height, depth, text1, text2, text3, classType) {
-            /* Hopefully not so Magic Calculation */
             var texts = [text1, text2, text3];
             var y = 0;
 
@@ -151,8 +150,8 @@
                     width: size.width,
                     height: size.height,
                     depth: size.depth || 10,
-                    text: text.str,
-                    textCenter: text.textCenter
+                    text: text,
+                    textCenter: true
                 }
             }
         },
