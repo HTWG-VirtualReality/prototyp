@@ -111,9 +111,9 @@
         ready: function () {
             // setUp size information => gets generated
             this.sizeInformations = [
-                VrSizeDatastruct(null, null, {height: 0.3, width: 1}),
-                VrSizeDatastruct(null, null, {height: 0.3, width:1}),
-                VrSizeDatastruct(null, null, {height: 0.4, width:1})
+                new VrSizeDatastruct({height: 25}, {height: 25}, {width:1}),
+                new VrSizeDatastruct(null, null, {height: 0.3, width:1}),
+                new VrSizeDatastruct(null, null, null)
             ]
             this.getThreeJS().on('click', this.onClick.bind(this));
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
@@ -136,9 +136,13 @@
             var texts = [text1, text2, text3];
             var y = 0;
 
+            var adaptable = this.sizeInformations.filter(isAdaptable(true)).length;
+            var adaptableHeight = (calculateAdaptableHeight.bind(this))(height, adaptable);
+
             return this.sizeInformations.map(function (element, i){
                 var position = {x: 0, y: y};
-                var size = element(width, height);
+                var size = !element.isAdaptable() ? element.calculateSize(width, height)
+                    : { width:width, height: adaptableHeight > 0 ? adaptableHeight : 0};
                 y -= size.height;
                 return createProperties(position, size, texts[i]);
             });
@@ -154,6 +158,23 @@
                     textCenter: true
                 }
             }
+
+            function calculateAdaptableHeight(height, adaptable) {
+                if(adaptable == 0) return 0;
+                return (height - this.sizeInformations.filter(isAdaptable(false))
+                    .map(calculateHeight)
+                    .reduce(add, 0)) / adaptable;
+            }
+
+            function isAdaptable(boolean){
+                return function(element) { return element.isAdaptable() === boolean; }
+            }
+
+            function calculateHeight(element) {
+                return element.calculateSize(width, height).height
+            }
+
+            function add(a, b) { return a + b }
         },
 
         // simple on click => triggered in vr-scene.html
