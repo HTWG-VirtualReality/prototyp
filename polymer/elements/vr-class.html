@@ -5,6 +5,7 @@
 <link rel="import" href="../behaviors/vr-connect-extended.html">
 <link rel="import" href="../behaviors/vr-look.html">
 <link rel="import" href="../behaviors/vr-highlight.html">
+<link rel="import" href="../behaviors/vr-inner-sizing.html">
 <link rel="import" href="./vr-box.html">
 
 <script src="../js/vr-size-datastruct.js"></script>
@@ -54,7 +55,8 @@
             VrBehavior.Resize,
             VrBehavior.Delete,
             VrBehavior.ConnectExtended,
-            VrBehavior.Look
+            VrBehavior.Look,
+            VrBehavior.InnerSizing
         ],
 
         observers: [
@@ -77,10 +79,10 @@
                     this.width = newWidth < this.maxWidth ? newWidth : this.maxWidth;
                 }
 
-                if (this.boxItems) {
-                    var properties = this._getBoxItemProperties(this.width, height, depth, text1, text2, text3, classType);
-                    this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
-                }
+                // if (this.boxItems) {
+                //     var properties = this._getBoxItemProperties(this.width, height, depth, text1, text2, text3, classType);
+                //     this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
+                // }
                 this.fire('vr-resize', {});
             }
         },
@@ -109,14 +111,7 @@
         },
 
         ready: function () {
-            // setUp size information => gets generated
-            this.sizeInformations = {
-                "0": VrSizeDatastruct({height: 25}, {height: 25}, {height: 0.2, width:1}),
-                "1": VrSizeDatastruct(null, null, {height: 0.4, width:1}),
-                "2": VrSizeDatastruct(null, null, {height: 0.4, width:1})
-            }
             this.getThreeJS().on('click', this.onClick.bind(this));
-            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
         },
 
         attached: function () {
@@ -131,65 +126,7 @@
                 return node.localName != 'template';
             });
         },
-
-        _getBoxItemProperties: function (width, height, depth, text1, text2, text3, classType) {
-            var texts = [text1, text2, text3];
-            var y = 0;
-
-            var size = (calculateSize.bind(this))([], width, height, 1, Object.keys(this.sizeInformations), 0);
-            var y = 0;
-            var properties = size.map(function(size, i){
-                var position = {x: 0, y: y};
-                y -= size.height;
-                return createProperties(position, size, texts[i])
-            });
-
-            return properties;
-
-            function calculateSize(arr, width, height, percentage, posibilities, i) {
-                var tmpHeight = 0;
-                var tmpPercentage = 0;
-                var tmpposibilities = [];
-                for(var key in this.sizeInformations) {
-                    if(posibilities.indexOf(String(key)) == -1) { continue; }
-                    var tmp = this.sizeInformations[key](width, proportion(1), height, proportion(percentage));
-                    tmpHeight += tmp.diffHeight;
-                    tmpPercentage += tmp.percentageHeight;
-                    arr = append(arr, key, tmp.size);
-                    if(tmp.percentageHeight != 0) { tmpposibilities.push(key); }
-                }
-
-                if(tmpHeight == 0) { return arr; }
-                return (calculateSize.bind(this))(arr, width, height + tmpHeight, tmpPercentage, tmpposibilities, ++i);
-
-                function append(arr, index, value) {
-                    index = parseInt(index, 10);
-                    if(arr[index] === undefined) {
-                        arr.push(value)
-                    } else {
-                        arr[index] = value;
-                    }
-                    return arr;
-                }
-            }
-
-            function proportion(percentage) {
-                return 1 / percentage;
-            }
-
-            function createProperties(position, size, text) {
-                return {
-                    x: position.x,
-                    y: position.y - (size.height/2), // (size.height/2) to set y in center
-                    width: size.width,
-                    height: size.height,
-                    depth: size.depth || 10,
-                    text: text,
-                    textCenter: true
-                }
-            }
-        },
-
+        
         // simple on click => triggered in vr-scene.html
         onClick: function () {
             var self = this;
