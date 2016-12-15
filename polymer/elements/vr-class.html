@@ -110,11 +110,11 @@
 
         ready: function () {
             // setUp size information => gets generated
-            this.sizeInformations = [
-                new VrSizeDatastruct({height: 25}, {height: 25}, {width:1}),
-                new VrSizeDatastruct(null, null, {height: 0.3, width:1}),
-                new VrSizeDatastruct(null, null, null)
-            ]
+            this.sizeInformations = {
+                "0": new VrSizeDatastruct({height: 25}, {height: 25}, {height: 0.2, width:1}),
+                "1": new VrSizeDatastruct(null, null, {height: 0.4, width:1}),
+                "2": new VrSizeDatastruct(null, null, {height: 0.4, width:1})
+            }
             this.getThreeJS().on('click', this.onClick.bind(this));
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
         },
@@ -136,16 +136,82 @@
             var texts = [text1, text2, text3];
             var y = 0;
 
-            var adaptable = this.sizeInformations.filter(isAdaptable(true)).length;
-            var adaptableHeight = (calculateAdaptableHeight.bind(this))(height, adaptable);
-
-            return this.sizeInformations.map(function (element, i){
+            var size = (calculateSize.bind(this))([], width, height, 1, Object.keys(this.sizeInformations), 0);
+            var y = 0;
+            var properties = size.map(function(size, i){
                 var position = {x: 0, y: y};
-                var size = !element.isAdaptable() ? element.calculateSize(width, height)
-                    : { width:width, height: adaptableHeight > 0 ? adaptableHeight : 0};
                 y -= size.height;
-                return createProperties(position, size, texts[i]);
+                return createProperties(position, size, texts[i])
             });
+
+            return properties;
+
+            function calculateSize(arr, width, height, percentage, posibilities, i) {
+
+                var tmpHeight = 0;
+                var tmpPercentage = 0;
+                var tmpposibilities = [];
+                for(var key in this.sizeInformations) {
+                    if(posibilities.indexOf(String(key)) == -1) { continue; }
+                    var tmp = this.sizeInformations[key]
+                        .calculateSize(width, proportion(1), height, proportion(percentage));
+                    tmpHeight += tmp.diffMinHeight;
+                    tmpPercentage += tmp.percentageHeight;
+                    arr = append(arr, key, tmp.size);
+                    if(tmp.percentageHeight != 0) { tmpposibilities.push(key); }
+                }
+
+                if(tmpHeight == 0) { return arr; }
+                return (calculateSize.bind(this))(arr, width, height + tmpHeight, tmpPercentage, tmpposibilities, ++i);
+
+                function append(arr, index, value) {
+                    index = parseInt(index, 10);
+                    if(arr[index] === undefined) {
+                        arr.push(value)
+                    } else {
+                        arr[index] = value;
+                    }
+                    return arr;
+                }
+            }
+
+            function proportion(percentage) {
+                return 1 / percentage;
+            }
+
+
+            function filterMap(map, filter) {
+                var result = {};
+                for(var key in map) {
+                    if(filter(map[key], parseInt(key, 10))) { result[key] = map[key] }
+                }
+                return result;
+            }
+
+            function isUndefined(maximumHeightsMap) {
+                var keys = Object.keys(maximumHeightsMap);
+                return function(element, index) {
+                    return keys.indexOf(String(index)) == -1;
+                }
+            }
+
+            function isMaximalHeight(items) {
+                return function(element, index) {
+                    if(items === null || items === undefined) return false;
+                    var maxHeight = element.getMaxHeight();
+                    return (maxHeight !== null) ? maxHeight >= items[index] : false;
+                };
+            }
+
+            function getHeight(items) {
+                return function(index) {
+                    return items[parseInt(index, 10)].height;
+                }
+            }
+
+            function getPercentageHeight(element) {
+                return element.getPercentageHeight();
+            }
 
             function createProperties(position, size, text) {
                 return {
