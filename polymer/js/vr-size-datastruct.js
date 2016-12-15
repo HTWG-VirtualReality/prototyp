@@ -39,21 +39,6 @@ VrSizeDatastruct = function(min, max, percentage) {
             function order2(a,b) {return b-a;}
 
             function exists(value) { return value !== null && value !== undefined && value !== {}; }
-        },
-
-        isAdaptable: function() {
-            return (exists(percentage) || exists(min) || exists(max)) ? false : true;
-            function exists(value) { return value !== null && value !== undefined && value !== {}; }
-        },
-
-        getMaxHeight: function() {
-            return (exists(max) && exists(max.height)) ? max.height : null;
-            function exists(value) { return value !== null && value !== undefined && value !== {}; }
-        },
-
-        getPercentageHeight: function() {
-            return (exists(percentage) && exists(percentage.height)) ? percentage.height : null;
-            function exists(value) { return value !== null && value !== undefined && value !== {}; }
         }
     }
 }

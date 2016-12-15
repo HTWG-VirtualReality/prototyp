@@ -178,40 +178,6 @@
                 return 1 / percentage;
             }
 
-
-            function filterMap(map, filter) {
-                var result = {};
-                for(var key in map) {
-                    if(filter(map[key], parseInt(key, 10))) { result[key] = map[key] }
-                }
-                return result;
-            }
-
-            function isUndefined(maximumHeightsMap) {
-                var keys = Object.keys(maximumHeightsMap);
-                return function(element, index) {
-                    return keys.indexOf(String(index)) == -1;
-                }
-            }
-
-            function isMaximalHeight(items) {
-                return function(element, index) {
-                    if(items === null || items === undefined) return false;
-                    var maxHeight = element.getMaxHeight();
-                    return (maxHeight !== null) ? maxHeight >= items[index] : false;
-                };
-            }
-
-            function getHeight(items) {
-                return function(index) {
-                    return items[parseInt(index, 10)].height;
-                }
-            }
-
-            function getPercentageHeight(element) {
-                return element.getPercentageHeight();
-            }
-
             function createProperties(position, size, text) {
                 return {
                     x: position.x,
@@ -223,23 +189,6 @@
                     textCenter: true
                 }
             }
-
-            function calculateAdaptableHeight(height, adaptable) {
-                if(adaptable == 0) return 0;
-                return (height - this.sizeInformations.filter(isAdaptable(false))
-                    .map(calculateHeight)
-                    .reduce(add, 0)) / adaptable;
-            }
-
-            function isAdaptable(boolean){
-                return function(element) { return element.isAdaptable() === boolean; }
-            }
-
-            function calculateHeight(element) {
-                return element.calculateSize(width, height).height
-            }
-
-            function add(a, b) { return a + b }
         },
 
         // simple on click => triggered in vr-scene.html
