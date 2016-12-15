@@ -111,9 +111,9 @@
         ready: function () {
             // setUp size information => gets generated
             this.sizeInformations = {
-                "0": new VrSizeDatastruct({height: 25}, {height: 25}, {height: 0.2, width:1}),
-                "1": new VrSizeDatastruct(null, null, {height: 0.4, width:1}),
-                "2": new VrSizeDatastruct(null, null, {height: 0.4, width:1})
+                "0": VrSizeDatastruct({height: 25}, {height: 25}, {height: 0.2, width:1}),
+                "1": VrSizeDatastruct(null, null, {height: 0.4, width:1}),
+                "2": VrSizeDatastruct(null, null, {height: 0.4, width:1})
             }
             this.getThreeJS().on('click', this.onClick.bind(this));
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
@@ -152,8 +152,7 @@
                 var tmpposibilities = [];
                 for(var key in this.sizeInformations) {
                     if(posibilities.indexOf(String(key)) == -1) { continue; }
-                    var tmp = this.sizeInformations[key]
-                        .calculateSize(width, proportion(1), height, proportion(percentage));
+                    var tmp = this.sizeInformations[key](width, proportion(1), height, proportion(percentage));
                     tmpHeight += tmp.diffMinHeight;
                     tmpPercentage += tmp.percentageHeight;
                     arr = append(arr, key, tmp.size);
