@@ -26,18 +26,20 @@
 
         _sizeInnerElements: function(width, height) {
             var texts = [this.text1, this.text2, this.text3];
-            var y = 0;
 
+            // calculate sizes
             var size = (calculateSize.bind(this))([], width, height, 1, Object.keys(this.sizeInformations));
-            var y = 0;
-            var properties = size.map(function(size, i){
-                var position = {x: 0, y: y};
-                y -= size.height;
-                return createProperties(position, size, texts[i])
-            });
+
+            // create properties
+            var properties = size.map(handleY(0, function(size, i, y){
+                return createProperties({x: 0, y: y}, size, texts[i]);
+            }));
 
             return properties;
 
+            // gets executed until hole space(width/heigth) is used
+            // it needs more than one iteration if an element reaches its
+            // min or max size
             function calculateSize(arr, width, height, percentage, posibilities) {
                 var tmpHeight = tmpPercentage = 0;
                 var tmpPosibilities = [];
@@ -45,26 +47,35 @@
                 for(var key in this.sizeInformations) {
                     if(posibilities.indexOf(String(key)) == -1) { continue; }
                     var tmp = this.sizeInformations[key](width, proportion(1), height, proportion(percentage));
-                    tmpHeight += tmp.diffHeight;
+                    tmpHeight += tmp.diffHeight; 
                     tmpPercentage += tmp.percentageHeight;
                     arr = append(arr, key, tmp.size);
                     if(tmp.percentageHeight != 0) { tmpPosibilities.push(key); }
                 }
 
-                if(tmpHeight == 0) { return arr; }
-                return (calculateSize.bind(this))(arr, width, height + tmpHeight, tmpPercentage, tmpPosibilities);
+                // can cause endrecursion if maxWidth and minWidth
+                //aren't set properly
+                return (tmpHeight == 0) ? arr :
+                    (calculateSize.bind(this))(arr, width, height + tmpHeight, tmpPercentage, tmpPosibilities);
+            }
 
-                function append(arr, index, value) {
-                    index = parseInt(index, 10);
-                    if(arr[index] === undefined) {
-                        arr.push(value)
-                    } else {
-                        arr[index] = value;
-                    }
-                    return arr;
+            function handleY(y, func) {
+                return function(size, i) {
+                    var property = func(size, i, y);
+                    y -= size.height;
+                    return property;
                 }
             }
 
+            function append(arr, index, value) {
+                index = parseInt(index, 10);
+                if(arr[index] === undefined) { arr.push(value) } else { arr[index] = value; }
+                return arr;
+            }
+
+            // important if on element has reached it min/max height
+            // calculates how much the percentage of all elements should be
+            // increased
             function proportion(percentage) {
                 return 1 / percentage;
             }
