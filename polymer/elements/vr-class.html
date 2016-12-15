@@ -153,7 +153,7 @@
                 for(var key in this.sizeInformations) {
                     if(posibilities.indexOf(String(key)) == -1) { continue; }
                     var tmp = this.sizeInformations[key](width, proportion(1), height, proportion(percentage));
-                    tmpHeight += tmp.diffMinHeight;
+                    tmpHeight += tmp.diffHeight;
                     tmpPercentage += tmp.percentageHeight;
                     arr = append(arr, key, tmp.size);
                     if(tmp.percentageHeight != 0) { tmpposibilities.push(key); }
