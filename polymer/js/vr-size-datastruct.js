@@ -4,25 +4,39 @@ VrSizeDatastruct = function(min, max, percentage) {
     return {
         calculateSize: function (width, propWidth, height, propHeight) {
             var result = { width: 0, height: 0};
-            console.log(propHeight)
 
             result.width = width * (percentage.width * propWidth);
             result.height = height * (percentage.height * propHeight);
 
-            var diff = calculateDiff(min, result.height);
-            // adjust diff to minimum
-            console.log("diff: " + diff)
-            if(diff < 0) { result.height -= diff; }
+            var diff = calculateDiff(min, max, result.height);
+
+            if(diff.min) { result.height -= diff.value }
+            else if(diff.max) { result.height += diff.value }
 
             return {
                 size: result,
-                diffMinHeight: (diff < 0) ? -(result.height) : 0,
-                percentageHeight:  (diff > 0) ? percentage.height : 0
+                diffMinHeight: (diff.value < 0) ? -(result.height) : 0,
+                percentageHeight:  (diff.value >= 0) ? percentage.height : 0
             }
 
-            function calculateDiff(obj, height) {
-                return height - ((exists(obj) && exists(obj.height)) ? obj.height : 0);
+            function calculateDiff(min, max, height) {
+                var diff = sub(order1, min, height);
+                var min = (diff < 0) ? true : false;
+                diff = (diff < 0) ? diff : sub(order2, max, height);
+                return {
+                    value: diff,
+                    min: min,
+                    max: (diff < 0 && !min) ? true : false
+                }
             }
+
+            function sub(func, obj, height) {
+                if ((exists(obj) && exists(obj.height))) { return func(height, obj.height); }
+                return 0;
+            }
+
+            function order1(a,b) {return a-b;}
+            function order2(a,b) {return b-a;}
 
             function exists(value) { return value !== null && value !== undefined && value !== {}; }
         },
