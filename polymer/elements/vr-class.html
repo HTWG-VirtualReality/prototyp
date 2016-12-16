@@ -112,16 +112,18 @@
         },
 
         attached: function () {
-            this._getChildren().forEach(function (box) {
-                this.getThreeJS().add(box.getThreeJS());
-            }.bind(this));
-        },
-
-        _getChildren: function () {
-            // return all children except template element
-            return Polymer.dom(this.root).children.filter(function (node) {
-                return node.localName != 'template';
+            var self = this;
+            var boxes = Polymer.dom(this.root).children.filter(function(node) {
+                return node instanceof VrElement.Box;
             });
+
+            boxes.forEach(function(box) {
+                self.getThreeJS().add(box.getThreeJS());
+
+                box._highlight_elements.forEach(function(material) {
+                    self.addHighlight(material);
+                });
+            }.bind(this));
         },
 
         _getBoxItemProperties: function (width, height, depth, text1, text2, text3, classType) {
