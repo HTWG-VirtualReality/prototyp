@@ -1,6 +1,6 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-positioner.html">
-<link rel="import" href="../behaviors/vr-size.html">
+<link rel="import" href="../behaviors/vr-resize.html">
 <link rel="import" href="../behaviors/vr-image.html">
 <link rel="import" href="../behaviors/vr-text.html">
 <link rel="import" href="../behaviors/vr-highlight.html">
@@ -22,7 +22,7 @@
         ],
 
         observers: [
-            '_updateBoxSize(width, height)'
+            '_updateBoxSize(width, height, depth)'
         ],
 
         ready: function() {
@@ -59,11 +59,20 @@
         },
 
         _updateBoxSize: function(width, height, depth) {
+            function updatePosition(object3d) {
+                object3d.position.x = width/2;
+                object3d.position.y = -height/2;
+                object3d.position.z = depth/2;
+            }
+
             if (this.getThreeJS()) {
                 this.mesh.geometry = new THREE.BoxGeometry(width, height, depth);
+                updatePosition(this.mesh);
                 this.mesh.updateMorphTargets();
 
-                this.wireFrame.update(this.mesh);
+                this.mesh.geometry.computeBoundingBox();
+                this.wireFrame.update(this.mesh.geometry.boundingBox);
+                updatePosition(this.wireFrame);
             }
         }
 
