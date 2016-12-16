@@ -10,9 +10,15 @@
 <dom-module id="vr-class">
     <template>
         <template is="dom-repeat" items="{{boxItems}}">
-            <vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"
-                    height="{{item.height}}" depth="{{item.depth}}"
-                    text="{{item.text}}" text-center="{{item.textCenter}}"></vr-box>
+            <vr-box x-pos="{{item.x}}"
+                    y-pos="{{item.y}}"
+                    width="{{item.width}}"
+                    height="{{item.height}}"
+                    depth="{{item.depth}}"
+                    text="{{item.text}}"
+                    text-center="{{item.textCenter}}"
+                    parent-highlight>
+            </vr-box>
         </template>
     </template>
 </dom-module>
@@ -113,16 +119,10 @@
 
         attached: function () {
             var self = this;
-            var boxes = Polymer.dom(this.root).children.filter(function(node) {
+            Polymer.dom(this.root).children.filter(function(node) {
                 return node instanceof VrElement.Box;
-            });
-
-            boxes.forEach(function(box) {
+            }).forEach(function(box) {
                 self.getThreeJS().add(box.getThreeJS());
-
-                box._highlight_elements.forEach(function(material) {
-                    self.addHighlight(material);
-                });
             }.bind(this));
         },
 

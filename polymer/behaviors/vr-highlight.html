@@ -12,21 +12,22 @@
                 },
                 readOnly: true
             },
-
             highlight: {
                 type: Boolean,
                 value: false
             },
-
             highlighted: {
                 type: Boolean,
                 value: false
             },
-
             highlight_color: {
                 type: String,
                 value: "ff0000",
                 readOnly: true
+            },
+            parentHighlight: {
+                type: Boolean,
+                value: false
             }
         },
 
@@ -54,6 +55,19 @@
                     return self.highlight_color;
                 }
                 return originalColor[material.uuid]
+            }
+        },
+
+        attached: function() {
+            var self = this;
+            if (self.highlight) {
+                Polymer.dom(this.root).children.filter(function(node) {
+                    return node.parentHighlight;
+                }).forEach(function(node) {
+                    node._highlight_elements.forEach(function(material) {
+                        self.addHighlight(material);
+                    });
+                });
             }
         },
 
