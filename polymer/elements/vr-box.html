@@ -22,51 +22,49 @@
         ],
 
         observers: [
-            'updateBox(xPos, yPos, width, height, depth, text, image)'
+            '_updateBoxSize(width, height)'
         ],
 
-        updateBox: function (xPos, yPos, width, height, depth, text, image) {
+        ready: function() {
+            function createMaterials() {
+                var materials = [];
+                var material = new THREE.MeshBasicMaterial({color: 0xffffff});
+                for (var i = 0; i < 6; i++) {
+                    materials.push(material);
+                }
+                return materials
+            }
+            function createMesh() {
+                var materials = createMaterials();
+                var front = new THREE.MeshBasicMaterial();
+                materials[4] =  front;
+                self.registerFrontSide(front);
+
+                var meshFace = new THREE.MeshFaceMaterial(materials);
+                return new THREE.Mesh(undefined, meshFace);
+            }
+            function createWireFrame(mesh) {
+                var wireFrame = new THREE.BoxHelper(mesh, 0x000000);
+                self.addHighlight(wireFrame.material);
+                return wireFrame;
+            }
+
+            var self = this;
+            self.mesh = createMesh();
+            self.getThreeJS().add(self.mesh);
+
+            self.wireFrame = createWireFrame(self.mesh);
+            self.getThreeJS().add(self.wireFrame);
+            self._updateBoxSize(self.width, self.height, self.depth);
+        },
+
+        _updateBoxSize: function(width, height, depth) {
             if (this.getThreeJS()) {
-                this.getThreeJS().remove(this.cube);
-                this.getThreeJS().remove(this.wireframe);
+                this.mesh.geometry = new THREE.BoxGeometry(width, height, depth);
+                this.mesh.updateMorphTargets();
 
-                this._createBox(width, height, depth, text, image);
-                this.wireframe.material.color.set(0xff0000);
-
-                this.getThreeJS().add(this.cube);
-                this.getThreeJS().add(this.wireframe);
+                this.wireFrame.update(this.mesh);
             }
-        },
-
-        ready: function () {
-            var sides = 6;
-            this.materials = [];
-
-            // init all sides of cube
-            var material = new THREE.MeshBasicMaterial({color: 0xffffff});
-            for (var i = 0; i < sides; i++) {
-                this.materials.push(material);
-            }
-
-            // creating cube and wireframe
-            this._createBox(this.width, this.height, this.depth, this.text, this.image);
-            this.getThreeJS().add(this.cube);
-            this.getThreeJS().add(this.wireframe);
-            this.addHighlight(this.wireframe.material);
-        },
-
-        _createBox: function (width, height, depth, text, image) {
-            // sides of the box
-            var left = 0, right = 1, bottom = 2, top = 3, front = 4, back = 5;
-
-            this.materials[front] =  new THREE.MeshBasicMaterial();
-            this.registerFrontSide(this.materials[front]);
-
-            // create box and wireframe
-            var geometry = new THREE.BoxGeometry(parseInt(width), parseInt(height), parseInt(depth));
-            this.cube = new THREE.Mesh(geometry, new THREE.MeshFaceMaterial(this.materials));
-            this.wireframe = new THREE.BoxHelper(this.cube);
-            this.wireframe.material.color.set(0x000000);
         }
 
     });
