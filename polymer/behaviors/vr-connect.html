@@ -82,7 +82,7 @@
 
             var width = 10;
             var geometry = new THREE.CylinderGeometry(width, width, 10, 32);
-            var texture = new THREE.TextureLoader().load( '../images/arrow.png' );
+            var texture = new THREE.TextureLoader().load( 'images/arrow.png' );
 
             return this.getEntries().map(function(type, index) {
                 return createMesh(type, index);
