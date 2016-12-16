@@ -29,7 +29,8 @@
             var group = this._createGroup();
             this._initiateMeshes(group);
 
-            this.getThreeJS().on('mousedown', function() {
+            this.getThreeJS().on('mousedown', function(event) {
+                event.origDomEvent.stopImmediatePropagation();
                 group.children.forEach(function (element) {
                     element.material.opacity = (element.material.opacity === 1) ? 0 : 1;
                 })
@@ -84,7 +85,8 @@
             var mesh = new THREE.Mesh(geometry, material);
             mesh.userData = { side: side, vertical: vertical };
             mesh.rotateX(90 * (Math.PI/180));
-            mesh.position.z += 1; //Fixes raycaster detection
+            mesh.position.z = this.depth/2 + 1; //Fixes raycaster detection
+
             group.add(mesh);
 
             mesh.on('mouseover', this.onMouseOverChild.bind(this));
