@@ -5,44 +5,34 @@
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.ClassControl = [VrBehavior.Positioner, VrBehavior.Size, {
         ready: function() {
+            function showControls() {
+                var Menu = function () {
+                    this.name = self.text1;
+                    this.variables = self.text2;
+                    this.functions = self.text3;
+                    this.width = self.width;
+                    this.height = self.height;
+                    this.yPos = self.yPos;
+                };
+                var text = new Menu();
+                self.gui = new dat.GUI();
+
+                function addElement(name, finishChangeCallBack, min, max) {
+                    self.gui.add(text, name, min, max).onFinishChange(finishChangeCallBack);
+                }
+
+                addElement('name',      function(value) { self.text1 = value; });
+                addElement('variables', function(value) { self.text2 = value; });
+                addElement('functions', function(value) { self.text3 = value; });
+                addElement('yPos',      function(value) { self.yPos = value; },  -200, 200);
+                addElement('width',     function(value) { self.width = value; },   30, 200);
+                addElement('height',    function(value) { self.height = value; },  30, 200);
+            }
+
             var self = this;
             self.getThreeJS().on('click', function() {
                 if (!self.gui) {
-                    var Menu = function () {
-                        this.name = self.text1;
-                        this.variables = self.text2;
-                        this.functions = self.text3;
-                        this.width = self.width;
-                        this.height = self.height;
-                        this.yPos = self.yPos;
-                    };
-                    var text = new Menu();
-                    self.gui = new dat.GUI();
-                    var text1Controller = self.gui.add(text, 'name');
-                    var text2Controller = self.gui.add(text, 'variables');
-                    var text3Controller = self.gui.add(text, 'functions');
-                    var yPosController = self.gui.add(text, 'yPos', -200, 200);
-                    var widthController = self.gui.add(text, 'width', 30, 200);
-                    var heightController = self.gui.add(text, 'height', 30, 200);
-
-                    text1Controller.onFinishChange(function (text) {
-                        self.text1 = text;
-                    });
-                    text2Controller.onFinishChange(function (text) {
-                        self.text2 = text;
-                    });
-                    text3Controller.onFinishChange(function (text) {
-                        self.text3 = text;
-                    });
-                    yPosController.onFinishChange(function (yPos) {
-                        self.yPos = yPos;
-                    });
-                    widthController.onFinishChange(function (width) {
-                        self.width = width;
-                    });
-                    heightController.onFinishChange(function (height) {
-                        self.height = height;
-                    });
+                    showControls();
                 } else {
                     self.gui.destroy();
                     self.gui = null;
