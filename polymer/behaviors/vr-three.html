@@ -17,6 +17,18 @@
          */
         getThreeJS: function() {
             return this.obj;
+        },
+
+        /**
+         * Automatically adds child html-nodes with ThreeJS behavior to own THREE.Group
+         */
+        attached: function() {
+            var self = this;
+            Polymer.dom(this.root).children.filter(function(node) {
+                return node.getThreeJS;
+            }).forEach(function(node) {
+                self.getThreeJS().add(node.getThreeJS());
+            }.bind(this));
         }
     };
 </script>

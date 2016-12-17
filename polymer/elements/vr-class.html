@@ -117,15 +117,6 @@
             this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2, this.text3, this.classType);
         },
 
-        attached: function () {
-            var self = this;
-            Polymer.dom(this.root).children.filter(function(node) {
-                return node instanceof VrElement.Box;
-            }).forEach(function(box) {
-                self.getThreeJS().add(box.getThreeJS());
-            }.bind(this));
-        },
-
         _getBoxItemProperties: function (width, height, depth, text1, text2, text3, classType) {
             /* Hopefully not so Magic Calculation */
 
