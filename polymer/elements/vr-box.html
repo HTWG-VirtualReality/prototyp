@@ -1,9 +1,8 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
-<link rel="import" href="../behaviors/vr-positioner.html">
+<link rel="import" href="../behaviors/vr-move.html">
 <link rel="import" href="../behaviors/vr-resize.html">
 <link rel="import" href="../behaviors/vr-image.html">
 <link rel="import" href="../behaviors/vr-text.html">
-<link rel="import" href="../behaviors/vr-highlight.html">
 
 <script src="../bower_components/dat.gui/dat.gui.js"></script>
 <script src="../js/threex.dynamic-texture.js"></script>
@@ -14,11 +13,10 @@
         is: "vr-box",
 
         behaviors: [
-            VrBehavior.Positioner,
-            VrBehavior.Size,
+            VrBehavior.Move,
+            VrBehavior.Resize,
             VrBehavior.Image,
-            VrBehavior.Text,
-            VrBehavior.Highlight
+            VrBehavior.Text
         ],
 
         observers: [
@@ -65,7 +63,7 @@
                 object3d.position.z = depth/2;
             }
 
-            if (this.getThreeJS()) {
+            if (this.getThreeJS() && this.mesh) {
                 this.mesh.geometry = new THREE.BoxGeometry(width, height, depth);
                 updatePosition(this.mesh);
                 this.mesh.updateMorphTargets();

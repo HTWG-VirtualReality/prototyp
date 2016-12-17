@@ -37,7 +37,8 @@
 
             this.getThreeJS().on('mousedown', onMouseDown);
 
-            function onMouseDown() {
+            function onMouseDown(event) {
+                event.stopPropagation();
                 if (!self.highlight) {
                     return;
                 }
