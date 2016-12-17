@@ -134,8 +134,8 @@
             var dynamicTexture = new THREEx.DynamicTexture(this.width * 10, this.height * 10);
             dynamicTexture.texture.minFilter = THREE.NearestFilter;
             var heightBox1 = 25; // fix default height for first box
-            var heightBox2 = dynamicTexture.computeHeight(text2, "64px Verdana") / 10;
-            var heightBox3 = dynamicTexture.computeHeight(text3, "64px Verdana") / 10;
+            var heightBox2 = Math.ceil(dynamicTexture.computeHeight(text2, "64px Verdana") / 10);
+            var heightBox3 = Math.ceil(dynamicTexture.computeHeight(text3, "64px Verdana") / 10);
 
             // calculate total height
             var sumHeight = heightBox1 + heightBox2 + heightBox3;
@@ -146,9 +146,10 @@
             }
 
             // calculate y pos
+            var padding = 0.5;
             var yValueBox1 = 0;
-            var yValueBox2 = -(heightBox1);
-            var yValueBox3 = -(heightBox1 + heightBox2);
+            var yValueBox2 = -(heightBox1 + padding);
+            var yValueBox3 = yValueBox2 - (heightBox2 + padding);
 
             if (classType === 'abstract') {
                 text1 = '<<abstract>>; ' + text1
@@ -156,37 +157,23 @@
                 text1 = '<<interface>>; ' + text1
             }
 
-            var properties = [
-                {
+            function createBox(y, height, text, center) {
+                return {
                     x: 0,
-                    y: yValueBox1,
+                    y: y,
                     width: width,
-                    height: heightBox1,
+                    height: height,
                     depth: depth,
-                    text: text1,
-                    textCenter: true
-                },
-                {
-                    x: 0,
-                    y: yValueBox2,
-                    width: width,
-                    height: heightBox2,
-                    depth: depth,
-                    text: text2,
-                    textCenter: false
-                },
-                {
-                    x: 0,
-                    y: yValueBox3,
-                    width: width,
-                    height: heightBox3,
-                    depth: depth,
-                    text: text3,
-                    textCenter: false
-                }
-            ];
+                    text: text,
+                    textCenter: center
+                };
+            }
 
-            return properties;
+            return [
+                createBox(yValueBox1, heightBox1, text1, true),
+                createBox(yValueBox2, heightBox2, text2, false),
+                createBox(yValueBox3, heightBox3, text3, false)
+            ];
         }
     });
 </script>
