@@ -1,0 +1,43 @@
+<link rel="import" href="vr-positioner.html">
+<link rel="import" href="vr-size.html">
+
+<script>
+    window.VrBehavior = window.VrBehavior || {};
+    VrBehavior.ClassControl = [VrBehavior.Positioner, VrBehavior.Size, {
+        ready: function() {
+            function showControls() {
+                var Menu = function () {
+                    this.name = self.text1;
+                    this.variables = self.text2;
+                    this.functions = self.text3;
+                    this.width = self.width;
+                    this.height = self.height;
+                    this.yPos = self.yPos;
+                };
+                var text = new Menu();
+                self.gui = new dat.GUI();
+
+                function addElement(name, finishChangeCallBack, min, max) {
+                    self.gui.add(text, name, min, max).onFinishChange(finishChangeCallBack);
+                }
+
+                addElement('name',      function(value) { self.text1 = value; });
+                addElement('variables', function(value) { self.text2 = value; });
+                addElement('functions', function(value) { self.text3 = value; });
+                addElement('yPos',      function(value) { self.yPos = value; },  -200, 200);
+                addElement('width',     function(value) { self.width = value; },   30, 200);
+                addElement('height',    function(value) { self.height = value; },  30, 200);
+            }
+
+            var self = this;
+            self.getThreeJS().on('click', function() {
+                if (!self.gui) {
+                    showControls();
+                } else {
+                    self.gui.destroy();
+                    self.gui = null;
+                }
+            });
+        }
+    }];
+</script>

@@ -52,7 +52,7 @@
             // not really safe but since all behaviors extend threejs it
             // is the only way
             if(this.ConnectBehavior) {
-                mesh.position.x = width/2 + padding;
+                mesh.position.x = width + padding;
                 mesh.position.y = padding;
             } else {
                 mesh.position.x = padding;
@@ -75,7 +75,7 @@
                 width = 10;
             }
             var geometry = new THREE.CylinderGeometry(width, width, 5, 32);
-            var texture = new THREE.TextureLoader().load( '../images/delete-vr.png' );
+            var texture = new THREE.TextureLoader().load( 'images/delete-vr.png' );
             texture.repeat.x = 100 / 75;
             texture.repeat.y = 100 / 75;
             texture.offset.x = -0.2; // 0.0 - 1.0

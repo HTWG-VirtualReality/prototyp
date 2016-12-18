@@ -31,7 +31,7 @@
             points = this._diagonalCalculation(fromObj, toObj, fromPos, toPos);
         }
 
-        points.coord = this._createPoint(fromPos.x, fromPos.y - fromObj.height/2);
+        points.coord = this._createPoint(fromPos.x + fromObj.width/2, fromPos.y - fromObj.height/2);
         points.placingObjs = this._createPlacingObjs(placings, points);
         return points;
     };
@@ -48,7 +48,7 @@
             var group2 = createGroup(0, placing.radius, -placing.angle);
 
             // compose everything
-            group2.add(Polymer.dom(placing).children[0].obj)
+            group2.add(Polymer.dom(placing).children[0].obj);
             group1.add(group2);
             placingObjs.push(group1);
         });
@@ -85,7 +85,7 @@
     };
 
     GeneralConnection.prototype._diagonalCalculation = function(fromObj, toObj, fromPos, toPos) {
-        var a = this._absoluteSubtraction(fromPos.x, toPos.x);
+        var a = this._absoluteSubtraction(fromPos.x + fromObj.width/2, toPos.x + toObj.width/2);
         var b = this._absoluteSubtraction(fromPos.y - fromObj.height/2, toPos.y - toObj.height/2);
         var c = Math.sqrt(Math.pow(a, 2) + Math.pow(b, 2));
 
