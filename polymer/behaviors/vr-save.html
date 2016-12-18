@@ -57,21 +57,124 @@
                 return old;
             }
 
+            function _addModel(model, element) {
+                var obj = {};
+                obj.initSize = {};
+                obj.size = {};
+                obj.resize = {};
+                obj.resize.horizontal = true;
+                obj.resize.vertical = true;
+                obj.resize.propotional = true;
+                obj.compartments = [];
+                obj.position = {};
+                obj.position.x = element.xPos;
+                obj.position.y = element.yPos;
+                obj.angle = 0;
+                obj.mClassAttributeInfo = [];
+                obj.id = element.id;
+                obj.embeds = '';
+                obj.attrs = {};
+
+                var text = {};
+                text['dominant-baseline'] = 'text-before-edge';
+                text['fill'] = '#000000';
+                text['font-family'] = 'sans-serif';
+                text['font-size'] = '40';
+                text['font-weight'] = ' normal';
+
+                var ellipse = {};
+                ellipse['text'] = text;
+                ellipse['fill'] = '#ffffff';
+                ellipse['fill-opacity'] = 0.95;
+                ellipse['stroke'] = '#000000';
+                ellipse['stroke-width'] = 1;
+                ellipse['stroke-dasharray'] = "0";
+
+                if (element.tagName === 'VR-PLACE') {
+                    obj.type = 'zeta.place';
+                    obj.initSize.width = 60;
+                    obj.initSize.height = 60;
+                    obj.size.width = 60;
+                    obj.size.height = 60;
+                    obj.nodeName = 'placeNode';
+                    obj.mClass = 'Place';
+                    obj.z = 1;
+
+                    var id1 = 'ellipse.' + guid();
+                    obj.attrs[id1] = ellipse;
+                    var id2 = 'ellipse.' + guid();
+                    obj.attrs[id2] = ellipse;
+
+                    var ele = {};
+                    ele.id = element.id;
+                    ele.mClass = 'Place';
+                    ele.outputs = {};
+                    ele.inputs = {};
+                    ele.attributes = {};
+                } else if (element.tagName === 'VR-TRANSITION') {
+                    obj.type = 'zeta.transition';
+                    obj.initSize.width = 100;
+                    obj.initSize.height = 200;
+                    obj.size.width = 100;
+                    obj.size.height = 200;
+                    obj.nodeName = 'transitionNode';
+                    obj.mClass = 'Transition';
+                    obj.z = 3;
+                    var id1 = 'rect.' + guid();
+                    obj.attrs[id1] = ellipse;
+                    var id2 = 'rect.' + guid();
+                    obj.attrs[id2] = ellipse;
+                }
+
+                model.cells.push(obj);
+                return model;
+            }
+
+            function guid() {
+                function s4() {
+                    return Math.floor((1 + Math.random()) * 0x10000)
+                            .toString(16)
+                            .substring(1);
+                }
+
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                        s4() + '-' + s4() + s4() + s4();
+            }
+
+            function _addElemnt(allElements, element) {
+                var newElement = {};
+                if (element.tagName === 'VR-PLACE') {
+                    newElement.mClass = 'Place';
+                } else if (element.tagName === 'VR-TRANSITION') {
+                    newElement.mClass = 'Transition';
+                }
+                newElement.attributes = {};
+                newElement.id = element.id;
+                newElement.inputs = {};
+                newElement.outputs = {};
+
+                allElements.elements.push(newElement);
+                return allElements;
+
+            }
+
             function _onModelSuccess(event) {
                 var response = event.detail.xhr.response;
                 var model = JSON.parse(response.model.uiState);
-                var elements = document.querySelector('div#classItems').children;
+                var elements = response.model;
+                var children = document.querySelector('div#itemsContent').children;
 
                 var currentElements = [];
 
-                for (var i = 0; i < elements.length; i++) {
-                    if (elements[i].tagName.indexOf("VR-") !== -1) {
-                        var index = findIndexOfElement(model.cells, elements[i].id);
-                        currentElements.push(elements[i].id);
+                for (var i = 0; i < children.length; i++) {
+                    if (children[i].tagName.indexOf("VR-") !== -1) {
+                        var index = findIndexOfElement(model.cells, children[i].id);
+                        currentElements.push(children[i].id);
                         if (index !== -1) {
-                            model.cells[index] = updateElement(model.cells[index], elements[i]);
+                            model.cells[index] = updateElement(model.cells[index], children[i]);
                         } else {
-                            // TODO createNewElement(elements[i]);
+                            model = _addModel(model, children[i]);
+                            elements = _addElemnt(elements, children[i]);
                         }
                     }
                 }
@@ -84,8 +187,8 @@
                 }
 
                 // back to string
-                response.model.uiState = JSON.stringify(model);
-                var myResponse = JSON.stringify(response.model);
+                elements.uiState = JSON.stringify(model);
+                var myResponse = JSON.stringify(elements);
 
                 var updateModelAttributes = {
                     method: 'PUT',

@@ -8,11 +8,9 @@
           return ["Interface", "Class", "Abstract"];
         },
 
-        pushNewElement: function(counter, position, text) {
-          counter += 1
+        pushNewElement: function(elementId, position, text) {
           // classItems must be part off vr-scene.html
-          this.push('classItems', {id: 'class-' + counter, xPos: position.x, yPos: position.y, classType: text.toLowerCase()});
-          return counter;
+          this.push('classItems', {id: elementId, xPos: position.x, yPos: position.y, classType: text.toLowerCase()});
         }
     }];
 </script>
