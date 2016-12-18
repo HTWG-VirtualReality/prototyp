@@ -79,10 +79,6 @@
                     this.width = newWidth < this.maxWidth ? newWidth : this.maxWidth;
                 }
 
-                // if (this.boxItems) {
-                //     var properties = this._getBoxItemProperties(this.width, height, depth, text1, text2, text3, classType);
-                //     this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
-                // }
                 this.fire('vr-resize', {});
             }
         },
@@ -126,7 +122,7 @@
                 return node.localName != 'template';
             });
         },
-        
+
         // simple on click => triggered in vr-scene.html
         onClick: function () {
             var self = this;
