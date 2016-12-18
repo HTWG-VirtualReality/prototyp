@@ -97,6 +97,13 @@
                 moveLeft();
             }
 
+            if(camera.position.y > obj.position.y) {
+                moveDown();
+            }
+            else if(camera.position.y < obj.position.y) {
+                moveUp();
+            }
+
             function moveRight() {
                 setTimeout(function () {
                     camera.position.x += 3;
@@ -111,6 +118,24 @@
                     camera.position.x -= 3;
                     if (camera.position.x >= obj.position.x) {
                         moveLeft();
+                    }
+                }, 10);
+            }
+
+            function moveDown() {
+                setTimeout(function () {
+                    camera.position.y -= 3;
+                    if (camera.position.y >= obj.position.y) {
+                        moveDown();
+                    }
+                }, 10);
+            }
+
+            function moveUp() {
+                setTimeout(function () {
+                    camera.position.y += 3;
+                    if (camera.position.y <= obj.position.y) {
+                        moveUp();
                     }
                 }, 10);
             }
