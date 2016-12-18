@@ -57,21 +57,94 @@
                 return old;
             }
 
+            function _addModel(model, element) {
+                if (element.tagName === 'VR-PLACE') {
+                    var obj = {};
+                    obj.type = 'zeta.place';
+                    obj.initSize = {};
+                    obj.initSize.width = 60;
+                    obj.initSize.height = 60;
+                    obj.size = {};
+                    obj.size.width = 60;
+                    obj.size.height = 60;
+                    obj.resize = {};
+                    obj.resize.horizontal = true;
+                    obj.resize.vertical = true;
+                    obj.resize.propotional = true;
+                    obj.compartments = [];
+                    obj.position = {};
+                    obj.position.x = element.xPos;
+                    obj.position.y = element.yPos;
+                    obj.angle = 0;
+                    obj.nodeName = 'placeNode';
+                    obj.mClass = 'Place';
+                    obj.mClassAttributeInfo = [];
+                    obj.id = element.id;
+                    obj.z = 1;
+                    obj.embeds = '';
+                    obj.attrs = {};
+
+                    var text = {};
+                    text['dominant-baseline'] = 'text-before-edge';
+                    text['fill'] = '#000000';
+                    text['font-family'] = 'sans-serif';
+                    text['font-size'] = '40';
+                    text['font-weight'] = ' normal';
+
+                    var ellipse = {};
+                    ellipse['text'] = text;
+                    ellipse['fill'] = '#ffffff';
+                    ellipse['fill-opacity'] = 0.95;
+                    ellipse['stroke'] = '#000000';
+                    ellipse['stroke-width'] = 1;
+                    ellipse['stroke-dasharray'] = "0";
+
+                    obj.attrs['ellipse.d4dd85d1-e0f2-43c5-b605-29e80f4d18c6'] = ellipse;
+                    obj.attrs['ellipse.d258fd2b-5c9a-4416-b39a-a382efc20e8e'] = ellipse;
+
+                    var ele = {};
+                    ele.id = element.id;
+                    ele.mClass = 'Place';
+                    ele.outputs = {};
+                    ele.inputs = {};
+                    ele.attributes = {};
+                }
+
+                model.cells.push(obj);
+                return model;
+            }
+
+            function _addElemnt(allElements, element) {
+                var newElement = {};
+                if (element.tagName === 'VR-PLACE') {
+                    newElement.attributes = {};
+                    newElement.id = element.id;
+                    newElement.inputs = {};
+                    newElement.mClass = 'Place';
+                    newElement.outputs = {};
+                }
+                allElements.elements.push(newElement);
+                return allElements;
+
+            }
+
             function _onModelSuccess(event) {
                 var response = event.detail.xhr.response;
                 var model = JSON.parse(response.model.uiState);
-                var elements = document.querySelector('div#classItems').children;
+                var elements = response.model;
+                var children = document.querySelector('div#itemsContent').children;
 
                 var currentElements = [];
 
-                for (var i = 0; i < elements.length; i++) {
-                    if (elements[i].tagName.indexOf("VR-") !== -1) {
-                        var index = findIndexOfElement(model.cells, elements[i].id);
-                        currentElements.push(elements[i].id);
+                for (var i = 0; i < children.length; i++) {
+                    if (children[i].tagName.indexOf("VR-") !== -1) {
+                        var index = findIndexOfElement(model.cells, children[i].id);
+                        currentElements.push(children[i].id);
                         if (index !== -1) {
-                            model.cells[index] = updateElement(model.cells[index], elements[i]);
+                            model.cells[index] = updateElement(model.cells[index], children[i]);
                         } else {
-                            // TODO createNewElement(elements[i]);
+                            model = _addModel(model, children[i]);
+                            elements = _addElemnt(elements, children[i]);
                         }
                     }
                 }
@@ -84,8 +157,8 @@
                 }
 
                 // back to string
-                response.model.uiState = JSON.stringify(model);
-                var myResponse = JSON.stringify(response.model);
+                elements.uiState = JSON.stringify(model);
+                var myResponse = JSON.stringify(elements);
 
                 var updateModelAttributes = {
                     method: 'PUT',
