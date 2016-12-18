@@ -81,10 +81,20 @@
                 group.on('mousedown', function(e) {
                     e.origDomEvent.stopImmediatePropagation();
                     e.stopPropagation();
-                    counter = self.pushNewElement(counter, position, text);
+                    self.pushNewElement(guid(), position, text);
                     onMouseUp(null);
                 });
                 return group;
+            }
+
+            function guid() {
+                function s4() {
+                    return Math.floor((1 + Math.random()) * 0x10000)
+                            .toString(16)
+                            .substring(1);
+                }
+                return s4() + s4() + '-' + s4() + '-' + s4() + '-' +
+                        s4() + '-' + s4() + s4() + s4();
             }
 
             function generateText(width, text) {
@@ -108,6 +118,6 @@
 
         // Override this function in generated behavior
         // returns new counter value
-        pushNewElement: function(counter, position, text) { return counter; }
+        pushNewElement: function(id, position, text) {}
     };
 </script>
