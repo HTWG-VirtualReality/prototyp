@@ -25,7 +25,9 @@
         },
 
         _sizeInnerElements: function(width, height) {
-            var texts = [this.text1, this.text2, this.text3];
+            var texts = [{text: this.text1, center: true},
+                {text: this.text2, center: false},
+                {text: this.text3, center: false}];
 
             // calculate sizes
             var size = (calculateSize.bind(this))([], width, height, 1, Object.keys(this.sizeInformations));
@@ -87,8 +89,8 @@
                     width: size.width,
                     height: size.height,
                     depth: size.depth || 10,
-                    text: text,
-                    textCenter: true
+                    text: text.text,
+                    textCenter: text.center
                 }
             }
         }
