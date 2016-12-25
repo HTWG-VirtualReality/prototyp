@@ -13,7 +13,7 @@ VrSizeDatastruct = function(min, max, percentage) {
         result.height = height * (percentage.height * propHeight);
 
         // check if new height outruns min or max height
-        var diff = calculateDiff(min, max, result.height);
+        var diff = calculateDiffBetweenHeightAndMinMaxHeight(min, max, result.height);
 
         // adjust height to found diff
         result.height = handleDiff(diff, result.height);
@@ -22,10 +22,9 @@ VrSizeDatastruct = function(min, max, percentage) {
             size: result,
             diffHeight: outruns(diff) ? -(result.height) : 0,
             percentageHeight: outruns(diff) ? 0 : percentage.height
-        }
+        };
 
-        // calculates Difference between height and min/max height
-        function calculateDiff(min, max, height) {
+        function calculateDiffBetweenHeightAndMinMaxHeight(min, max, height) {
             return {
                 min: sub(order1, min, height),
                 max: sub(order2, max, height)
@@ -49,4 +48,4 @@ VrSizeDatastruct = function(min, max, percentage) {
     };
 
     function exists(value) { return value !== null && value !== undefined && value !== {}; }
-}
+};

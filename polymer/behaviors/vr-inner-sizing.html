@@ -7,20 +7,23 @@
         observers: ['_sizingHandler(width, height)'],
 
         ready: function() {
-            this.sizeInformations = {
-                "0": VrSizeDatastruct({height: 25}, {height: 25}, {height: 0.2, width:1}),
-                "1": VrSizeDatastruct(null, null, {height: 0.4, width:1}),
-                "2": VrSizeDatastruct(null, null, {height: 0.4, width:1})
-            };
+            this.innerSizingElements = [];
+        },
 
-            // first setup
-            this.boxItems = this._sizeInnerElements(this.width, this.height);
+        attached: function () {
+            this._sizeInnerElements(this.width, this.height);
+        },
+
+        registerInnerSizingElement: function (element, min, max, percentage) {
+            this.innerSizingElements.push({
+              element: element,
+              size: VrSizeDatastruct(min, max, percentage)
+            });
         },
 
         _sizingHandler: function(width, height) {
-            if(this.boxItems) {
-                var properties = this._sizeInnerElements(width, height);
-                this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
+            if(this.getThreeJS()) {
+                this._sizeInnerElements(width, height);
             }
         },
 
@@ -29,36 +32,38 @@
                 {text: this.text2, center: false},
                 {text: this.text3, center: false}];
 
-            // calculate sizes
-            var size = (calculateSize.bind(this))([], width, height, 1, Object.keys(this.sizeInformations));
+            var self = this;
+            var size = calculateSize([], width, height, 1, Object.keys(this.innerSizingElements));
 
-            // create properties
-            var properties = size.map(handleY(0, function(size, i, y){
+            return size.map(handleY(0, function(size, i, y) {
+                setProperties(self.innerSizingElements[i]['element'], y, size);
                 return createProperties({x: 0, y: y}, size, texts[i]);
             }));
-
-            return properties;
 
             // gets executed until hole space(width/heigth) is used
             // it needs more than one iteration if an element reaches its
             // min or max size
-            function calculateSize(arr, width, height, percentage, posibilities) {
-                var tmpHeight = tmpPercentage = 0;
-                var tmpPosibilities = [];
+            function calculateSize(arr, width, height, percentage, possibilities) {
+                var tmpHeight = 0, tmpPercentage = 0;
+                var tmpPossibilities = [];
 
-                for(var key in this.sizeInformations) {
-                    if(posibilities.indexOf(String(key)) == -1) { continue; }
-                    var tmp = this.sizeInformations[key](width, proportion(1), height, proportion(percentage));
-                    tmpHeight += tmp.diffHeight;
-                    tmpPercentage += tmp.percentageHeight;
-                    arr = append(arr, key, tmp.size);
-                    if(tmp.percentageHeight != 0) { tmpPosibilities.push(key); }
-                }
+                self.innerSizingElements.forEach(function (value, key) {
+                    if(possibilities.indexOf(String(key)) >= 0) {
+                      var tmp = value['size'](width, proportion(1), height, proportion(percentage));
+                      tmpHeight += tmp.diffHeight;
+                      tmpPercentage += tmp.percentageHeight;
+                      arr = append(arr, key, tmp.size);
+                      if(tmp.percentageHeight != 0) { tmpPossibilities.push(key); }
+                    }
+                });
 
                 // can cause endrecursion if maxWidth and minWidth
                 //aren't set properly
-                return (tmpHeight == 0) ? arr :
-                    (calculateSize.bind(this))(arr, width, height + tmpHeight, tmpPercentage, tmpPosibilities);
+                if (tmpHeight == 0) {
+                  return arr;
+                } else {
+                  return calculateSize(arr, width, height + tmpHeight, tmpPercentage, tmpPossibilities);
+                }
             }
 
             function handleY(y, func) {
@@ -92,6 +97,12 @@
                     text: text.text,
                     textCenter: text.center
                 }
+            }
+
+            function setProperties(element, y, size) {
+                element.yPos = y;
+                element.width = size.width;
+                element.height = size.height;
             }
         }
     }];
