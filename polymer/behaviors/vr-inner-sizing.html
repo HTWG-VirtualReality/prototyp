@@ -16,68 +16,45 @@
 
         registerInnerSizingElement: function (element, min, max, percentage) {
             this.innerSizingElements.push({
-              element: element,
-              size: VrSizeDatastruct(min, max, percentage)
+                element: element,
+                calculation: VrSizeDatastruct(min, max, percentage),
+                size: null
             });
         },
 
         _sizingHandler: function(width, height) {
-            if(this.getThreeJS()) {
+            if(this.innerSizingElements) {
                 this._sizeInnerElements(width, height);
             }
         },
 
         _sizeInnerElements: function(width, height) {
-            var texts = [{text: this.text1, center: true},
-                {text: this.text2, center: false},
-                {text: this.text3, center: false}];
-
             var self = this;
-            var size = calculateSize([], width, height, 1, Object.keys(this.innerSizingElements));
-
-            return size.map(handleY(0, function(size, i, y) {
-                setProperties(self.innerSizingElements[i]['element'], y, size);
-                return createProperties({x: 0, y: y}, size, texts[i]);
-            }));
+            calculateSize(height, 1, Object.keys(self.innerSizingElements));
+            updateElements(self.innerSizingElements);
 
             // gets executed until hole space(width/heigth) is used
             // it needs more than one iteration if an element reaches its
             // min or max size
-            function calculateSize(arr, width, height, percentage, possibilities) {
+            function calculateSize(height, percentage, possibilities) {
                 var tmpHeight = 0, tmpPercentage = 0;
                 var tmpPossibilities = [];
+                self.innerSizingElements.forEach(calculateElementSize);
+                return endRecursionCondition(height, tmpHeight, tmpPercentage, tmpPossibilities);
 
-                self.innerSizingElements.forEach(function (value, key) {
-                    if(possibilities.indexOf(String(key)) >= 0) {
-                      var tmp = value['size'](width, proportion(1), height, proportion(percentage));
-                      tmpHeight += tmp.diffHeight;
-                      tmpPercentage += tmp.percentageHeight;
-                      arr = append(arr, key, tmp.size);
-                      if(tmp.percentageHeight != 0) { tmpPossibilities.push(key); }
+                function calculateElementSize(value, key) {
+                    if(possibilities.indexOf(String(key)) == -1) {
+                        return;
                     }
-                });
 
-                // can cause endrecursion if maxWidth and minWidth
-                //aren't set properly
-                if (tmpHeight == 0) {
-                  return arr;
-                } else {
-                  return calculateSize(arr, width, height + tmpHeight, tmpPercentage, tmpPossibilities);
+                    var size = value.calculation(width, proportion(1), height, proportion(percentage));
+                    tmpHeight += size.diffHeight;
+                    tmpPercentage += size.percentageHeight;
+                    if(size.percentageHeight != 0) {
+                        tmpPossibilities.push(String(key));
+                    }
+                    value.size = size.size;
                 }
-            }
-
-            function handleY(y, func) {
-                return function(size, i) {
-                    var property = func(size, i, y);
-                    y -= size.height;
-                    return property;
-                }
-            }
-
-            function append(arr, index, value) {
-                index = parseInt(index, 10);
-                if(arr[index] === undefined) { arr.push(value) } else { arr[index] = value; }
-                return arr;
             }
 
             // important if on element has reached it min/max height
@@ -87,16 +64,19 @@
                 return 1 / percentage;
             }
 
-            function createProperties(position, size, text) {
-                return {
-                    x: position.x,
-                    y: position.y,
-                    width: size.width,
-                    height: size.height,
-                    depth: size.depth || 10,
-                    text: text.text,
-                    textCenter: text.center
-                }
+            function endRecursionCondition(height, tmpHeight, tmpPercentage, tmpPossibilities) {
+              // can cause end-recursion if maxWidth and minWidth
+              //aren't set properly
+              if (tmpHeight != 0) {
+                  return calculateSize(height + tmpHeight, tmpPercentage, tmpPossibilities);
+              }
+            }
+
+            function updateElements(sizes, y = 0) {
+                sizes.forEach(function (value) {
+                    setProperties(value.element, y, value.size);
+                    y -= value.size.height;
+                });
             }
 
             function setProperties(element, y, size) {
