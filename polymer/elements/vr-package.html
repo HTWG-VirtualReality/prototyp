@@ -109,7 +109,7 @@
             mesh.position.y = this.yPos + padding;
 
             mesh.on('mousedown', function () {
-                VrBehavior.Scene.camera.position.setZ(-300);
+                VrBehavior.Scene.camera.position.setZ(-250);
                 this.classes.forEach(function (clazz) {
                     clazz.position.setZ(-500);
                     this.getThreeJS().add(clazz);
