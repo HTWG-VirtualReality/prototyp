@@ -1,13 +1,22 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
+<link rel="import" href="../behaviors/vr-move.html">
 <link rel="import" href="../behaviors/vr-positioner.html">
 <link rel="import" href="./vr-box.html">
 
-<dom-module id="vr-package">
+    <dom-module id="vr-package">
     <template>
+        <content id="content" select="*"></content>
+
         <template is="dom-repeat" items="{{boxItems}}">
-            <vr-box x-pos="{{item.x}}" y-pos="{{item.y}}" width="{{item.width}}"
-                    height="{{item.height}}" depth="{{item.depth}}"
-                    text="{{item.text}}" text-center="{{item.textCenter}}"></vr-box>
+            <vr-box x-pos="{{item.x}}"
+                    y-pos="{{item.y}}"
+                    width="{{item.width}}"
+                    height="{{item.height}}"
+                    depth="{{item.depth}}"
+                    text="{{item.text}}"
+                    text-center="{{item.textCenter}}"
+                    parent-highlight>
+            </vr-box>
         </template>
     </template>
 </dom-module>
@@ -18,150 +27,97 @@
         is: "vr-package",
 
         properties: {
-            zPos: {
-                type: Number,
-                value: 0
-            },
-            width: {
-                type: Number,
-                value: 50
-            },
-            height: {
-                type: Number,
-                value: 50
-            },
-            depth: {
-                type: Number,
-                value: 10
-            },
             text1: {
                 type: String,
                 value: ''
-            },
-            text2: {
-                type: String,
-                value: ''
             }
         },
 
-        observers: [
-            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3)'
-        ],
-
         behaviors: [
+            VrBehavior.Move,
             VrBehavior.Positioner
         ],
 
-        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
-            if (this.getThreeJS()) {
-                var properties = this._getBoxItemProperties(width, height, depth, text1, text2, text3);
-                this.splice('boxItems', 0, 3, properties[0], properties[1], properties[2]);
-                this.fire('vr-resize', {});
-            }
+        observers: [
+            '_updatePackage(xPos, yPos, width, height, depth, text1)'
+        ],
+
+        _updatePackage: function (xPos, yPos, width, height, depth, text1) {
+            console.log('update package');
         },
 
         ready: function () {
-            this.getThreeJS().position.setZ(-(this.depth - 2)); // TODO: discuss z axis
-            this.boxItems = this._getBoxItemProperties(this.width, this.height, this.depth, this.text1, this.text2);
-            this.getThreeJS().on('click', this.onClick.bind(this));
-        },
-
-        attached: function () {
-            this._getChildren().forEach(function (box) {
-                this.getThreeJS().add(box.getThreeJS());
-            }.bind(this));
-        },
-
-        _getChildren: function () {
-            // return all children except template element
-            return Polymer.dom(this.root).children.filter(function (node) {
-                return node.localName != 'template';
-            });
-        },
-
-        _getBoxItemProperties: function (width, height, depth, text1, text2) {
-            // Set default height of first box
-            var firstBoxHeight = 20;
-
-            // calculate positions of first "Box"
-            var widthBox1 = width / 5;
-            var yBox1 = -(firstBoxHeight / 2);
-            var xBox1 = -(widthBox1 / 0.5);
-
-            // second (main) "Box"
-            var heightBox2 = (height - firstBoxHeight) / 2;
-            var yBox2 = -(firstBoxHeight + heightBox2 / 2);
-
-            var properties = [
-                {
-                    x: xBox1,
-                    y: yBox1,
-                    width: widthBox1,
-                    height: firstBoxHeight,
-                    depth: depth,
-                    text: text1,
-                    textCenter: true
-                },
-                {
-                    x: 0,
-                    y: yBox2,
-                    width: width,
-                    height: heightBox2,
-                    depth: depth,
-                    text: text2,
-                    textCenter: true
-                }];
-
-            return properties;
-        },
-
-        // simple on click
-        onClick: function () {
             var self = this;
-            this._getChildren().forEach(function (box) {
-                box.highlight();
+            self.classes = [];
+
+            Polymer.dom(self.$.content).observeNodes(observe);
+
+            function observe(nodes) {
+                nodes.addedNodes.forEach(function (node) {
+                    if (node.getThreeJS) {
+                        self.classes.push(node.getThreeJS());
+                    }
+                });
+
+                nodes.removedNodes.forEach(function (node) {
+                    if (node.getThreeJS) {
+                        var index = self.classes.indexOf(node.getThreeJS());
+                        if (index > -1) {
+                            self.classes.splice(index, 1);
+                        }
+                    }
+                });
+            }
+
+            var box = this._createPackage();
+            this.boxItems = [box];
+
+            this._createZoomButton();
+        },
+
+        _createPackage: function () {
+            return {
+                x: this.xPos,
+                y: this.yPos,
+                width: 100,
+                height: 100,
+                depth: this.depth || 10,
+                text: this.text1,
+                textCenter: true
+            }
+        },
+
+        _createZoomButton: function () {
+            // TODO: extract to behavior
+            var width;
+            if (navigator.userAgent.match(/iPhone/i)) {
+                width = 20;
+            } else {
+                width = 10;
+            }
+            var geometry = new THREE.CylinderGeometry(width, width, 5, 32);
+            var texture = new THREE.TextureLoader().load( 'images/crosshair.png' );
+            var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.rotateX(90 * (Math.PI/180));
+            mesh.rotateY(45 * (Math.PI/180));
+            mesh.name = 'zoom';
+            mesh.position.setZ(15);
+
+            var padding = 10;
+            mesh.position.x = this.xPos - padding;
+            mesh.position.y = this.yPos + padding;
+
+            mesh.on('mousedown', function () {
+                VrBehavior.Scene.camera.position.setZ(-300);
+                this.classes.forEach(function (clazz) {
+                    clazz.position.setZ(-500);
+                    this.getThreeJS().add(clazz);
+                }.bind(this))
             }.bind(this));
 
-            if (!this.gui) {
-                var Menu = function () {
-                    this.name = self.text1;
-                    this.variables = self.text2;
-                    this.functions = self.text3;
-                    this.width = self.width;
-                    this.height = self.height;
-                    this.yPos = self.yPos;
-                };
-                var text = new Menu();
-                this.gui = new dat.GUI();
-                var text1Controller = this.gui.add(text, 'name');
-                var text2Controller = this.gui.add(text, 'variables');
-                var text3Controller = this.gui.add(text, 'functions');
-                var yPosController = this.gui.add(text, 'yPos', -200, 200);
-                var widthController = this.gui.add(text, 'width', 30, 200);
-                var heightController = this.gui.add(text, 'height', 30, 200);
-
-                text1Controller.onFinishChange(function (text) {
-                    self.text1 = text;
-                });
-                text2Controller.onFinishChange(function (text) {
-                    self.text2 = text;
-                });
-                text3Controller.onFinishChange(function (text) {
-                    self.text3 = text;
-                });
-                yPosController.onFinishChange(function (yPos) {
-                    self.yPos = yPos;
-                });
-                widthController.onFinishChange(function (width) {
-                    self.width = width;
-                });
-                heightController.onFinishChange(function (height) {
-                    self.height = height;
-                });
-            } else {
-                this.gui.destroy();
-                this.gui = null;
-            }
+            this.getThreeJS().add(mesh);
         }
+
     });
 </script>

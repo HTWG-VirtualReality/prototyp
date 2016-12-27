@@ -1,23 +1,27 @@
 <!DOCTYPE html>
 <html>
 <head>
-
+    <title>Package Diagram</title>
 
     <meta charset="UTF-8">
-    <title>Package Diagram</title>
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0, shrink-to-fit=no">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
 
     <script src="bower_components/webcomponentsjs/webcomponents-lite.min.js"></script>
     <script src="bower_components/underscore/underscore-min.js"></script>
 
-    <!-- main scene -->
     <link rel="import" href="elements/vr-scene.html">
-
-
-    <!-- own modules -->
-    <link rel="import" href="elements/vr-package.html">
+    <link rel="import" href="elements/vr-ellipse.html">
     <link rel="import" href="elements/vr-class.html">
-    <link rel="import" href="elements/vr-connection-extends.html">
-
+    <link rel="import" href="elements/vr-package.html">
+    <link rel="import" href="elements/vr-connection-aggregation.html">
+    <link rel="import" href="elements/vr-connection-association.html">
+    <link rel="import" href="elements/vr-connection-inheritance.html">
+    <link rel="import" href="elements/vr-controlpanel.html">
+    <link rel="import" href="elements/vr-control.html">
 
 
     <style>
@@ -31,23 +35,165 @@
 <body>
 <vr-scene>
 
-    <vr-package id="package" x-pos="0" y-pos="150" height="600" width="500" text1="Package Name"
-                text2=""></vr-package>
+    <vr-package id="model"
+                x-pos="-50"
+                y-pos="0"
+                text1="de.htwg.vr.model"
+                highlight
+                resize-vertical
+                resize-horizontal
+                move-horizontal
+                move-vertical>
 
-    <vr-class id="customer" x-pos="0" y-pos="100" height="75" width="120" text1="Customer"
-              text2="-name:String; -address:String"
-              text3="+getCreditRating():String"></vr-class>
+        <vr-class id="customer"
+                  x-pos="150"
+                  y-pos="150"
+                  height="100"
+                  width="120"
+                  text1="Customer"
+                  text2="-name:String; -address:String"
+                  text3="+getCreditRating():String"
+                  class-type="abstract"
+                  highlight
+                  resize-vertical
+                  resize-horizontal
+                  move-horizontal
+                  move-vertical>
+        </vr-class>
 
-    <vr-class id="corporatecustomer" x-pos="-100" y-pos="-50" height="80" width="120" text1="CorporateCustomer"
-              text2="-contactName:String; -creditRaiting:String; -creaditLimit:Decimal"
-              text3="+billForMonth(int amount); +remind()"></vr-class>
+        <vr-class id="corporatecustomer"
+                  x-pos="-20"
+                  y-pos="0"
+                  height="100"
+                  width="50"
+                  text1="CorporateCustomer"
+                  text2="-contactName:String; -creditRaiting:String; -creaditLimit:Decimal"
+                  text3="+billForMonth(int amount); +remind()"
+                  highlight
+                  resize-vertical
+                  resize-horizontal
+                  move-horizontal
+                  move-vertical>
+        </vr-class>
 
-    <vr-class id="personalcustomer" x-pos="100" y-pos="-50" height="70" width="175" text1="PersonalCustomer"
-              text2="-creaditCardNumber:String"
-              text3="+getCreditRaiting(creditRaiting:String)"></vr-class>
+        <vr-class id="personalcustomer"
+                  x-pos="250"
+                  y-pos="0"
+                  height="100"
+                  width="175"
+                  text1="PersonalCustomer"
+                  text2="-creaditCardNumber:String"
+                  text3="+getCreditRaiting(creditRaiting:String)"
+                  highlight
+                  resize-vertical
+                  resize-horizontal
+                  move-horizontal
+                  move-vertical>
+        </vr-class>
 
-    <vr-connection-association from="#customer" to="#corporatecustomer"></vr-connection-association>
-    <vr-connection-association from="#customer" to="#personalcustomer"></vr-connection-association>
+        <vr-class id="employee"
+                  x-pos="160"
+                  y-Pos="-120"
+                  width="50"
+                  height="30"
+                  text1="Employee"
+                  text2=""
+                  text3=""
+                  highlight
+                  resize-vertical
+                  resize-horizontal
+                  move-horizontal
+                  move-vertical>
+        </vr-class>
+
+        <vr-class id="orderline"
+                  x-pos="-150"
+                  y-Pos="0"
+                  width="80"
+                  height="95"
+                  text1="OrderLine"
+                  text2="-quantity:Integer; -price:Decimal"
+                  text3=""
+                  highlight
+                  resize-vertical
+                  resize-horizontal
+                  move-horizontal
+                  move-vertical>
+        </vr-class>
+
+        <vr-class id="product"
+                  x-pos="-150"
+                  y-Pos="-130"
+                  width="50"
+                  height="30"
+                  text1="Product" text2="" text3=""
+                  highlight
+                  resize-vertical
+                  resize-horizontal
+                  move-horizontal
+                  move-vertical>
+        </vr-class>
+
+        <vr-class id="order"
+                  x-pos="-150"
+                  y-Pos="150"
+                  width="90"
+                  height="100"
+                  text1="Order"
+                  text2="-dateRecieved:Date; -isPrePaid:Boolean; -lineItems[]"
+                  text3="+dispatch(); +close(); +testMethodWithAVeryVeryVeryVerySuperLongMethodName"
+                  class-type="interface"
+                  highlight
+                  resize-vertical
+                  resize-horizontal
+                  move-horizontal
+                  move-vertical>
+        </vr-class>
+
+
+        <!--<vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="10" text="Class Test"></vr-box>-->
+        <!--<vr-box id="b2" x-pos="-150" y-pos="-100" depth="10" text="test(): String; hallo(): int"></vr-box>-->
+
+        <!-- <vr-line from="#c1" to="#b2"></vr-line> -->
+        <vr-connection-inheritance from="#customer" to="#personalcustomer"></vr-connection-inheritance>
+        <vr-connection-inheritance from="#customer" to="#corporatecustomer"></vr-connection-inheritance>
+        <vr-connection-inheritance from="#corporatecustomer" to="#customer"></vr-connection-inheritance>
+        <vr-connection-aggregation from="#order" to="#customer"></vr-connection-aggregation>
+        <vr-connection-association from="#orderline" to="#order"></vr-connection-association>
+        <vr-connection-association from="#product" to="#orderline"></vr-connection-association>
+        <vr-connection-association from="#customer" to="#order"></vr-connection-association>
+        <vr-connection-association from="#employee" to="#corporatecustomer"></vr-connection-association>
+        <vr-connection-association from="#corporatecustomer" to="#employee"></vr-connection-association>
+
+    </vr-package>
+
+    <vr-package id="view"
+                x-pos="50"
+                y-pos="0"
+                text1="de.htwg.vr.view"
+                highlight
+                resize-vertical
+                resize-horizontal
+                move-horizontal
+                move-vertical>
+
+        <vr-class id="customer2"
+                  x-pos="120"
+                  y-pos="0"
+                  height="100"
+                  width="120"
+                  text1="Customer"
+                  text2="-name:String; -address:String"
+                  text3="+getCreditRating():String"
+                  class-type="abstract"
+                  highlight
+                  resize-vertical
+                  resize-horizontal
+                  move-horizontal
+                  move-vertical>
+        </vr-class>
+    </vr-package>
+
 
 </vr-scene>
 </body>
