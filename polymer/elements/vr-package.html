@@ -3,7 +3,7 @@
 <link rel="import" href="../behaviors/vr-positioner.html">
 <link rel="import" href="./vr-box.html">
 
-    <dom-module id="vr-package">
+<dom-module id="vr-package">
     <template>
         <content id="content" select="*"></content>
 
@@ -71,7 +71,6 @@
 
             var box = this._createPackage();
             this.boxItems = [box];
-
             this._createZoomButton();
         },
 
@@ -87,29 +86,19 @@
             }
         },
 
+        // TODO: extract to behavior
         _createZoomButton: function () {
-            // TODO: extract to behavior
-            var width;
-            if (navigator.userAgent.match(/iPhone/i)) {
-                width = 20;
-            } else {
-                width = 10;
-            }
-            var geometry = new THREE.CylinderGeometry(width, width, 5, 32);
-            var texture = new THREE.TextureLoader().load( 'images/crosshair.png' );
-            var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
-            var mesh = new THREE.Mesh(geometry, material);
-            mesh.rotateX(90 * (Math.PI/180));
-            mesh.rotateY(45 * (Math.PI/180));
-            mesh.name = 'zoom';
-            mesh.position.setZ(15);
+            var mesh = this._createButtonMesh('crosshair', 15);
 
             var padding = 10;
             mesh.position.x = this.xPos - padding;
             mesh.position.y = this.yPos + padding;
 
+            // zoom in
             mesh.on('mousedown', function () {
+                this.startCameraPos = new THREE.Vector3().copy(VrBehavior.Scene.camera.position);
                 VrBehavior.Scene.camera.position.setZ(-250);
+                this._createZoomBackButton();
                 this.classes.forEach(function (clazz) {
                     clazz.position.setZ(-500);
                     this.getThreeJS().add(clazz);
@@ -117,6 +106,41 @@
             }.bind(this));
 
             this.getThreeJS().add(mesh);
+        },
+
+        // TODO: extract to behavior
+        _createZoomBackButton: function () {
+            var mesh = this._createButtonMesh('arrow', -480);
+            mesh.position.x = -250;
+
+            // zoom out
+            mesh.on('mousedown', function () {
+                VrBehavior.Scene.camera.position.setZ(this.startCameraPos.z);
+                this.getThreeJS().remove(mesh);
+                this.classes.forEach(function (clazz) {
+                    this.getThreeJS().remove(clazz);
+                }.bind(this))
+            }.bind(this));
+
+            this.getThreeJS().add(mesh);
+        },
+
+        _createButtonMesh: function (image, zPos) {
+            var width;
+            if (navigator.userAgent.match(/iPhone/i)) {
+                width = 20;
+            } else {
+                width = 10;
+            }
+            var geometry = new THREE.CylinderGeometry(width, width, 5, 32);
+            var texture = new THREE.TextureLoader().load('images/' + image + '.png');
+            var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
+            var mesh = new THREE.Mesh(geometry, material);
+            mesh.rotateX(90 * (Math.PI / 180));
+            mesh.rotateY(-90 * (Math.PI / 180));
+            mesh.name = 'back';
+            mesh.position.setZ(zPos);
+            return mesh;
         }
 
     });
