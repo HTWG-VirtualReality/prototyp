@@ -96,8 +96,11 @@
 
             // zoom in
             mesh.on('mousedown', function () {
-                this.startCameraPos = new THREE.Vector3().copy(VrBehavior.Scene.camera.position);
-                VrBehavior.Scene.camera.position.setZ(-250);
+                var camera = VrBehavior.Scene.camera;
+                this.startCameraPos = new THREE.Vector3().copy(camera.position);
+                camera.position.setX(this.xPos);
+                camera.position.setY(this.yPos);
+                camera.position.setZ(-250);
                 this._createZoomBackButton();
                 this.classes.forEach(function (clazz) {
                     clazz.position.setZ(-500);
@@ -115,7 +118,7 @@
 
             // zoom out
             mesh.on('mousedown', function () {
-                VrBehavior.Scene.camera.position.setZ(this.startCameraPos.z);
+                VrBehavior.Scene.camera.position.set(this.startCameraPos.x, this.startCameraPos.y, this.startCameraPos.z);
                 this.getThreeJS().remove(mesh);
                 this.classes.forEach(function (clazz) {
                     this.getThreeJS().remove(clazz);
