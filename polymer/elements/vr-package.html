@@ -99,19 +99,35 @@
                 // change camera pos
                 var camera = VrBehavior.Scene.camera;
                 this.startCameraPos = new THREE.Vector3().copy(camera.position);
-                camera.position.set(this.xPos, this.yPos, -250);
+                zoomIn(camera, this.getThreeJS(), -250, function () {
+                    camera.position.setX(this.xPos);
+                    camera.position.setY(this.yPos);
 
-                // zoom out button
-                this._createZoomBackButton();
+                    // zoom out button
+                    this._createZoomBackButton();
 
-                // add elements to scene
-                this.classes.forEach(function (clazz) {
-                    clazz.position.setZ(-500);
-                    this.getThreeJS().add(clazz);
-                }.bind(this))
+                    // add elements to scene
+                    this.classes.forEach(function (clazz) {
+                        clazz.position.setZ(-500);
+                        this.getThreeJS().add(clazz);
+                    }.bind(this));
+                }.bind(this));
             }.bind(this));
 
             this.getThreeJS().add(mesh);
+
+            function zoomIn(camera, obj, zPos, show) {
+                setTimeout(function () {
+                    if (show && camera.position.z < obj.position.z - 20) {
+                        show();
+                        show = null;
+                    }
+                    camera.position.z -= 3;
+                    if (camera.position.z >= zPos) {
+                        zoomIn(camera, obj, zPos, show);
+                    }
+                }, 10);
+            }
         },
 
         // TODO: extract to behavior
@@ -122,18 +138,35 @@
             // zoom out
             mesh.on('mousedown', function () {
                 // restore camera pos
-                VrBehavior.Scene.camera.position.set(this.startCameraPos.x, this.startCameraPos.y, this.startCameraPos.z);
+                var camera = VrBehavior.Scene.camera;
+                zoomOut(camera, this.getThreeJS(), this.startCameraPos.z, function () {
+                    // remove zoom out button
+                    this.getThreeJS().remove(mesh);
 
-                // remove zoom out button
-                this.getThreeJS().remove(mesh);
+                    // remove elements from scene
+                    this.classes.forEach(function (clazz) {
+                        this.getThreeJS().remove(clazz);
+                    }.bind(this));
 
-                // remove elements from scene
-                this.classes.forEach(function (clazz) {
-                    this.getThreeJS().remove(clazz);
-                }.bind(this))
+                    camera.position.setX(this.startCameraPos.x);
+                    camera.position.setY(this.startCameraPos.y);
+                }.bind(this));
             }.bind(this));
 
             this.getThreeJS().add(mesh);
+
+            function zoomOut(camera, obj, zPos, show) {
+                setTimeout(function () {
+                    if (show && camera.position.z > obj.position.z - 20) {
+                        show();
+                        show = null;
+                    }
+                    camera.position.z += 3;
+                    if (camera.position.z <= zPos) {
+                        zoomOut(camera, obj, zPos, show);
+                    }
+                }, 10);
+            }
         },
 
         _createButtonMesh: function (image, zPos) {
