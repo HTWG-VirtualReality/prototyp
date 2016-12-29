@@ -10,22 +10,6 @@
 
 <script src="../js/vr-size-datastruct.js"></script>
 
-<dom-module id="vr-class">
-    <template>
-        <template is="dom-repeat" items="{{boxItems}}">
-            <vr-box x-pos="{{item.x}}"
-                    y-pos="{{item.y}}"
-                    width="{{item.width}}"
-                    height="{{item.height}}"
-                    depth="{{item.depth}}"
-                    text="{{item.text}}"
-                    text-center="{{item.textCenter}}"
-                    parent-highlight>
-            </vr-box>
-        </template>
-    </template>
-</dom-module>
-
 <script>
     window.VrElement = window.VrElement || {};
     VrElement.Class = Polymer({
@@ -64,6 +48,23 @@
             VrBehavior.Look,
             VrBehavior.InnerSizing
         ],
+
+        ready: function() {
+          var self = this;
+          create(this.text1, true, {height: 25}, {height: 25}, {height: 0.2, width:1});
+          create(this.text2, false, null, null, {height: 0.4, width:1});
+          create(this.text3, false, null, null, {height: 0.4, width:1});
+
+          function create(text, center, min, max, percentage) {
+            var element = new VrElement.Box();
+            element.width = self.width;
+            element.xPos = 0;
+            element.text = text;
+            element.textCener = center;
+            Polymer.dom(self.root).appendChild(element);
+            self.registerInnerSizingElement(element, min, max, percentage);
+          }
+        },
 
         observers: [
             '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3, classType)'
@@ -110,6 +111,6 @@
             }
 
             return maxWidth / 10;
-        },
+        }
     });
 </script>
