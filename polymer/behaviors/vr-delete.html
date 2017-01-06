@@ -100,10 +100,14 @@
         },
 
         delete: function(event) {
+            event.stopPropagation();
+            event.origDomEvent.stopImmediatePropagation();
             // delete all connections
             this.fire('vr-delete', {});
+
             // delete this object
-            if(this.parentNode) Polymer.dom(this.parentNode).removeChild(this);
+            document.querySelector("vr-scene").deleteShape(this)
+            // if(this.parentNode) Polymer.dom(this.parentNode).removeChild(this);
         }
 
     }];

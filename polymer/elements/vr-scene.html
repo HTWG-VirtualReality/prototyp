@@ -101,6 +101,15 @@
             }
 
             self._render();
+        },
+
+        deleteShape: function(obj) {
+          var items = this._getItemsArray(obj)
+          this[items] = this[items].filter(function(e){ return e.id != obj.id; })
+        },
+
+        _getItemsArray: function(obj) {
+          if(obj instanceof VrElement.Class) { return "classItems" }
         }
 
     });
