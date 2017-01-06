@@ -103,7 +103,7 @@
             // delete all connections
             this.fire('vr-delete', {});
             // delete this object
-            Polymer.dom(this.parentNode).removeChild(this);
+            if(this.parentNode) Polymer.dom(this.parentNode).removeChild(this);
         }
 
     }];
