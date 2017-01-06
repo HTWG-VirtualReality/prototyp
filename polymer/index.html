@@ -33,10 +33,6 @@
 </head>
 <body>
 <vr-scene>
-
-    <!-- <vr-controlpanel x-pos="-500" y-pos="22" height="200" width="202"></vr-controlpanel> -->
-  <!--  <vr-control id="ctr" x-pos="-50" y-pos="130" height="50" width="200"></vr-control>-->
-
     <vr-class id="customer"
               x-pos="150"
               y-pos="150"
@@ -143,43 +139,15 @@
     </vr-class>
 
 
-    <!--<vr-box id="b1" x-pos="-150" y-pos="100" width="50" height="50" depth="10" text="Class Test"></vr-box>-->
-    <!--<vr-box id="b2" x-pos="-150" y-pos="-100" depth="10" text="test(): String; hallo(): int"></vr-box>-->
-
-    <!-- <vr-line from="#c1" to="#b2"></vr-line> -->
-    <vr-connection-inheritance from="#customer" to="#personalcustomer"></vr-connection-inheritance>
-    <vr-connection-inheritance from="#customer" to="#corporatecustomer"></vr-connection-inheritance>
-    <vr-connection-inheritance from="#corporatecustomer" to="#customer"></vr-connection-inheritance>
-    <vr-connection-aggregation from="#order" to="#customer"></vr-connection-aggregation>
-    <vr-connection-association from="#orderline" to="#order"></vr-connection-association>
-    <vr-connection-association from="#product" to="#orderline"></vr-connection-association>
-    <vr-connection-association from="#customer" to="#order"></vr-connection-association>
-    <vr-connection-association from="#employee" to="#corporatecustomer"></vr-connection-association>
-    <vr-connection-association from="#corporatecustomer" to="#employee"></vr-connection-association>
-
-
-    <!-- <vr-connection-extends from="#employee" to="#personalcustomer"></vr-connection-extends>
-    <vr-connection-extends from="#personalcustomer" to="#employee"></vr-connection-extends> -->
-
-
-    <!-- <vr-polyline dashed>
-        <vr-point x="150" y="100"></vr-point>
-        <vr-point x="-150" y="0"></vr-point>
-        <vr-point x="-150" y="100"></vr-point>
-        <vr-point x="150" y="0"></vr-point>
-        <vr-point x="150" y="100"></vr-point>
-    </vr-polyline>
-    <vr-ellipse x="-50" y="100" width="50" height="100"></vr-ellipse>
-
-    <vr-polygon id="poly">
-        <vr-point x="150" y="0"></vr-point>
-        <vr-point x="100" y="40"></vr-point>
-        <vr-point x="50" y="0"></vr-point>
-        <vr-point x="100" y="-40"></vr-point>
-    </vr-polygon> -->
-
-    <!--<vr-line from="#c1" to="#poly"></vr-line>-->
-
+    <vr-connection-inheritance from="customer" to="personalcustomer"></vr-connection-inheritance>
+    <vr-connection-inheritance from="customer" to="corporatecustomer"></vr-connection-inheritance>
+    <vr-connection-inheritance from="corporatecustomer" to="customer"></vr-connection-inheritance>
+    <vr-connection-aggregation from="order" to="customer"></vr-connection-aggregation>
+    <vr-connection-association from="orderline" to="order"></vr-connection-association>
+    <vr-connection-association from="product" to="orderline"></vr-connection-association>
+    <vr-connection-association from="customer" to="order"></vr-connection-association>
+    <vr-connection-association from="employee" to="corporatecustomer"></vr-connection-association>
+    <vr-connection-association from="corporatecustomer" to="employee"></vr-connection-association>
 </vr-scene>
 </body>
 </html>

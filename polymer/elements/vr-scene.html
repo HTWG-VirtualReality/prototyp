@@ -33,13 +33,13 @@
 
             <!-- For connections -->
             <template is="dom-repeat" items="{{connectionInheritanceItems}}" strip-whitespace>
-                <vr-connection-inheritance from="#{{item.from}}" to="#{{item.to}}"></vr-connection-inheritance>
+                <vr-connection-inheritance from="{{item.from}}" to="{{item.to}}"></vr-connection-inheritance>
             </template>
             <template is="dom-repeat" items="{{connectionAssociationItems}}" strip-whitespace>
-                <vr-connection-association from="#{{item.from}}" to="#{{item.to}}"></vr-connection-association>
+                <vr-connection-association from="{{item.from}}" to="{{item.to}}"></vr-connection-association>
             </template>
             <template is="dom-repeat" items="{{connectionAggregationItems}}" strip-whitespace>
-                <vr-connection-aggregation from="#{{item.from}}" to="#{{item.to}}"></vr-connection-aggregation>
+                <vr-connection-aggregation from="{{item.from}}" to="{{item.to}}"></vr-connection-aggregation>
             </template>
         </div>
     </template>

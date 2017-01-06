@@ -173,8 +173,8 @@ change the implementation of GeneralConnection.
             }
 
             var cb = this.ConnectionBehavior = {
-                fromObj: document.querySelector(this.from),
-                toObj: document.querySelector(this.to),
+                fromObj: document.getElementById(this.from),
+                toObj: document.getElementById(this.to),
                 resize: this._updateConnection.bind(this),
                 delete: this._deleteConnection.bind(this),
                 mousedown: this._handleClick.bind(this)
