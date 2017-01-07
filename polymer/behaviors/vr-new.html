@@ -81,7 +81,7 @@
                 group.on('mousedown', function(e) {
                     e.origDomEvent.stopImmediatePropagation();
                     e.stopPropagation();
-                    self.pushNewElement(guid(), position, text);
+                    self.pushNewElement(guid(), text, position, null);
                     onMouseUp(null);
                 });
                 return group;
@@ -118,6 +118,6 @@
 
         // Override this function in generated behavior
         // returns new counter value
-        pushNewElement: function(id, position, text) {}
+        pushNewElement: function(id, type, position, size) {}
     };
 </script>
