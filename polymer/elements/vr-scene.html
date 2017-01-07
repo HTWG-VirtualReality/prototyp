@@ -28,7 +28,7 @@
         <div id="itemsContent">
             <template is="dom-repeat" items="{{classItems}}" strip-whitespace>
                 <vr-class id="{{item.id}}" x-pos="{{item.xPos}}" y-pos="{{item.yPos}}"
-                          class-type="{{item.classType}}"></vr-class>
+                  width="{{item.width}}" height="{{item.height}}"></vr-class>
             </template>
 
             <!-- For connections -->
@@ -108,8 +108,18 @@
           this[items] = this[items].filter(function(e){ return e.id != obj.id; })
         },
 
+        deleteConnection: function(obj) {
+          var items = this._getItemsArray(obj)
+          this[items] = this[items].filter(function(e) {
+            return !(e.to == obj.to && e.from == obj.from)
+          });
+        },
+
         _getItemsArray: function(obj) {
           if(obj instanceof VrElement.Class) { return "classItems" }
+          else if(obj instanceof VrElement.ConnectionAggregation) { return "connectionAggregationItems" }
+          else if(obj instanceof VrElement.ConnectionAssociation) { return "connectionAssociationItems" }
+          else if(obj instanceof VrElement.ConnectionInheritance) { return "connectionInheritanceItems" }
         }
 
     });

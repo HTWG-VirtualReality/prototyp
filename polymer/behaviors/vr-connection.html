@@ -271,8 +271,7 @@ change the implementation of GeneralConnection.
             this._handleListener(cb.toObj.removeEventListener.bind(cb.toObj));
             this.getThreeJS().off('mousedown', cb.mousedown);
 
-            if(this.parentNode === null) return; // TODO: quick fix
-            Polymer.dom(this.parentNode).removeChild(this);
+            document.querySelector("vr-scene").deleteConnection(this)
         },
 
         _createLinePoint: function(x, y) {

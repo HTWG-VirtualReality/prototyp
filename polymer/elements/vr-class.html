@@ -30,11 +30,6 @@
             text3: {
                 type: String,
                 value: ''
-            },
-            classType: {
-                type: String,
-                value: 'class',
-                observer: '_enumClassType'
             }
         },
 
@@ -48,6 +43,11 @@
         ],
 
         ready: function() {
+          this.highlight = true
+        this.resizeVertical = true
+        this.resizeHorizontal = true
+        this.moveHorizontal = true
+        this.moveVertical = true
           var self = this;
           create(this.text1, true, {height: 25}, {height: 25}, {height: 0.2, width:1});
           create(this.text2, false, null, null, {height: 0.4, width:1});
@@ -65,18 +65,10 @@
         },
 
         observers: [
-            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3, classType)'
+            '_updateClass(xPos, yPos, width, height, depth, text1, text2, text3)'
         ],
 
-        _enumClassType: function (newValue) {
-            var validTypes = ['class', 'abstract', 'interface'];
-            if (validTypes.indexOf(newValue) === -1) {
-                // set default value
-                this.classType = 'class';
-            }
-        },
-
-        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3, classType) {
+        _updateClass: function (xPos, yPos, width, height, depth, text1, text2, text3) {
             if (this.getThreeJS()) {
                 // compute width for fitting the text
                 var newWidth = this._computeWidth();

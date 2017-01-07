@@ -65,7 +65,7 @@
                 width = 10;
             }
             var geometry = new THREE.CylinderGeometry(width, width, 5, 32);
-            var texture = new THREE.TextureLoader().load( 'images/crosshair.png' );
+            var texture = new THREE.TextureLoader().load( '/assets/prototyp/images/crosshair.png' );
             var material = new THREE.MeshBasicMaterial({color: 0xFFFFFF, map: texture});
             var mesh = new THREE.Mesh(geometry, material);
             mesh.rotateX(90 * (Math.PI/180));
