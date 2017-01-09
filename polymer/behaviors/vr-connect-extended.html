@@ -1,18 +1,21 @@
 <!-- This file should be generated -->
 <link rel="import" href="vr-connect.html">
+<link rel="import" href="../elements/vr-connection-inheritance.html">
+<link rel="import" href="../elements/vr-connection-aggregation.html">
+<link rel="import" href="../elements/vr-connection-association.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.ConnectExtended = [VrBehavior.Connect, {
         connectionMap: {
-            connectionAssociation: function(connection) {
-                this.ConnectBehavior.scene.push('connectionAssociationItems', connection)
+            connectionAssociation: function() {
+                return new VrElement.ConnectionAssociation();
             },
-            connectionInheritance: function(connection) {
-                this.ConnectBehavior.scene.push('connectionInheritanceItems', connection)
+            connectionInheritance: function() {
+                return new VrElement.ConnectionInheritance();
             },
-            connectionAggregation: function(connection) {
-                this.ConnectBehavior.scene.push('connectionAggregationItems', connection)
+            connectionAggregation: function() {
+                return new VrElement.ConnectionAggregation();
             }
         },
 
@@ -22,7 +25,10 @@
 
         pushNewConnection: function(type, connection) {
             if(type in this.connectionMap) {
-                (this.connectionMap[type].bind(this))(connection)
+                var element = this.connectionMap[type]();
+                element.from = connection.from;
+                element.to = connection.to;
+                if(this.parentNode) Polymer.dom(this.parentNode.root).appendChild(element);
             } else {
                 console.error("No valid connection found!");
             }

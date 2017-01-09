@@ -6,14 +6,10 @@
 <link rel="import" href="../bower_components/polymer/polymer.html">
 <link rel="import" href="../behaviors/vr-zoom.html">
 <link rel="import" href="../behaviors/vr-axis-control.html">
-
 <link rel="import" href="../behaviors/vr-new-class.html">
 <link rel="import" href="../behaviors/vr-touch.html">
 <link rel="import" href="../behaviors/vr-webvr.html">
 <link rel="import" href="../behaviors/vr-scene.html">
-<link rel="import" href="./vr-connection-inheritance.html">
-<link rel="import" href="./vr-connection-aggregation.html">
-<link rel="import" href="./vr-connection-association.html">
 
 
 <dom-module id="vr-scene">
@@ -22,19 +18,6 @@
         <button class="top-left save" on-click="_save">Save</button>
         <button class="top-left save editor" on-click="_switchToEditor">2D</button>
         <button class="bottom-right" on-click="_resetPose">Reset Pose</button>
-
-        <div id="itemsContent">
-            <!-- For connections -->
-            <template is="dom-repeat" items="{{connectionInheritanceItems}}" strip-whitespace>
-                <vr-connection-inheritance from="{{item.from}}" to="{{item.to}}"></vr-connection-inheritance>
-            </template>
-            <template is="dom-repeat" items="{{connectionAssociationItems}}" strip-whitespace>
-                <vr-connection-association from="{{item.from}}" to="{{item.to}}"></vr-connection-association>
-            </template>
-            <template is="dom-repeat" items="{{connectionAggregationItems}}" strip-whitespace>
-                <vr-connection-aggregation from="{{item.from}}" to="{{item.to}}"></vr-connection-aggregation>
-            </template>
-        </div>
     </template>
 </dom-module>
 
@@ -51,27 +34,6 @@
             VrBehavior.Webvr,
             VrBehavior.Scene
         ],
-
-        properties: {
-            connectionInheritanceItems: {
-                type: Array,
-                value: function () {
-                    return []
-                }
-            },
-            connectionAssociationItems: {
-                type: Array,
-                value: function () {
-                    return []
-                }
-            },
-            connectionAggregationItems: {
-                type: Array,
-                value: function () {
-                    return []
-                }
-            }
-        },
 
         ready: function () {
             var self = this;
@@ -92,33 +54,13 @@
             }
 
             Polymer.dom(self.root).observeNodes(observe);
-            Polymer.dom(self.$.itemsContent).observeNodes(observe);
             self._render();
-        },
-
-        deleteConnection: function (obj) {
-            var items = this._getItemsArray(obj)
-            this[items] = this[items].filter(function (e) {
-                return !(e.to == obj.to && e.from == obj.from)
-            });
         },
 
         _switchToEditor: function () {
             var location = window.location.href;
             location = location.replace("vreditor", "editor");
             window.location.href = location;
-        },
-
-        _getItemsArray: function (obj) {
-            if (obj instanceof VrElement.ConnectionAggregation) {
-                return "connectionAggregationItems"
-            }
-            else if (obj instanceof VrElement.ConnectionAssociation) {
-                return "connectionAssociationItems"
-            }
-            else if (obj instanceof VrElement.ConnectionInheritance) {
-                return "connectionInheritanceItems"
-            }
         }
 
     });
