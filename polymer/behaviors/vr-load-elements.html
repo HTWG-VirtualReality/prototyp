@@ -55,7 +55,7 @@
                 var model = JSON.parse(event.detail.xhr.response.model.uiState);
 
                 model.cells.forEach(function (element) {
-                    self.pushNewElement(element.id, element.position, element.mClass.toLowerCase());
+                    self.pushNewElement(element.id, element.position, element.mClass.toLowerCase(), element.size);
                 });
             }
 
@@ -93,10 +93,10 @@
             element.generateRequest();
         },
 
-        pushNewElement: function (elementId, position, text) {
+        pushNewElement: function (elementId, position, text, size) {
             // classItems must be part off vr-scene.html
-            switch (text) {
 
+            switch (text) {
                 case "transition":
                     this.push('transitionItems', {
                         id: elementId,
@@ -112,6 +112,16 @@
                         xPos: position.x,
                         yPos: position.y,
                         classType: text.toLowerCase()
+                    });
+                    break;
+
+                case "class":
+                    this.push('classItems', {
+                        id: elementId,
+                        xPos: position.x,
+                        yPos: position.y,
+                        width: size != null ? size.width : 50,
+                        height: size != null ? size.height : 50
                     });
                     break;
 
