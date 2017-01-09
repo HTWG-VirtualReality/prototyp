@@ -13,7 +13,7 @@
 
             this.getThreeJS().on('mousedown', this._handleClickConnectButton.bind(this));
             this.ConnectBehavior = {
-                fromID: this._getPolymerElement(this.getThreeJS().id).id,
+                fromID: this.id,
                 meshes: null,
                 mouseover: this.onMouseOver.bind(this),
                 mouseout: this.onMouseOut.bind(this),
@@ -158,16 +158,18 @@
 
             // setup registration
             cb.allElements = (getAllElements.bind(this))();
-            cb.connect = this.connect(connection).bind(this)
+            cb.connect = this.connect(connection).bind(this);
 
             // register listener
             cb.allElements.forEach(function(element) {
-                if(element.id != cb.fromID) { element.getThreeJS().on('mousedown', cb.connect); }
+                if(element.id != cb.fromID) {
+                    element.getThreeJS().on('mousedown', cb.connect);
+                }
             });
 
             function getAllElements() {
-                return Polymer.dom(this.parentNode).children.filter(function(element) {
-                    return element.tagName !== "TEMPLATE";
+                return Polymer.dom(this.parentNode.root).children.filter(function(element) {
+                    return element.getThreeJS;
                 });
             }
         },
@@ -180,7 +182,7 @@
         },
 
         _getPolymerElement: function(id) {
-             return Polymer.dom(this.parentNode).children.filter(function(element) {
+             return Polymer.dom(this.parentNode.root).children.filter(function(element) {
                 return (element.getThreeJS && element.getThreeJS().id == id);
             })[0];
         },

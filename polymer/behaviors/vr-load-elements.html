@@ -1,5 +1,6 @@
 <link rel="import" href="vr-three.html">
 <link rel="import" href="../bower_components/iron-ajax/iron-ajax.html">
+<link rel="import" href="../elements/vr-class.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
@@ -94,7 +95,7 @@
         },
 
         pushNewElement: function (elementId, text, position, size) {
-            // classItems must be part off vr-scene.html
+            var self = this;
 
             switch (text) {
                 case "transition":
@@ -116,13 +117,13 @@
                     break;
 
                 case "class":
-                    this.push('classItems', {
-                        id: elementId,
-                        xPos: position.x,
-                        yPos: position.y,
-                        width: size != null ? size.width : 50,
-                        height: size != null ? size.height : 50
-                    });
+                    var element = new VrElement.Class();
+                    element.id = elementId;
+                    element.xPos = position.x;
+                    element.yPos = position.y;
+                    element.width = size != null ? size.width : 50;
+                    element.height = size != null ? size.height : 50;
+                    Polymer.dom(self.root).appendChild(element);
                     break;
 
                 default:

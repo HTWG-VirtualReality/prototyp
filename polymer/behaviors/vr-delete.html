@@ -106,8 +106,7 @@
             this.fire('vr-delete', {});
 
             // delete this object
-            document.querySelector("vr-scene").deleteShape(this)
-            // if(this.parentNode) Polymer.dom(this.parentNode).removeChild(this);
+            if(this.parentNode) Polymer.dom(this.parentNode.root).removeChild(this);
         }
 
     }];

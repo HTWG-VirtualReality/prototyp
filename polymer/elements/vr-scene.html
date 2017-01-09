@@ -11,7 +11,6 @@
 <link rel="import" href="../behaviors/vr-touch.html">
 <link rel="import" href="../behaviors/vr-webvr.html">
 <link rel="import" href="../behaviors/vr-scene.html">
-<link rel="import" href="./vr-class.html">
 <link rel="import" href="./vr-connection-inheritance.html">
 <link rel="import" href="./vr-connection-aggregation.html">
 <link rel="import" href="./vr-connection-association.html">
@@ -24,14 +23,7 @@
         <button class="top-left save editor" on-click="_switchToEditor">2D</button>
         <button class="bottom-right" on-click="_resetPose">Reset Pose</button>
 
-        <content id="content" select="*"></content>
-
         <div id="itemsContent">
-            <template is="dom-repeat" items="{{classItems}}" strip-whitespace>
-                <vr-class id="{{item.id}}" x-pos="{{item.xPos}}" y-pos="{{item.yPos}}"
-                          width="{{item.width}}" height="{{item.height}}"></vr-class>
-            </template>
-
             <!-- For connections -->
             <template is="dom-repeat" items="{{connectionInheritanceItems}}" strip-whitespace>
                 <vr-connection-inheritance from="{{item.from}}" to="{{item.to}}"></vr-connection-inheritance>
@@ -61,12 +53,6 @@
         ],
 
         properties: {
-            classItems: {
-                type: Array,
-                value: function () {
-                    return [];
-                }
-            },
             connectionInheritanceItems: {
                 type: Array,
                 value: function () {
@@ -91,10 +77,6 @@
             var self = this;
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
 
-            // observe nodes that will added to this element
-            Polymer.dom(self.$.content).observeNodes(observe);
-            Polymer.dom(self.$.itemsContent).observeNodes(observe);
-
             function observe(nodes) {
                 nodes.addedNodes.forEach(function (node) {
                     if (node.getThreeJS) {
@@ -109,14 +91,9 @@
                 });
             }
 
+            Polymer.dom(self.root).observeNodes(observe);
+            Polymer.dom(self.$.itemsContent).observeNodes(observe);
             self._render();
-        },
-
-        deleteShape: function (obj) {
-            var items = this._getItemsArray(obj)
-            this[items] = this[items].filter(function (e) {
-                return e.id != obj.id;
-            })
         },
 
         deleteConnection: function (obj) {
@@ -133,10 +110,7 @@
         },
 
         _getItemsArray: function (obj) {
-            if (obj instanceof VrElement.Class) {
-                return "classItems"
-            }
-            else if (obj instanceof VrElement.ConnectionAggregation) {
+            if (obj instanceof VrElement.ConnectionAggregation) {
                 return "connectionAggregationItems"
             }
             else if (obj instanceof VrElement.ConnectionAssociation) {
