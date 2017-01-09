@@ -43,6 +43,25 @@
             return camera;
         },
 
+        ready: function () {
+            var self = this;
+            Polymer.dom(self.root).appendChild(self.renderer.domElement);
+            Polymer.dom(self.root).observeNodes(function(nodes) {
+                nodes.addedNodes.forEach(function (node) {
+                    if (node.getThreeJS) {
+                        self.group.add(node.getThreeJS());
+                    }
+                });
+
+                nodes.removedNodes.forEach(function (node) {
+                    if (node.getThreeJS) {
+                        self.group.remove(node.getThreeJS());
+                    }
+                });
+            });
+            self._render();
+        },
+
         _render: function () {
             requestAnimationFrame(this._render.bind(this));
             this.controls.update(); //WebvrBehavior

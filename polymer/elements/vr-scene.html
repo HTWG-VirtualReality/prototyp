@@ -35,28 +35,6 @@
             VrBehavior.Scene
         ],
 
-        ready: function () {
-            var self = this;
-            Polymer.dom(self.root).appendChild(self.renderer.domElement);
-
-            function observe(nodes) {
-                nodes.addedNodes.forEach(function (node) {
-                    if (node.getThreeJS) {
-                        self.group.add(node.getThreeJS());
-                    }
-                });
-
-                nodes.removedNodes.forEach(function (node) {
-                    if (node.getThreeJS) {
-                        self.group.remove(node.getThreeJS());
-                    }
-                });
-            }
-
-            Polymer.dom(self.root).observeNodes(observe);
-            self._render();
-        },
-
         _switchToEditor: function () {
             var location = window.location.href;
             location = location.replace("vreditor", "editor");
