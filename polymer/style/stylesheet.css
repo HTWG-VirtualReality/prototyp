@@ -22,6 +22,11 @@ button {
     border-color: rgb(136, 136, 136);
 }
 
+.editor {
+    position: fixed;
+    left: 50px;
+}
+
 .bottom-right {
     position: absolute;
     right: 0;

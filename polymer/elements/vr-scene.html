@@ -21,6 +21,7 @@
     <template>
         <button class="top-left" on-click="_enterVR">Enter VR (WebVR/Mobile only)</button>
         <button class="top-left save" on-click="_save">Save</button>
+        <button class="top-left save editor" on-click="_switchToEditor">2D</button>
         <button class="bottom-right" on-click="_resetPose">Reset Pose</button>
 
         <content id="content" select="*"></content>
@@ -28,7 +29,7 @@
         <div id="itemsContent">
             <template is="dom-repeat" items="{{classItems}}" strip-whitespace>
                 <vr-class id="{{item.id}}" x-pos="{{item.xPos}}" y-pos="{{item.yPos}}"
-                  width="{{item.width}}" height="{{item.height}}"></vr-class>
+                          width="{{item.width}}" height="{{item.height}}"></vr-class>
             </template>
 
             <!-- For connections -->
@@ -62,19 +63,27 @@
         properties: {
             classItems: {
                 type: Array,
-                value: function () { return []; }
+                value: function () {
+                    return [];
+                }
             },
             connectionInheritanceItems: {
                 type: Array,
-                value: function () { return [] }
+                value: function () {
+                    return []
+                }
             },
             connectionAssociationItems: {
                 type: Array,
-                value: function () { return [] }
+                value: function () {
+                    return []
+                }
             },
             connectionAggregationItems: {
                 type: Array,
-                value: function () { return [] }
+                value: function () {
+                    return []
+                }
             }
         },
 
@@ -103,23 +112,39 @@
             self._render();
         },
 
-        deleteShape: function(obj) {
-          var items = this._getItemsArray(obj)
-          this[items] = this[items].filter(function(e){ return e.id != obj.id; })
+        deleteShape: function (obj) {
+            var items = this._getItemsArray(obj)
+            this[items] = this[items].filter(function (e) {
+                return e.id != obj.id;
+            })
         },
 
-        deleteConnection: function(obj) {
-          var items = this._getItemsArray(obj)
-          this[items] = this[items].filter(function(e) {
-            return !(e.to == obj.to && e.from == obj.from)
-          });
+        deleteConnection: function (obj) {
+            var items = this._getItemsArray(obj)
+            this[items] = this[items].filter(function (e) {
+                return !(e.to == obj.to && e.from == obj.from)
+            });
         },
 
-        _getItemsArray: function(obj) {
-          if(obj instanceof VrElement.Class) { return "classItems" }
-          else if(obj instanceof VrElement.ConnectionAggregation) { return "connectionAggregationItems" }
-          else if(obj instanceof VrElement.ConnectionAssociation) { return "connectionAssociationItems" }
-          else if(obj instanceof VrElement.ConnectionInheritance) { return "connectionInheritanceItems" }
+        _switchToEditor: function () {
+            var location = window.location.href;
+            location = location.replace("vreditor", "editor");
+            window.location.href = location;
+        },
+
+        _getItemsArray: function (obj) {
+            if (obj instanceof VrElement.Class) {
+                return "classItems"
+            }
+            else if (obj instanceof VrElement.ConnectionAggregation) {
+                return "connectionAggregationItems"
+            }
+            else if (obj instanceof VrElement.ConnectionAssociation) {
+                return "connectionAssociationItems"
+            }
+            else if (obj instanceof VrElement.ConnectionInheritance) {
+                return "connectionInheritanceItems"
+            }
         }
 
     });
