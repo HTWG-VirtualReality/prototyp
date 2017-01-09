@@ -55,7 +55,7 @@
                 var model = JSON.parse(event.detail.xhr.response.model.uiState);
 
                 model.cells.forEach(function (element) {
-                    self.pushNewElement(element.id, element.position, element.mClass.toLowerCase(), element.size);
+                    self.pushNewElement(element.id, element.mClass.toLowerCase(), element.position, element.size);
                 });
             }
 
@@ -93,7 +93,7 @@
             element.generateRequest();
         },
 
-        pushNewElement: function (elementId, position, text, size) {
+        pushNewElement: function (elementId, text, position, size) {
             // classItems must be part off vr-scene.html
 
             switch (text) {
