@@ -182,7 +182,7 @@
                 var response = event.detail.xhr.response;
                 var model = JSON.parse(response.model.uiState);
                 var elements = response.model;
-                var children = document.querySelector('div#itemsContent').children;
+                var children = document.querySelector('vr-scene').children;
 
                 var currentElements = [];
 
