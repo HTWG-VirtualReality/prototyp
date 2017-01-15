@@ -16,14 +16,14 @@
             }
         },
         classMap: {
-            association: function () {
-                return new VrElement.ConnectionAssociation();
+            interfaceklasse: function () {
+                return new VrElement.Interface();
             },
-            inheritance: function () {
-                return new VrElement.ConnectionInheritance();
+            abstractklasse: function () {
+                return new VrElement.AbstractKlasse();
             },
-            aggregation: function () {
-                return new VrElement.ConnectionAggregation();
+            klasse: function () {
+                return new VrElement.Klasse();
             }
         },
 
@@ -149,42 +149,18 @@
                         classType: text.toLowerCase()
                     });
                     break;
-
-                case "klasse":
-                    var element = new VrElement.Klasse();
-                    element.id = elementId;
-                    element.xPos = position.x;
-                    element.yPos = position.y;
-                    element.width = size != null ? size.width : 50;
-                    element.height = size != null ? size.height : 50;
-                    Polymer.dom(self.root).appendChild(element);
-                    break;
-
-                case "abstractKlasse": // TODO Fix uppercase in generator // OR fix here :D
-                case "abstractklasse":
-                    var element = new VrElement.AbstractKlasse();
-                    element.id = elementId;
-                    element.xPos = position.x;
-                    element.yPos = position.y;
-                    element.width = size != null ? size.width : 50;
-                    element.height = size != null ? size.height : 50;
-                    Polymer.dom(self.root).appendChild(element);
-                    break;
-
-                case "interfaceklasse":
-                case "interfaceKlasse":
-                    var element = new VrElement.Interface();
-                    element.id = elementId;
-                    element.xPos = position.x;
-                    element.yPos = position.y;
-                    element.width = size != null ? size.width : 50;
-                    element.height = size != null ? size.height : 50;
-                    Polymer.dom(self.root).appendChild(element);
-                    break;
-
-
                 default:
-                    console.error("No valid element found! Caution generated Code.");
+                    if (text.toLowerCase() in this.classMap) {
+                        var element = this.classMap[text.toLowerCase()]();
+                        element.id = elementId;
+                        element.xPos = position.x;
+                        element.yPos = position.y;
+                        element.width = size != null ? size.width : 100;
+                        element.height = size != null ? size.height : 100;
+                        Polymer.dom(self.root).appendChild(element);
+                    } else {
+                        console.error("No valid element found! Caution generated Code.");
+                    }
             }
         },
         pushNewConnection: function (type, connection) {
