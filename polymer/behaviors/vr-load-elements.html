@@ -125,7 +125,7 @@
                     Polymer.dom(self.root).appendChild(element);
                     break;
 
-                case "abstractklasse":
+                case "abstractKlasse":
                     var element = new VrElement.AbstractKlasse();
                     element.id = elementId;
                     element.xPos = position.x;
@@ -135,6 +135,15 @@
                     Polymer.dom(self.root).appendChild(element);
                     break;
 
+                case "interfaceKlasse":
+                    var element = new VrElement.Interface();
+                    element.id = elementId;
+                    element.xPos = position.x;
+                    element.yPos = position.y;
+                    element.width = size != null ? size.width : 50;
+                    element.height = size != null ? size.height : 50;
+                    Polymer.dom(self.root).appendChild(element);
+                    break;
 
 
                 default:

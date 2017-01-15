@@ -63,7 +63,7 @@
 
             function _addModel(model, element) {
                 var obj = {};
-                obj.initSize = {};
+                obj['init-size'] = {};
                 obj.size = {};
                 obj.resize = {};
                 obj.resize.horizontal = true;
@@ -97,7 +97,7 @@
                 if (element.tagName === 'VR-PLACE') {
                     obj.type = 'zeta.place';
                     obj.initSize.width = 60;
-                    obj.initSize.height = 60;
+                    obj['init-size'].height = 60;
                     obj.size.width = 60;
                     obj.size.height = 60;
                     obj.nodeName = 'placeNode';
@@ -117,8 +117,8 @@
                     ele.attributes = {};
                 } else if (element.tagName === 'VR-TRANSITION') {
                     obj.type = 'zeta.transition';
-                    obj.initSize.width = 100;
-                    obj.initSize.height = 200;
+                    obj['init-size'].width = 100;
+                    obj['init-size'].height = 200;
                     obj.size.width = 100;
                     obj.size.height = 200;
                     obj.nodeName = 'transitionNode';
@@ -128,28 +128,42 @@
                     obj.attrs[id1] = ellipse;
                     var id2 = 'rect.' + guid();
                     obj.attrs[id2] = ellipse;
-                } else if (element.tagName === 'vr-klasse') {
+                } else if (element.tagName === 'VR-KLASSE') {
                     obj.type = 'zeta.klasse';
-                    obj.initSize.width = element.width;
-                    obj.initSize.height = element.height;
+                    obj['init-size'].width = element.width;
+                    obj['init-size'].height = element.height;
                     obj.size.width = element.width;
                     obj.size.height = element.height;
                     obj.nodeName = 'classNode';
-                    obj.mClass = 'Class';
+                    obj.mClass = 'Klasse';
                     var id1 = 'rect.' + guid();
                     obj.attrs[id1] = ellipse;
                     var id2 = 'rect.' + guid();
                     obj.attrs[id2] = ellipse;
                     var id3 = 'rect.' + guid();
                     obj.attrs[id3] = ellipse;
-                } else if (element.tagName === 'vr-abstract') {
+                } else if (element.tagName === 'VR-ABSTRACTKLASSE') {
                     obj.type = 'zeta.abstractKlasse';
-                    obj.initSize.width = element.width;
-                    obj.initSize.height = element.height;
+                    obj['init-size'].width = element.width;
+                    obj['init-size'].height = element.height;
                     obj.size.width = element.width;
                     obj.size.height = element.height;
                     obj.nodeName = 'classNode';
-                    obj.mClass = 'Class';
+                    obj.mClass = 'AbstractKlasse';
+                    var id1 = 'rect.' + guid();
+                    obj.attrs[id1] = ellipse;
+                    var id2 = 'rect.' + guid();
+                    obj.attrs[id2] = ellipse;
+                    var id3 = 'rect.' + guid();
+                    obj.attrs[id3] = ellipse;
+                } else if (element.tagName === 'VR-INTERFACE') {
+                    obj.type = 'zeta.interface';
+                    obj['init-size'].width = element.width;
+                    obj['init-size'].height = element.height;
+                    obj.size.width = element.width;
+                    obj.size.height = element.height;
+                    obj.nodeName = 'classNode';
+                    obj.mClass = 'InterfaceKlasse';
                     var id1 = 'rect.' + guid();
                     obj.attrs[id1] = ellipse;
                     var id2 = 'rect.' + guid();
@@ -179,13 +193,18 @@
                     newElement.mClass = 'Place';
                 } else if (element.tagName === 'VR-TRANSITION') {
                     newElement.mClass = 'Transition';
-                } else if (element.tagName === 'vr-klasse') {
-                    newElement.mClass = 'Class'
+                } else if (element.tagName === 'VR-KLASSE') {
+                    newElement.mClass = 'Klasse'
+                }else if (element.tagName === 'VR-ABSTRACTKLASSE') {
+                    newElement.mClass = 'AbstractClass'
+                }else if (element.tagName === 'VR-INTERFACE') {
+                    newElement.mClass = 'Interface'
                 }
                 newElement.attributes = {};
                 newElement.id = element.id;
                 newElement.inputs = {};
                 newElement.outputs = {};
+                newElement.attributes = {};
 
                 allElements.elements.push(newElement);
                 return allElements;
