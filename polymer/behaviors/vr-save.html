@@ -148,7 +148,7 @@
                     obj['init-size'].height = element.height;
                     obj.size.width = element.width;
                     obj.size.height = element.height;
-                    obj.nodeName = 'classNode';
+                    obj.nodeName = 'abClassNode';
                     obj.mClass = 'AbstractKlasse';
                     var id1 = 'rect.' + guid();
                     obj.attrs[id1] = ellipse;
@@ -162,7 +162,7 @@
                     obj['init-size'].height = element.height;
                     obj.size.width = element.width;
                     obj.size.height = element.height;
-                    obj.nodeName = 'classNode';
+                    obj.nodeName = 'inClassNode';
                     obj.mClass = 'InterfaceKlasse';
                     var id1 = 'rect.' + guid();
                     obj.attrs[id1] = ellipse;
@@ -196,9 +196,9 @@
                 } else if (element.tagName === 'VR-KLASSE') {
                     newElement.mClass = 'Klasse'
                 }else if (element.tagName === 'VR-ABSTRACTKLASSE') {
-                    newElement.mClass = 'AbstractClass'
+                    newElement.mClass = 'AbstractKlasse'
                 }else if (element.tagName === 'VR-INTERFACE') {
-                    newElement.mClass = 'Interface'
+                    newElement.mClass = 'InterfaceKlasse'
                 }
                 newElement.attributes = {};
                 newElement.id = element.id;

@@ -125,7 +125,8 @@
                     Polymer.dom(self.root).appendChild(element);
                     break;
 
-                case "abstractKlasse":
+                case "abstractKlasse": // TODO Fix uppercase in generator
+                case "abstractklasse":
                     var element = new VrElement.AbstractKlasse();
                     element.id = elementId;
                     element.xPos = position.x;
@@ -135,7 +136,7 @@
                     Polymer.dom(self.root).appendChild(element);
                     break;
 
-                case "interfaceKlasse":
+                case "interface":
                     var element = new VrElement.Interface();
                     element.id = elementId;
                     element.xPos = position.x;
