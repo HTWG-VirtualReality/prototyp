@@ -56,34 +56,38 @@
                 old.position.y = modified.yPos;
                 old.size.height = modified.height;
                 old.size.width = modified.width;
-                old['init-size'].height= modified.height;
+                old['init-size'].height = modified.height;
                 old['init-size'].width = modified.width;
                 return old;
             }
 
             function _addModel(model, element) {
                 var obj = {};
+                obj.type = '';
                 obj['init-size'] = {};
                 obj.size = {};
                 obj.resize = {};
-                obj.resize.horizontal = true;
-                obj.resize.vertical = true;
-                obj.resize.propotional = true;
                 obj.compartments = [];
                 obj.position = {};
                 obj.position.x = element.xPos;
                 obj.position.y = element.yPos;
                 obj.angle = 0;
+                obj.nodeName = '';
+                obj.mClass = '';
                 obj.mClassAttributeInfo = [];
                 obj.id = element.id;
                 obj.embeds = '';
+                obj.z = Math.floor(Math.random() * (31));
+                obj.resize.horizontal = true;
+                obj.resize.vertical = true;
+                obj.resize.propotional = true;
                 obj.attrs = {};
 
                 var text = {};
                 text['dominant-baseline'] = 'text-before-edge';
-                text['fill'] = '#000000';
                 text['font-family'] = 'sans-serif';
-                text['font-size'] = '40';
+                text['font-size'] = '';
+                text['fill'] = '#000000';
                 text['font-weight'] = ' normal';
 
                 var ellipse = {};
@@ -92,7 +96,23 @@
                 ellipse['fill-opacity'] = 0.95;
                 ellipse['stroke'] = '#000000';
                 ellipse['stroke-width'] = 1;
-                ellipse['stroke-dasharray'] = "0";
+                ellipse['stroke-dasharray'] = '0';
+
+                var abstract = {};
+                abstract['text'] = text;
+                abstract['fill'] = '#ffffff';
+                abstract['fill-opacity'] = 1;
+                abstract['stroke'] = '#000000';
+                abstract['stroke-width'] = 1;
+                abstract['stroke-dasharray'] = '0';
+
+                var rect = {};
+                abstract['text'] = text;
+                abstract['fill'] = '#ffffff';
+                abstract['fill-opacity'] = 1;
+                abstract['stroke'] = '#000000';
+                abstract['stroke-width'] = 1;
+                abstract['stroke-dasharray'] = '0';
 
                 if (element.tagName === 'VR-PLACE') {
                     obj.type = 'zeta.place';
@@ -103,12 +123,10 @@
                     obj.nodeName = 'placeNode';
                     obj.mClass = 'Place';
                     obj.z = 1;
-
                     var id1 = 'ellipse.' + guid();
                     obj.attrs[id1] = ellipse;
                     var id2 = 'ellipse.' + guid();
                     obj.attrs[id2] = ellipse;
-
                     var ele = {};
                     ele.id = element.id;
                     ele.mClass = 'Place';
@@ -136,12 +154,12 @@
                     obj.size.height = element.height;
                     obj.nodeName = 'classNode';
                     obj.mClass = 'Klasse';
-                    var id1 = 'rect.' + guid();
-                    obj.attrs[id1] = ellipse;
-                    var id2 = 'rect.' + guid();
-                    obj.attrs[id2] = ellipse;
-                    var id3 = 'rect.' + guid();
-                    obj.attrs[id3] = ellipse;
+                    obj.attrs['text.c120cc33-f019-4972-9dec-61dbf3777944'] = text;
+                    obj.attrs['text.69897231-96c9-4fd6-941a-bd5a7790e652'] = text;
+                    obj.attrs['text.50f914f6-c5a3-4c54-a53c-aaf93085809c'] = text;
+                    obj.attrs['rect.1921ae15-f1d0-4054-854e-ed6866afc7fa'] = ellipse;
+                    obj.attrs['rect.0e81847a-451a-488b-be46-38252225c238'] = ellipse;
+                    obj.attrs['rect.516c73b6-0e97-4b0e-a606-8b31e76c7eae'] = ellipse;
                 } else if (element.tagName === 'VR-ABSTRACTKLASSE') {
                     obj.type = 'zeta.abstractKlasse';
                     obj['init-size'].width = element.width;
@@ -150,12 +168,12 @@
                     obj.size.height = element.height;
                     obj.nodeName = 'abClassNode';
                     obj.mClass = 'AbstractKlasse';
-                    var id1 = 'rect.' + guid();
-                    obj.attrs[id1] = ellipse;
-                    var id2 = 'rect.' + guid();
-                    obj.attrs[id2] = ellipse;
-                    var id3 = 'rect.' + guid();
-                    obj.attrs[id3] = ellipse;
+                    obj.attrs['rect.00cd6055-ff7b-4693-be01-36a8cf7b641e'] = abstract;
+                    obj.attrs['rect.0421c9f4-2da5-46bc-9888-13e0ecd69ee6'] = abstract;
+                    obj.attrs['rect.ce244106-fb8e-4e69-aa3a-2ef6c69cb14b'] = abstract;
+                    obj.attrs['text.45dbd761-115c-43ce-9714-0adcd2a4fb4b'] = text;
+                    obj.attrs['text.6483aef0-8244-40f6-99ac-97b2965a9b97'] = text;
+                    obj.attrs['text.c31398aa-5c8b-443e-beb0-c0fc417248f5'] = text;
                 } else if (element.tagName === 'VR-INTERFACE') {
                     obj.type = 'zeta.interface';
                     obj['init-size'].width = element.width;
@@ -164,19 +182,19 @@
                     obj.size.height = element.height;
                     obj.nodeName = 'inClassNode';
                     obj.mClass = 'InterfaceKlasse';
-                    var id1 = 'rect.' + guid();
-                    obj.attrs[id1] = ellipse;
-                    var id2 = 'rect.' + guid();
-                    obj.attrs[id2] = ellipse;
-                    var id3 = 'rect.' + guid();
-                    obj.attrs[id3] = ellipse;
+                    obj.attrs['rect.06180b62-d7f5-4811-be11-bd8c98652b60'] = abstract;
+                    obj.attrs['rect.c0ce7740-ec1c-4952-884e-7f99c8235389'] = abstract;
+                    obj.attrs['rect.dc9a778c-991b-4570-9515-18902435e30d'] = abstract;
+                    obj.attrs['text.27ffdb43-5152-4325-87e0-275c7e264d5c'] = text;
+                    obj.attrs['text.47c4988e-877f-4d68-8766-2d1395088d36'] = text;
+                    obj.attrs['text.f6b1fb34-4b8c-412a-994c-8c136ef005c4'] = text;
                 }
 
                 model.cells.push(obj);
                 return model;
             }
 
-            function guid() {
+            function guVid() {
                 function s4() {
                     return Math.floor((1 + Math.random()) * 0x10000)
                             .toString(16)
@@ -195,9 +213,9 @@
                     newElement.mClass = 'Transition';
                 } else if (element.tagName === 'VR-KLASSE') {
                     newElement.mClass = 'Klasse'
-                }else if (element.tagName === 'VR-ABSTRACTKLASSE') {
+                } else if (element.tagName === 'VR-ABSTRACTKLASSE') {
                     newElement.mClass = 'AbstractKlasse'
-                }else if (element.tagName === 'VR-INTERFACE') {
+                } else if (element.tagName === 'VR-INTERFACE') {
                     newElement.mClass = 'InterfaceKlasse'
                 }
                 newElement.attributes = {};
@@ -273,7 +291,7 @@
             function _onFailure(error) {
                 console.error(error);
             }
-        },
+        }
 
     }];
 </script>
