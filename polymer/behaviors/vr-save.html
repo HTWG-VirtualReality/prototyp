@@ -129,7 +129,21 @@
                     var id2 = 'rect.' + guid();
                     obj.attrs[id2] = ellipse;
                 } else if (element.tagName === 'vr-klasse') {
-                    obj.type = 'zeta.class';
+                    obj.type = 'zeta.klasse';
+                    obj.initSize.width = element.width;
+                    obj.initSize.height = element.height;
+                    obj.size.width = element.width;
+                    obj.size.height = element.height;
+                    obj.nodeName = 'classNode';
+                    obj.mClass = 'Class';
+                    var id1 = 'rect.' + guid();
+                    obj.attrs[id1] = ellipse;
+                    var id2 = 'rect.' + guid();
+                    obj.attrs[id2] = ellipse;
+                    var id3 = 'rect.' + guid();
+                    obj.attrs[id3] = ellipse;
+                } else if (element.tagName === 'vr-abstract') {
+                    obj.type = 'zeta.abstractKlasse';
                     obj.initSize.width = element.width;
                     obj.initSize.height = element.height;
                     obj.size.width = element.width;

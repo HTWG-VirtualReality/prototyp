@@ -125,6 +125,18 @@
                     Polymer.dom(self.root).appendChild(element);
                     break;
 
+                case "abstractklasse":
+                    var element = new VrElement.AbstractKlasse();
+                    element.id = elementId;
+                    element.xPos = position.x;
+                    element.yPos = position.y;
+                    element.width = size != null ? size.width : 50;
+                    element.height = size != null ? size.height : 50;
+                    Polymer.dom(self.root).appendChild(element);
+                    break;
+
+
+
                 default:
                     console.error("No valid element found! Caution generated Code.");
             }
