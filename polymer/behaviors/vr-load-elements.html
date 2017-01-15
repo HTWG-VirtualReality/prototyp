@@ -4,6 +4,28 @@
 <script>
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.LoadElements = [VrBehavior.ThreeJS, {
+        connectionMap: {
+            association: function () {
+                return new VrElement.ConnectionAssociation();
+            },
+            baseclassrealization: function () {
+                return new VrElement.ConnectionInheritance();
+            },
+            aggregation: function () {
+                return new VrElement.ConnectionAggregation();
+            }
+        },
+        classMap: {
+            association: function () {
+                return new VrElement.ConnectionAssociation();
+            },
+            inheritance: function () {
+                return new VrElement.ConnectionInheritance();
+            },
+            aggregation: function () {
+                return new VrElement.ConnectionAggregation();
+            }
+        },
 
         attached: function () {
             var self = this;
@@ -54,8 +76,21 @@
                 // get ui-state
                 var model = JSON.parse(event.detail.xhr.response.model.uiState);
 
+                var connections = [];
                 model.cells.forEach(function (element) {
-                    self.pushNewElement(element.id, element.mClass.toLowerCase(), element.position, element.size);
+                    if (typeof element.mClass !== 'undefined') {
+                        self.pushNewElement(element.id, element.mClass.toLowerCase(), element.position, element.size);
+                    } else {
+                        connections.push(element);
+                    }
+                });
+
+                // create connections after classes
+                connections.forEach(function (element) {
+                    self.pushNewConnection(element.subtype.toLowerCase(), {
+                        from: element.source.id,
+                        to: element.target.id
+                    });
                 });
             }
 
@@ -125,7 +160,7 @@
                     Polymer.dom(self.root).appendChild(element);
                     break;
 
-                case "abstractKlasse": // TODO Fix uppercase in generator
+                case "abstractKlasse": // TODO Fix uppercase in generator // OR fix here :D
                 case "abstractklasse":
                     var element = new VrElement.AbstractKlasse();
                     element.id = elementId;
@@ -136,7 +171,8 @@
                     Polymer.dom(self.root).appendChild(element);
                     break;
 
-                case "interface":
+                case "interfaceklasse":
+                case "interfaceKlasse":
                     var element = new VrElement.Interface();
                     element.id = elementId;
                     element.xPos = position.x;
@@ -149,6 +185,17 @@
 
                 default:
                     console.error("No valid element found! Caution generated Code.");
+            }
+        },
+        pushNewConnection: function (type, connection) {
+            var self = this;
+            if (type in this.connectionMap) {
+                var element = this.connectionMap[type]();
+                element.from = connection.from;
+                element.to = connection.to;
+                Polymer.dom(self.root).appendChild(element);
+            } else {
+                console.error("No valid connection found!");
             }
         }
     }];
