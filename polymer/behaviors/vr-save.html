@@ -128,7 +128,7 @@
                     obj.attrs[id1] = ellipse;
                     var id2 = 'rect.' + guid();
                     obj.attrs[id2] = ellipse;
-                } else if (element.tagName === 'VR-CLASS') {
+                } else if (element.tagName === 'vr-klasse') {
                     obj.type = 'zeta.class';
                     obj.initSize.width = element.width;
                     obj.initSize.height = element.height;
@@ -165,7 +165,7 @@
                     newElement.mClass = 'Place';
                 } else if (element.tagName === 'VR-TRANSITION') {
                     newElement.mClass = 'Transition';
-                } else if (element.tagName === 'VR-CLASS') {
+                } else if (element.tagName === 'vr-klasse') {
                     newElement.mClass = 'Class'
                 }
                 newElement.attributes = {};

@@ -42,26 +42,26 @@
             VrBehavior.InnerSizing
         ],
 
-        ready: function() {
-          this.highlight = true
-        this.resizeVertical = true
-        this.resizeHorizontal = true
-        this.moveHorizontal = true
-        this.moveVertical = true
-          var self = this;
-          create(this.text1, true, {height: 25}, {height: 25}, {height: 0.2, width:1});
-          create(this.text2, false, null, null, {height: 0.4, width:1});
-          create(this.text3, false, null, null, {height: 0.4, width:1});
+        ready: function () {
+            this.highlight = true;
+            this.resizeVertical = true;
+            this.resizeHorizontal = true;
+            this.moveHorizontal = true;
+            this.moveVertical = true;
+            var self = this;
+            create(this.text1, true, {height: 25}, {height: 25}, {height: 0.2, width: 1});
+            create(this.text2, false, null, null, {height: 0.4, width: 1});
+            create(this.text3, false, null, null, {height: 0.4, width: 1});
 
-          function create(text, center, min, max, percentage) {
-            var element = new VrElement.Box();
-            element.width = self.width;
-            element.xPos = 0;
-            element.text = text;
-            element.textCener = center;
-            Polymer.dom(self.root).appendChild(element);
-            self.registerInnerSizingElement(element, min, max, percentage);
-          }
+            function create(text, center, min, max, percentage) {
+                var element = new VrElement.Box();
+                element.width = self.width;
+                element.xPos = 0;
+                element.text = text;
+                element.textCener = center;
+                Polymer.dom(self.root).appendChild(element);
+                self.registerInnerSizingElement(element, min, max, percentage);
+            }
         },
 
         observers: [
