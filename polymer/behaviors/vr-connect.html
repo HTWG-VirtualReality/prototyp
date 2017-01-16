@@ -128,7 +128,7 @@
                 this.pushNewConnection(type, {
                     from: this.ConnectBehavior.fromID,
                     to: this._getPolymerElement(event.target.id).id
-                });
+                }, null);
             }
         },
 
@@ -191,6 +191,6 @@
         getConnectionTypes: function() { return []; },
 
         // Override this function in generated behavior
-        pushNewConnection: function(type, connection) { /*nothing*/ }
+        pushNewConnection: function(type, connection, id) { /*nothing*/ }
     }];
 </script>
