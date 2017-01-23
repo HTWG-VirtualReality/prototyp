@@ -4,6 +4,31 @@
 <script>
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.LoadElements = [VrBehavior.ThreeJS, {
+        connectionMap: {
+            association: function () {
+                return new VrElement.ConnectionAssociation();
+            },
+            baseclassrealization: function () {
+                return new VrElement.ConnectionInheritance();
+            },
+            aggregation: function () {
+                return new VrElement.ConnectionAggregation();
+            }
+        },
+        classMap: {
+            interfaceklasse: function () {
+                return new VrElement.Interface();
+            },
+            interface: function () {
+                return new VrElement.Interface();
+            },
+            abstractklasse: function () {
+                return new VrElement.AbstractKlasse();
+            },
+            klasse: function () {
+                return new VrElement.Klasse();
+            }
+        },
 
         attached: function () {
             var self = this;
@@ -54,8 +79,22 @@
                 // get ui-state
                 var model = JSON.parse(event.detail.xhr.response.model.uiState);
 
+                var connections = [];
                 model.cells.forEach(function (element) {
-                    self.pushNewElement(element.id, element.mClass.toLowerCase(), element.position, element.size);
+                    if (typeof element.mClass !== 'undefined') {
+                        self.pushNewElement(element.id, element.mClass.toLowerCase(), element.position, element.size);
+                    } else {
+                        connections.push(element);
+                    }
+                });
+
+                // create connections after classes
+                connections.forEach(function (element) {
+                    self.pushNewConnection(element.subtype.toLowerCase(), {
+                        from: element.source.id,
+                        to: element.target.id,
+                        id: element.id
+                    });
                 });
             }
 
@@ -114,19 +153,30 @@
                         classType: text.toLowerCase()
                     });
                     break;
-
-                case "class":
-                    var element = new VrElement.Class();
-                    element.id = elementId;
-                    element.xPos = position.x;
-                    element.yPos = position.y * -1;
-                    element.width = size != null ? size.width : 50;
-                    element.height = size != null ? size.height : 50;
-                    Polymer.dom(self.root).appendChild(element);
-                    break;
-
                 default:
-                    console.error("No valid element found! Caution generated Code.");
+                    if (text.toLowerCase() in this.classMap) {
+                        var element = this.classMap[text.toLowerCase()]();
+                        element.id = elementId;
+                        element.xPos = position != null ? position.x : 0;
+                        element.yPos = position != null ? position.y * -1 : 0;
+                        element.width = size != null ? size.width : 100;
+                        element.height = size != null ? size.height : 100;
+                        Polymer.dom(self.root).appendChild(element);
+                    } else {
+                        console.error("No valid element found! Caution generated Code.");
+                    }
+            }
+        },
+        pushNewConnection: function (type, connection) {
+            var self = this;
+            if (type in this.connectionMap) {
+                var element = this.connectionMap[type]();
+                element.from = connection.from;
+                element.to = connection.to;
+                element.id = connection.id;
+                Polymer.dom(self.root).appendChild(element);
+            } else {
+                console.error("No valid connection found!");
             }
         }
     }];
