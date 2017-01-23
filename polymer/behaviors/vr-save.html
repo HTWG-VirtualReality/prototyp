@@ -67,6 +67,7 @@
                 return old;
             }
 
+            // SORRY From ZETA!!!
             function _addModel(model, element) {
                 var text = {};
                 text['dominant-baseline'] = 'text-before-edge';
@@ -83,7 +84,6 @@
                 obj.embeds = '';
                 obj.z = Math.floor(Math.random() * (31));
 
-                debugger;
                 if (element.tagName === 'VR-CONNECTION-AGGREGATION') {     // conection
                     obj.type = 'zeta.MLink';
                     obj.subtype = 'aggregation';
@@ -101,49 +101,41 @@
                     obj.styleSet = true;
                     obj.attr = {};
                     obj.attr.text = text;
-                    // From ZETA!!!
+
+                    /******** CSS from ZETA - TODO generate ****************/
                     obj.attr.fill = {};
                     obj.attr.fill[0] = '#';
-                    obj.attr.fill[1] = 'f';
-                    obj.attr.fill[2] = 'f';
-                    obj.attr.fill[3] = 'f';
-                    obj.attr.fill[4] = 'f';
-                    obj.attr.fill[5] = 'f';
-                    obj.attr.fill[6] = 'f';
+                    for (var i = 1; i <= 6; i++) {
+                        obj.attr.fill[i] = 'f';
+                    }
 
                     obj.attr.stroke = {};
                     obj.attr.stroke[0] = '#';
-                    obj.attr.stroke[1] = '0';
-                    obj.attr.stroke[2] = '0';
-                    obj.attr.stroke[3] = '0';
-                    obj.attr.stroke[4] = '0';
-                    obj.attr.stroke[5] = '0';
-                    obj.attr.stroke[6] = '0';
+                    for (var j = 1; j <= 6; i++) {
+                        obj.attr.fill[j] = '0';
+                    }
+
+                    var linestyle = {};
+                    linestyle['fill'] = "#ffffff";
+                    linestyle['fill-opacity'] = 1;
+                    linestyle['stroke'] = '#000000';
+                    linestyle['stroke-width'] = 1;
 
                     obj.attr['stroke-dasharray'] = {};
                     obj.attr['stroke-dasharray'][0] = '0';
-                    obj.attr['.connection, .marker-target, .marker-source'] = {};
-                    obj.attr['.connection, .marker-target, .marker-source']['fill'] = '#000000';
-                    obj.attr['.connection, .marker-target, .marker-source']['fill-opacity'] = 1;
-                    obj.attr['.connection, .marker-target, .marker-source']['stroke'] = '#000000';
-                    obj.attr['.connection, .marker-target, .marker-source']['stroke-width'] = 1;
+                    obj.attr['.connection, .marker-target, .marker-source'] = linestyle;
                     obj.attr['.connection, .marker-target, .marker-source']['dominat-baseline'] = 'text-before-edge';
                     obj.attr['.connection, .marker-target, .marker-source']['font-family'] = 'sans-serif';
                     obj.attr['.connection, .marker-target, .marker-source']['font-size'] = "20";
                     obj.attr['.connection, .marker-target, .marker-source']['font-weight'] = "normal";
-                    obj.attr['.marker-target'] = {};
+                    obj.attr['.marker-target'] = linestyle;
                     obj.attr['.marker-target']['d'] = "M 20 10 L 40 0L 20 -10L 0 0z";
-                    obj.attr['.marker-target']['fill'] = "#ffffff";
-                    obj.attr['.marker-target']['fill-opacity'] = 1;
-                    obj.attr['.marker-target']['stroke'] = '#000000';
-                    obj.attr['.marker-target']['stroke-width'] = 1;
                     obj.attr['.marker-target']['stroke-dasharray'] = "0";
                     obj.attr['.marker-target']['text'] = text;
 
 
                 } else {
                     // class
-
                     obj['init-size'] = {};
                     obj.resize = {};
                     obj.compartments = [];
@@ -224,6 +216,7 @@
                         obj.size.width = element.width;
                         obj.size.height = element.height;
 
+                        // TODO fix in zeta project
                         if (element.tagName === 'VR-KLASSE') {
                             obj.type = 'zeta.klasse';
                             obj.nodeName = 'classNode';
