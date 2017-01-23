@@ -13,6 +13,10 @@
             var href = window.location.href;
             var modelId = href.substr(href.lastIndexOf('/') + 1, href.length);
 
+            var tagType = {
+                "VR-KLASSE": "Klasse"
+            };
+
             getToken();
 
             function getToken() {
@@ -51,26 +55,91 @@
             }
 
             function updateElement(old, modified) {
-                // update position
-                old.position.x = modified.xPos;
-                old.position.y = modified.yPos;
-                old.size.height = modified.height;
-                old.size.width = modified.width;
-                old['init-size'].height = modified.height;
-                old['init-size'].width = modified.width;
+                if (old.mClass !== undefined) {
+                    // update position
+                    old.position.x = modified.xPos;
+                    old.position.y = modified.yPos;
+                    old.size.height = modified.height;
+                    old.size.width = modified.width;
+                    old['init-size'].height = modified.height;
+                    old['init-size'].width = modified.width;
+                }
                 return old;
             }
 
             function _addModel(model, element) {
+                var text = {};
+                text['dominant-baseline'] = 'text-before-edge';
+                text['font-family'] = 'sans-serif';
+                text['font-size'] = '';
+                text['fill'] = '#000000';
+                text['font-weight'] = ' normal';
+
                 var obj = {};
                 obj.type = '';
                 obj.size = {};
+                obj.source = {};
+                obj.target = {};
+                obj.embeds = '';
+                obj.z = Math.floor(Math.random() * (31));
 
-                if (element.mClass !== 'undefined') {     // conection
-                    obj.id = guVid();
-                    if (element.tagName === 'VR-CONNECTION-AGGREGATION') {
+                debugger;
+                if (element.tagName === 'VR-CONNECTION-AGGREGATION') {     // conection
+                    obj.type = 'zeta.MLink';
+                    obj.subtype = 'aggregation';
+                    obj.mReference = "Aggregation";
+                    var tagFrom = document.getElementById(element.from).tagName;
+                    var tagTo = document.getElementById(element.to).tagName;
+                    obj.sourceAttribute = tagType[tagFrom];
+                    obj.targetAttribute = tagType[tagTo];
 
-                    }
+                    obj.id = element.id;
+                    obj.source.id = element.from;
+                    obj.target.id = element.to;
+                    obj.placings = [];
+                    obj.labels = [];
+                    obj.styleSet = true;
+                    obj.attr = {};
+                    obj.attr.text = text;
+                    // From ZETA!!!
+                    obj.attr.fill = {};
+                    obj.attr.fill[0] = '#';
+                    obj.attr.fill[1] = 'f';
+                    obj.attr.fill[2] = 'f';
+                    obj.attr.fill[3] = 'f';
+                    obj.attr.fill[4] = 'f';
+                    obj.attr.fill[5] = 'f';
+                    obj.attr.fill[6] = 'f';
+
+                    obj.attr.stroke = {};
+                    obj.attr.stroke[0] = '#';
+                    obj.attr.stroke[1] = '0';
+                    obj.attr.stroke[2] = '0';
+                    obj.attr.stroke[3] = '0';
+                    obj.attr.stroke[4] = '0';
+                    obj.attr.stroke[5] = '0';
+                    obj.attr.stroke[6] = '0';
+
+                    obj.attr['stroke-dasharray'] = {};
+                    obj.attr['stroke-dasharray'][0] = '0';
+                    obj.attr['.connection, .marker-target, .marker-source'] = {};
+                    obj.attr['.connection, .marker-target, .marker-source']['fill'] = '#000000';
+                    obj.attr['.connection, .marker-target, .marker-source']['fill-opacity'] = 1;
+                    obj.attr['.connection, .marker-target, .marker-source']['stroke'] = '#000000';
+                    obj.attr['.connection, .marker-target, .marker-source']['stroke-width'] = 1;
+                    obj.attr['.connection, .marker-target, .marker-source']['dominat-baseline'] = 'text-before-edge';
+                    obj.attr['.connection, .marker-target, .marker-source']['font-family'] = 'sans-serif';
+                    obj.attr['.connection, .marker-target, .marker-source']['font-size'] = "20";
+                    obj.attr['.connection, .marker-target, .marker-source']['font-weight'] = "normal";
+                    obj.attr['.marker-target'] = {};
+                    obj.attr['.marker-target']['d'] = "M 20 10 L 40 0L 20 -10L 0 0z";
+                    obj.attr['.marker-target']['fill'] = "#ffffff";
+                    obj.attr['.marker-target']['fill-opacity'] = 1;
+                    obj.attr['.marker-target']['stroke'] = '#000000';
+                    obj.attr['.marker-target']['stroke-width'] = 1;
+                    obj.attr['.marker-target']['stroke-dasharray'] = "0";
+                    obj.attr['.marker-target']['text'] = text;
+
 
                 } else {
                     // class
@@ -86,19 +155,11 @@
                     obj.mClass = '';
                     obj.mClassAttributeInfo = [];
                     obj.id = element.id;
-                    obj.embeds = '';
-                    obj.z = Math.floor(Math.random() * (31));
                     obj.resize.horizontal = true;
                     obj.resize.vertical = true;
                     obj.resize.propotional = true;
                     obj.attrs = {};
 
-                    var text = {};
-                    text['dominant-baseline'] = 'text-before-edge';
-                    text['font-family'] = 'sans-serif';
-                    text['font-size'] = '';
-                    text['fill'] = '#000000';
-                    text['font-weight'] = ' normal';
 
                     var ellipse = {};
                     ellipse['text'] = text;
@@ -167,32 +228,32 @@
                             obj.type = 'zeta.klasse';
                             obj.nodeName = 'classNode';
                             obj.mClass = 'Klasse';
-                            obj.attrs['text.c120cc33-f019-4972-9dec-61dbf3777944'] = text;
-                            obj.attrs['text.69897231-96c9-4fd6-941a-bd5a7790e652'] = text;
-                            obj.attrs['text.50f914f6-c5a3-4c54-a53c-aaf93085809c'] = text;
-                            obj.attrs['rect.1921ae15-f1d0-4054-854e-ed6866afc7fa'] = ellipse;
-                            obj.attrs['rect.0e81847a-451a-488b-be46-38252225c238'] = ellipse;
-                            obj.attrs['rect.516c73b6-0e97-4b0e-a606-8b31e76c7eae'] = ellipse;
+                            obj.attrs['text.ab8cc40e-fba2-4df1-ab3e-667fb2fc9648'] = text;
+                            obj.attrs['text.933b7f4e-e24e-48bf-86c8-da29fc0d5c26'] = text;
+                            obj.attrs['text.611254ff-eb74-481f-a835-8d4979e04a80'] = text;
+                            obj.attrs['rect.1699c1e7-6fac-4e36-92e6-6251ea4032a8'] = ellipse;
+                            obj.attrs['rect.5ccb35e2-3ca9-4b34-aab8-cb5f87fafaae'] = ellipse;
+                            obj.attrs['rect.efbae945-3ab7-4f12-af30-5f7e26554b8b'] = ellipse;
                         } else if (element.tagName === 'VR-ABSTRACTKLASSE') {
                             obj.type = 'zeta.abstractKlasse';
                             obj.nodeName = 'abClassNode';
                             obj.mClass = 'AbstractKlasse';
-                            obj.attrs['rect.00cd6055-ff7b-4693-be01-36a8cf7b641e'] = abstract;
-                            obj.attrs['rect.0421c9f4-2da5-46bc-9888-13e0ecd69ee6'] = abstract;
-                            obj.attrs['rect.ce244106-fb8e-4e69-aa3a-2ef6c69cb14b'] = abstract;
-                            obj.attrs['text.45dbd761-115c-43ce-9714-0adcd2a4fb4b'] = text;
-                            obj.attrs['text.6483aef0-8244-40f6-99ac-97b2965a9b97'] = text;
-                            obj.attrs['text.c31398aa-5c8b-443e-beb0-c0fc417248f5'] = text;
+                            obj.attrs['rect.5fa4b7dd-401d-4607-842a-a930e6d678cb'] = abstract;
+                            obj.attrs['rect.9776a8f2-83e5-4e9f-b5bc-08b12a040193'] = abstract;
+                            obj.attrs['rect.f2fad98e-883b-4de5-b3d5-f66d3ffe2184'] = abstract;
+                            obj.attrs['text.093d274b-9a33-4048-8a32-ee5cf5b29011'] = text;
+                            obj.attrs['text.63f89879-42ed-47d1-aee2-cf3af3367bd0'] = text;
+                            obj.attrs['text.b054f913-4ece-41cd-9556-f643fe04a4f9'] = text;
                         } else if (element.tagName === 'VR-INTERFACE') {
                             obj.type = 'zeta.interface';
                             obj.nodeName = 'inClassNode';
                             obj.mClass = 'InterfaceKlasse';
-                            obj.attrs['rect.06180b62-d7f5-4811-be11-bd8c98652b60'] = abstract;
-                            obj.attrs['rect.c0ce7740-ec1c-4952-884e-7f99c8235389'] = abstract;
-                            obj.attrs['rect.dc9a778c-991b-4570-9515-18902435e30d'] = abstract;
-                            obj.attrs['text.27ffdb43-5152-4325-87e0-275c7e264d5c'] = text;
-                            obj.attrs['text.47c4988e-877f-4d68-8766-2d1395088d36'] = text;
-                            obj.attrs['text.f6b1fb34-4b8c-412a-994c-8c136ef005c4'] = text;
+                            obj.attrs['rect.45717d23-213f-4758-8775-188569808a53'] = abstract;
+                            obj.attrs['rect.ab4754f9-4cda-4ac3-aafe-f1763aa91bf4'] = abstract;
+                            obj.attrs['rect.c81c052f-9fb0-4388-9dad-ce9ad7f047f2'] = abstract;
+                            obj.attrs['text.20495d04-b291-4dd3-a96a-d933b54965bb'] = text;
+                            obj.attrs['text.303b1c87-2b30-432f-a6c5-672cf785fdf8'] = text;
+                            obj.attrs['text.f0c60a32-e074-43a0-942a-ab1be4fd18c2'] = text;
                         }
                     }
                 }
@@ -213,6 +274,9 @@
 
             function _addElemnt(allElements, element) {
                 var newElement = {};
+                newElement.id = element.id;
+                newElement.attributes = {};
+
                 if (element.tagName === 'VR-PLACE') {
                     newElement.mClass = 'Place';
                 } else if (element.tagName === 'VR-TRANSITION') {
@@ -224,11 +288,22 @@
                 } else if (element.tagName === 'VR-INTERFACE') {
                     newElement.mClass = 'InterfaceKlasse'
                 }
-                newElement.attributes = {};
-                newElement.id = element.id;
-                newElement.inputs = {};
-                newElement.outputs = {};
-                newElement.attributes = {};
+
+                if (element.tagName === 'VR-CONNECTION-AGGREGATION') {
+                    newElement.mReference = 'Aggregation';
+                    newElement.source = {};
+                    newElement.target = {};
+                    var tagFrom = document.getElementById(element.from).tagName;
+                    var tagTo = document.getElementById(element.to).tagName;
+                    newElement.source[tagType[tagFrom]] = [];
+                    newElement.source[tagType[tagFrom]][0] = element.from;
+                    newElement.target[tagType[tagTo]] = [];
+                    newElement.target[tagType[tagTo]] [0] = element.to;
+                } else {
+                    newElement.inputs = {};
+                    newElement.outputs = {};
+                }
+
 
                 allElements.elements.push(newElement);
                 return allElements;
