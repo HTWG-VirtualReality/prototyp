@@ -99,39 +99,41 @@
                     obj.placings = [];
                     obj.labels = [];
                     obj.styleSet = true;
-                    obj.attr = {};
-                    obj.attr.text = text;
+                    obj.attrs = {};
+                    obj.attrs.text = text;
 
                     /******** CSS from ZETA - TODO generate ****************/
-                    obj.attr.fill = {};
-                    obj.attr.fill[0] = '#';
+                    obj.attrs.fill = {};
+                    obj.attrs.fill[0] = '#';
                     for (var i = 1; i <= 6; i++) {
-                        obj.attr.fill[i] = 'f';
+                        obj.attrs.fill[i] = 'f';
                     }
 
-                    obj.attr.stroke = {};
-                    obj.attr.stroke[0] = '#';
-                    for (var j = 1; j <= 6; i++) {
-                        obj.attr.fill[j] = '0';
+                    obj.attrs.stroke = {};
+                    obj.attrs.stroke[0] = '#';
+                    for (var j = 1; j <= 6; j++) {
+                        obj.attrs.stroke[j] = '0';
                     }
 
                     var linestyle = {};
-                    linestyle['fill'] = "#ffffff";
                     linestyle['fill-opacity'] = 1;
                     linestyle['stroke'] = '#000000';
                     linestyle['stroke-width'] = 1;
 
-                    obj.attr['stroke-dasharray'] = {};
-                    obj.attr['stroke-dasharray'][0] = '0';
-                    obj.attr['.connection, .marker-target, .marker-source'] = linestyle;
-                    obj.attr['.connection, .marker-target, .marker-source']['dominat-baseline'] = 'text-before-edge';
-                    obj.attr['.connection, .marker-target, .marker-source']['font-family'] = 'sans-serif';
-                    obj.attr['.connection, .marker-target, .marker-source']['font-size'] = "20";
-                    obj.attr['.connection, .marker-target, .marker-source']['font-weight'] = "normal";
-                    obj.attr['.marker-target'] = linestyle;
-                    obj.attr['.marker-target']['d'] = "M 20 10 L 40 0L 20 -10L 0 0z";
-                    obj.attr['.marker-target']['stroke-dasharray'] = "0";
-                    obj.attr['.marker-target']['text'] = text;
+                    obj.attrs['stroke-dasharray'] = {};
+                    obj.attrs['stroke-dasharray'][0] = '0';
+                    obj.attrs['.connection, .marker-target, .marker-source'] = linestyle;
+                    obj.attrs['.connection, .marker-target, .marker-source']['stroke-dasharray'] = 0;
+                    obj.attrs['.connection, .marker-target, .marker-source']['fill'] = '#fffff0';
+                    obj.attrs['.connection, .marker-target, .marker-source']['dominat-baseline'] = 'text-before-edge';
+                    obj.attrs['.connection, .marker-target, .marker-source']['font-family'] = 'sans-serif';
+                    obj.attrs['.connection, .marker-target, .marker-source']['font-size'] = "20";
+                    obj.attrs['.connection, .marker-target, .marker-source']['font-weight'] = "normal";
+                    obj.attrs['.marker-target'] = linestyle;
+                    obj.attrs['.marker-target']['fill'] = "#ffffff";
+                    obj.attrs['.marker-target']['d'] = "M 20 10 L 40 0L 20 -10L 0 0z";
+                    obj.attrs['.marker-target']['stroke-dasharray'] = 0;
+                    obj.attrs['.marker-target']['text'] = text;
 
 
                 } else {
@@ -141,7 +143,7 @@
                     obj.compartments = [];
                     obj.position = {};
                     obj.position.x = element.xPos;
-                    obj.position.y = element.yPos *-1;
+                    obj.position.y = element.yPos * -1;
                     obj.angle = 0;
                     obj.nodeName = '';
                     obj.mClass = '';
@@ -331,9 +333,39 @@
                     }
                 }
 
+                console.log(elements);
+
+
+                for (var u = 0; u < elements.elements.length; u++) {
+                    if (elements.elements[u].mReference !== undefined) {
+                        var lineId = elements.elements[u].id;
+                        var klassenId = elements.elements[u].source[Object.keys(elements.elements[u].source)[0]][0];
+                        for (var v = 0; v < elements.elements.length; v++) {
+                            if (elements.elements[v].id === klassenId) {
+                                elements.elements[v].outputs[elements.elements[u].mReference] = [];
+                                elements.elements[v].outputs[elements.elements[u].mReference][0] = lineId;
+                            }
+                        }
+                    }
+                }
+                for (var u = 0; u < elements.elements.length; u++) {
+                    if (elements.elements[u].mReference !== undefined) {
+                        var lineId = elements.elements[u].id;
+                        var klassenId = elements.elements[u].target[Object.keys(elements.elements[u].target)[0]][0];
+                        for (var v = 0; v < elements.elements.length; v++) {
+                            if (elements.elements[v].id === klassenId) {
+                                elements.elements[v].inputs[elements.elements[u].mReference] = [];
+                                elements.elements[v].inputs[elements.elements[u].mReference][0] = lineId;
+                            }
+                        }
+                    }
+                }
+
+
                 // back to string
                 elements.uiState = JSON.stringify(model);
                 var myResponse = JSON.stringify(elements);
+
 
                 var updateModelAttributes = {
                     method: 'PUT',
@@ -371,3 +403,5 @@
 </script>
 
 
+
+{"name":"asasas","elements":[{"id":"8d8f8dd0-bd0d-dcf6-30f2-1f4c4e736e65","mClass":"Klasse","outputs":{},"inputs":{"Aggregation":["eb21fa87-8254-4264-9cc2-8659a47d2f3e"]},"attributes":{}},{"id":"eb6afb92-76ff-c00c-72e8-5dda2ceccd38","mClass":"Klasse","outputs":{"Aggregation":["eb21fa87-8254-4264-9cc2-8659a47d2f3e"]},"inputs":{},"attributes":{}},{"id":"eb21fa87-8254-4264-9cc2-8659a47d2f3e","mReference":"Aggregation","source":{"Klasse":["eb6afb92-76ff-c00c-72e8-5dda2ceccd38"]},"target":{"Klasse":["8d8f8dd0-bd0d-dcf6-30f2-1f4c4e736e65"]},"attributes":{}},{"id":"aaea2bf4-0a8d-c923-1469-c3db9e9ef597","attributes":{},"mClass":"Klasse","inputs":{},"outputs":{"Aggregation":["175dbf9c-f57c-b926-4c42-adc0a5bd4b09"]}},{"id":"e7c455fb-fbcc-b9f3-7e10-183661cc4bd1","attributes":{},"mClass":"Klasse","inputs":{"Aggregation":["175dbf9c-f57c-b926-4c42-adc0a5bd4b09"]},"outputs":{}},{"id":"175dbf9c-f57c-b926-4c42-adc0a5bd4b09","attributes":{},"mReference":"Aggregation","source":{"Klasse":["aaea2bf4-0a8d-c923-1469-c3db9e9ef597"]},"target":{"Klasse":["e7c455fb-fbcc-b9f3-7e10-183661cc4bd1"]}}],"uiState":"{"cells":[{"type":"zeta.klasse","init-size":{"width":100,"height":100},"size":{"width":100,"height":100},"resize":{"horizontal":true,"vertical":true,"proportional":true,"propotional":true},"compartments":[],"position":{"x":286,"y":170},"angle":0,"source":{},"target":{},"embeds":"","z":16,"nodeName":"classNode","mClass":"Klasse","mClassAttributeInfo":[],"id":"8d8f8dd0-bd0d-dcf6-30f2-1f4c4e736e65","attrs":{"text.611254ff-eb74-481f-a835-8d4979e04a80":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"text.933b7f4e-e24e-48bf-86c8-da29fc0d5c26":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"text.ab8cc40e-fba2-4df1-ab3e-667fb2fc9648":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"rect.1699c1e7-6fac-4e36-92e6-6251ea4032a8":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"},"rect.5ccb35e2-3ca9-4b34-aab8-cb5f87fafaae":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"},"rect.efbae945-3ab7-4f12-af30-5f7e26554b8b":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"}}},{"type":"zeta.klasse","init-size":{"width":100,"height":100},"size":{"width":100,"height":100},"resize":{"horizontal":true,"vertical":true,"proportional":true,"propotional":true},"compartments":[],"position":{"x":80,"y":160},"angle":0,"source":{},"target":{},"embeds":"","z":24,"nodeName":"classNode","mClass":"Klasse","mClassAttributeInfo":[],"id":"eb6afb92-76ff-c00c-72e8-5dda2ceccd38","attrs":{".1699c1e7-6fac-4e36-92e6-6251ea4032a8":{"x":"0","y":"150","width":"200","height":"185"},"text.611254ff-eb74-481f-a835-8d4979e04a80":{"x":"0","y":"150","dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},".efbae945-3ab7-4f12-af30-5f7e26554b8b":{"x":"0","y":"50","width":"200","height":"100"},"text.933b7f4e-e24e-48bf-86c8-da29fc0d5c26":{"x":"0","y":"50","dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},".5ccb35e2-3ca9-4b34-aab8-cb5f87fafaae":{"x":"0","y":"0","width":"200","height":"50"},"text.ab8cc40e-fba2-4df1-ab3e-667fb2fc9648":{"x":"0","y":"0","dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"rect.1699c1e7-6fac-4e36-92e6-6251ea4032a8":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":"1","stroke":"#000000","stroke-width":"1","stroke-dasharray":"0"},"rect.5ccb35e2-3ca9-4b34-aab8-cb5f87fafaae":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":"1","stroke":"#000000","stroke-width":"1","stroke-dasharray":"0"},"rect.efbae945-3ab7-4f12-af30-5f7e26554b8b":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":"1","stroke":"#000000","stroke-width":"1","stroke-dasharray":"0"},".611254ff-eb74-481f-a835-8d4979e04a80":{"font-size":"43","font-family":"Arial","font-weight":"400","fill":"#000000"},".933b7f4e-e24e-48bf-86c8-da29fc0d5c26":{"font-size":"43","font-family":"Arial","font-weight":"400","fill":"#000000"},".ab8cc40e-fba2-4df1-ab3e-667fb2fc9648":{"font-size":"43","font-family":"Arial","font-weight":"400","fill":"#000000"}}},{"type":"zeta.MLink","source":{"id":"eb6afb92-76ff-c00c-72e8-5dda2ceccd38"},"target":{"id":"8d8f8dd0-bd0d-dcf6-30f2-1f4c4e736e65"},"id":"eb21fa87-8254-4264-9cc2-8659a47d2f3e","embeds":"","z":26,"size":{},"subtype":"aggregation","placings":[],"sourceAttribute":"Klasse","targetAttribute":"Klasse","mReference":"Aggregation","labels":[],"styleSet":true,"attrs":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"20","fill":"#000000","font-weight":" normal"},"fill":{"0":"#","1":"f","2":"f","3":"f","4":"f","5":"f","6":"f"},"stroke":{"0":"#","1":"0","2":"0","3":"0","4":"0","5":"0","6":"0"},"stroke-dasharray":{"0":"0"},".connection, .marker-target, .marker-source":{"fill":"#000000","fill-opacity":1,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0","dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"20","font-weight":" normal"},".marker-target":{"d":"M 20 10 L 40 0L 20 -10L 0 0z","fill":"#ffffff","fill-opacity":1,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0","text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"20","fill":"#000000","font-weight":" normal"}}}},{"type":"zeta.klasse","size":{"width":100,"height":100},"source":{},"target":{},"embeds":"","z":30,"init-size":{"width":100,"height":100},"resize":{"horizontal":true,"vertical":true,"propotional":true},"compartments":[],"position":{"x":-2,"y":-42},"angle":0,"nodeName":"classNode","mClass":"Klasse","mClassAttributeInfo":[],"id":"aaea2bf4-0a8d-c923-1469-c3db9e9ef597","attrs":{"text.ab8cc40e-fba2-4df1-ab3e-667fb2fc9648":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"text.933b7f4e-e24e-48bf-86c8-da29fc0d5c26":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"text.611254ff-eb74-481f-a835-8d4979e04a80":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"rect.1699c1e7-6fac-4e36-92e6-6251ea4032a8":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"},"rect.5ccb35e2-3ca9-4b34-aab8-cb5f87fafaae":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"},"rect.efbae945-3ab7-4f12-af30-5f7e26554b8b":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"}}},{"type":"zeta.klasse","size":{"width":100,"height":100},"source":{},"target":{},"embeds":"","z":8,"init-size":{"width":100,"height":100},"resize":{"horizontal":true,"vertical":true,"propotional":true},"compartments":[],"position":{"x":205,"y":-35},"angle":0,"nodeName":"classNode","mClass":"Klasse","mClassAttributeInfo":[],"id":"e7c455fb-fbcc-b9f3-7e10-183661cc4bd1","attrs":{"text.ab8cc40e-fba2-4df1-ab3e-667fb2fc9648":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"text.933b7f4e-e24e-48bf-86c8-da29fc0d5c26":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"text.611254ff-eb74-481f-a835-8d4979e04a80":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"rect.1699c1e7-6fac-4e36-92e6-6251ea4032a8":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"},"rect.5ccb35e2-3ca9-4b34-aab8-cb5f87fafaae":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"},"rect.efbae945-3ab7-4f12-af30-5f7e26554b8b":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":"#ffffff","fill-opacity":0.95,"stroke":"#000000","stroke-width":1,"stroke-dasharray":"0"}}},{"type":"zeta.MLink","size":{},"source":{"id":"aaea2bf4-0a8d-c923-1469-c3db9e9ef597"},"target":{"id":"e7c455fb-fbcc-b9f3-7e10-183661cc4bd1"},"embeds":"","z":26,"subtype":"aggregation","mReference":"Aggregation","sourceAttribute":"Klasse","targetAttribute":"Klasse","id":"175dbf9c-f57c-b926-4c42-adc0a5bd4b09","placings":[],"labels":[],"styleSet":true,"attrs":{"text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"},"fill":{"0":"#","1":"f","2":"f","3":"f","4":"f","5":"f","6":"f"},"stroke":{"0":"#","1":"0","2":"0","3":"0","4":"0","5":"0","6":"0"},"stroke-dasharray":{"0":"0"},".connection, .marker-target, .marker-source":{"fill-opacity":1,"stroke":"#000000","stroke-width":1,"stroke-dasharray":0,"fill":"#ffffff","dominat-baseline":"text-before-edge","font-family":"sans-serif","font-size":"20","font-weight":"normal","d":"M 20 10 L 40 0L 20 -10L 0 0z","text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"}},".marker-target":{"fill-opacity":1,"stroke":"#000000","stroke-width":1,"stroke-dasharray":0,"fill":"#ffffff","dominat-baseline":"text-before-edge","font-family":"sans-serif","font-size":"20","font-weight":"normal","d":"M 20 10 L 40 0L 20 -10L 0 0z","text":{"dominant-baseline":"text-before-edge","font-family":"sans-serif","font-size":"","fill":"#000000","font-weight":" normal"}}}}]}"}
