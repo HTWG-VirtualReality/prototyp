@@ -101,7 +101,7 @@
                     this.push('transitionItems', {
                         id: elementId,
                         xPos: position.x,
-                        yPos: position.y,
+                        yPos: position.y * -1,
                         classType: text.toLowerCase()
                     });
                     break;
@@ -110,7 +110,7 @@
                     this.push('placeItems', {
                         id: elementId,
                         xPos: position.x,
-                        yPos: position.y,
+                        yPos: position.y * -1,
                         classType: text.toLowerCase()
                     });
                     break;
@@ -119,7 +119,7 @@
                     var element = new VrElement.Class();
                     element.id = elementId;
                     element.xPos = position.x;
-                    element.yPos = position.y;
+                    element.yPos = position.y * -1;
                     element.width = size != null ? size.width : 50;
                     element.height = size != null ? size.height : 50;
                     Polymer.dom(self.root).appendChild(element);

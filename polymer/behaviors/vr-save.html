@@ -53,7 +53,7 @@
             function updateElement(old, modified) {
                 // update position
                 old.position.x = modified.xPos;
-                old.position.y = modified.yPos;
+                old.position.y = modified.yPos * -1;
                 old.size.height = modified.height;
                 old.size.width = modified.width;
                 old['init-size'].height= modified.height;
@@ -72,7 +72,7 @@
                 obj.compartments = [];
                 obj.position = {};
                 obj.position.x = element.xPos;
-                obj.position.y = element.yPos;
+                obj.position.y = element.yPos * -1;
                 obj.angle = 0;
                 obj.mClassAttributeInfo = [];
                 obj.id = element.id;
