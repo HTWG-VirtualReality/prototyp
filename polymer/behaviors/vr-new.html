@@ -2,10 +2,11 @@
  Don't use this behavior alone. See it as an abstract class or a scala trait
  because there are two functions that need to be implemented.
 -->
+<link rel="import" href="vr-scene.html">
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.New = {
+    VrBehavior.New = [VrBehavior.Scene, {
         ready: function() {
             var self = this;
             var dom = self.renderer.domElement;
@@ -15,7 +16,7 @@
 
             function getPositionInThreeScene(event) {
                 var object = self.group;
-                var scale = object.position.z/320 * -1;
+                var scale = self.camera.position.z/500;
                 var centerX = event.clientX - Math.floor(window.innerWidth/2);
                 var centerY = Math.floor(window.innerHeight/2) - event.clientY;
                 return {
@@ -119,5 +120,5 @@
         // Override this function in generated behavior
         // returns new counter value
         pushNewElement: function(id, type, position, size) {}
-    };
+    }];
 </script>
