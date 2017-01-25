@@ -113,29 +113,6 @@
 
                     obj.attrs['stroke-dasharray'] = {};
                     obj.attrs['stroke-dasharray'][0] = '0';
-                }
-
-
-                if (element.tagName === 'VR-CONNECTION-AGGREGATION') {     // conection
-                    obj.type = 'zeta.MLink';
-                    obj.subtype = 'aggregation';
-                    obj.mReference = "Aggregation";
-                    obj.attrs = getConnectionStyle(obj.subtype)
-                } else if (element.tagName === 'VR-CONNECTION-INHERITANCE') {     // conection
-                    obj.type = 'zeta.MLink';
-                    obj.subtype = 'inheritance';
-                    obj.mReference = "Inheritance";
-                    obj.attrs = getConnectionStyle(obj.subtype)
-                } else if (element.tagName === 'VR-CONNECTION-REALIZATION') {     // conection
-                    obj.type = 'zeta.MLink';
-                    obj.subtype = 'realization';
-                    obj.mReference = "Realization";
-                    obj.attrs = getConnectionStyle(obj.subtype)
-                } else if (element.tagName === 'VR-CONNECTION-COMPONENT') {     // conection
-                    obj.type = 'zeta.MLink';
-                    obj.subtype = 'component';
-                    obj.mReference = "Component";
-                    obj.attrs = getConnectionStyle(obj.subtype)
                 } else {
                     // class
                     obj['init-size'] = {};
@@ -198,6 +175,35 @@
                         }
                     }
                 }
+
+                switch (element.tagName) {
+                    case 'VR-CONNECTION-AGGREGATION':
+                        obj.type = 'zeta.MLink';
+                        obj.subtype = 'aggregation';
+                        obj.mReference = "Aggregation";
+                        obj.attrs = getConnectionStyle(obj.subtype);
+                        break;
+                    case 'VR-CONNECTION-INHERITANCE':
+                        obj.type = 'zeta.MLink';
+                        obj.subtype = 'inheritance';
+                        obj.mReference = "Inheritance";
+                        obj.attrs = getConnectionStyle(obj.subtype);
+                        break;
+                    case 'VR-CONNECTION-REALIZATION':
+                        obj.type = 'zeta.MLink';
+                        obj.subtype = 'realization';
+                        obj.mReference = "Realization";
+                        obj.attrs = getConnectionStyle(obj.subtype);
+                        break;
+                    case 'VR-CONNECTION-COMPONENT':
+                        obj.type = 'zeta.MLink';
+                        obj.subtype = 'component';
+                        obj.mReference = "Component";
+                        obj.attrs = getConnectionStyle(obj.subtype)
+                        break;
+                }
+
+
                 model.cells.push(obj);
                 return model;
             }
@@ -218,24 +224,34 @@
                 newElement.id = element.id;
                 newElement.attributes = {};
 
-                if (element.tagName === 'VR-PLACE') {
-                    newElement.mClass = 'Place';
-                } else if (element.tagName === 'VR-TRANSITION') {
-                    newElement.mClass = 'Transition';
-                } else if (element.tagName === 'VR-KLASSE') {
-                    newElement.mClass = 'Klasse'
-                } else if (element.tagName === 'VR-ABSTRACTKLASSE') {
-                    newElement.mClass = 'AbstractKlasse'
-                } else if (element.tagName === 'VR-INTERFACE') {
-                    newElement.mClass = 'InterfaceKlasse'
-                } else if (element.tagName === 'VR-CONNECTION-AGGREGATION') {
-                    newElement.mReference = 'Aggregation';
-                } else if (element.tagName === 'VR-CONNECTION-INHERITANCE') {
-                    newElement.mReference = 'Inheritance';
-                } else if (element.tagName === 'VR-CONNECTION-REALIZATION') {
-                    newElement.mReference = 'Realization';
-                } else if (element.tagName === 'VR-CONNECTION-COMPONENT') {
-                    newElement.mReference = 'Component';
+                switch (element.tagName) {
+                    case 'VR-PLACE':
+                        newElement.mClass = 'Place';
+                        break;
+                    case 'VR-TRANSITION':
+                        newElement.mClass = 'Transition';
+                        break;
+                    case 'VR-KLASSE':
+                        newElement.mClass = 'Klasse'
+                        break;
+                    case 'VR-ABSTRACTKLASSE':
+                        newElement.mClass = 'AbstractKlasse'
+                        break;
+                    case 'VR-INTERFACE':
+                        newElement.mClass = 'InterfaceKlasse'
+                        break;
+                    case 'VR-CONNECTION-AGGREGATION':
+                        newElement.mReference = 'Aggregation';
+                        break;
+                    case 'VR-CONNECTION-INHERITANCE':
+                        newElement.mReference = 'Inheritance';
+                        break;
+                    case 'VR-CONNECTION-REALIZATION':
+                        newElement.mReference = 'Realization';
+                        break;
+                    case 'VR-CONNECTION-COMPONENT':
+                        newElement.mReference = 'Component';
+                        break;
                 }
 
 
