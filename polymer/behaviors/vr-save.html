@@ -1,7 +1,7 @@
 <link rel="import" href="vr-three.html">
-<script src="/model_specific/e35685a1-c8b2-43e3-aec4-eaeb3853e6f2/connectionstyle.js"></script>
-<script src="/model_specific/e35685a1-c8b2-43e3-aec4-eaeb3853e6f2/elementAndInlineStyle.js"></script>
-<script src="/model_specific/e35685a1-c8b2-43e3-aec4-eaeb3853e6f2/style.js"></script>
+<script src="/model_specific/3b3856e9-fd91-4e1b-b1da-cd190aaa7521/connectionstyle.js"></script>
+<script src="/model_specific/3b3856e9-fd91-4e1b-b1da-cd190aaa7521/elementAndInlineStyle.js"></script>
+<script src="/model_specific/3b3856e9-fd91-4e1b-b1da-cd190aaa7521/style.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
 
 
@@ -18,7 +18,9 @@
             var modelId = href.substr(href.lastIndexOf('/') + 1, href.length);
 
             var tagType = {
-                "VR-KLASSE": "Klasse"
+                "VR-KLASSE": "Klasse",
+                "VR-ABSTRACTKLASSE": "AbstractKlasse",
+                "VR-INTERFACE": "InterfaceKlasse"
             };
 
             getToken();
@@ -191,8 +193,14 @@
                         break;
                     case 'VR-CONNECTION-REALIZATION':
                         obj.type = 'zeta.MLink';
-                        obj.subtype = 'realization';
-                        obj.mReference = "Realization";
+                        if(tagFrom == "VR-KLASSE") {
+                            obj.subtype = 'realization';
+                            obj.mReference = "BaseClassRealization";
+
+                        } else {
+                            obj.subtype = 'realization';
+                            obj.mReference = "Realization";
+                        }
                         obj.attrs = getConnectionStyle(obj.subtype);
                         break;
                     case 'VR-CONNECTION-COMPONENT':
@@ -220,6 +228,9 @@
             }
 
             function _addElemnt(allElements, element) {
+                var tagFrom = document.getElementById(element.from).tagName;
+                var tagTo = document.getElementById(element.to).tagName;
+
                 var newElement = {};
                 newElement.id = element.id;
                 newElement.attributes = {};
@@ -247,7 +258,11 @@
                         newElement.mReference = 'Inheritance';
                         break;
                     case 'VR-CONNECTION-REALIZATION':
-                        newElement.mReference = 'Realization';
+                        if(tagFrom == "VR-KLASSE") {
+                            newElement.mReference = 'BaseClassRealization';
+                        } else {
+                            newElement.mReference = 'Realization';
+                        }
                         break;
                     case 'VR-CONNECTION-COMPONENT':
                         newElement.mReference = 'Component';
@@ -258,8 +273,6 @@
                 if (element.tagName.includes('VR-CONNECTION')) {
                     newElement.source = {};
                     newElement.target = {};
-                    var tagFrom = document.getElementById(element.from).tagName;
-                    var tagTo = document.getElementById(element.to).tagName;
                     newElement.source[tagType[tagFrom]] = [];
                     newElement.source[tagType[tagFrom]][0] = element.from;
                     newElement.target[tagType[tagTo]] = [];
@@ -332,7 +345,6 @@
                 }
 
 
-                debugger;
                 // back to string
                 elements.uiState = JSON.stringify(model);
                 var myResponse = JSON.stringify(elements);
