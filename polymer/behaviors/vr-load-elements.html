@@ -8,11 +8,20 @@
             association: function () {
                 return new VrElement.ConnectionAssociation();
             },
-            baseclassrealization: function () {
+            inheritance: function () {
                 return new VrElement.ConnectionInheritance();
+            },
+            realization: function () {
+                return new VrElement.ConnectionRealization();
+            },
+            baseclassrealization: function () {
+                return new VrElement.ConnectionRealization();
             },
             aggregation: function () {
                 return new VrElement.ConnectionAggregation();
+            },
+            component: function () {
+                return new VrElement.ConnectionComponent();
             }
         },
         classMap: {
