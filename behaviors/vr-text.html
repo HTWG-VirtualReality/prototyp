@@ -3,7 +3,7 @@
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.Text = [VrBehavior.FrontSide, VrBehavior.Size ,{
+    VrBehavior.Text = [VrBehavior.FrontSide, VrBehavior.Size , {
         properties: {
             text: {
                 type: String,
@@ -15,22 +15,31 @@
             }
         },
 
-        attached: function() {
-            if (!this.text) {
+        observers: [
+            '_onPropertyChange(width, height, text, textCenter)'
+        ],
+
+        _onPropertyChange: function(width, height, text, textCenter) {
+            if (!text) {
                 return;
             }
 
-            var dynamicTexture = new THREEx.DynamicTexture(this.width * 10, this.height * 10);
+            var dynamicTexture = new THREEx.DynamicTexture(width * 10, height * 10);
             dynamicTexture.texture.minFilter = THREE.NearestFilter;
             dynamicTexture.clear('white').drawTextCooked({
-                text: this.text,
+                text: text,
                 font: "64px Verdana",
-                center: this.textCenter
+                center: textCenter
             });
 
             this.frontSide.forEach(function(material) {
+                var tmp = material.map;
                 material.map = dynamicTexture.texture;
                 material.needsUpdate = true;
+
+                if (tmp) {
+                    tmp.dispose();
+                }
             });
         }
     }];
