@@ -225,12 +225,23 @@
             }
 
             function _addElemnt(allElements, element) {
-                var tagFrom = document.getElementById(element.from).tagName;
-                var tagTo = document.getElementById(element.to).tagName;
-
                 var newElement = {};
                 newElement.id = element.id;
                 newElement.attributes = {};
+
+                if (element.tagName.includes('VR-CONNECTION')) {
+                    var tagFrom = document.getElementById(element.from).tagName;
+                    var tagTo = document.getElementById(element.to).tagName;
+                    newElement.source = {};
+                    newElement.target = {};
+                    newElement.source[tagType[tagFrom]] = [];
+                    newElement.source[tagType[tagFrom]][0] = element.from;
+                    newElement.target[tagType[tagTo]] = [];
+                    newElement.target[tagType[tagTo]] [0] = element.to;
+                } else {
+                    newElement.inputs = {};
+                    newElement.outputs = {};
+                }
 
                 switch (element.tagName) {
                     case 'VR-PLACE':
@@ -264,19 +275,6 @@
                     case 'VR-CONNECTION-COMPONENT':
                         newElement.mReference = 'Component';
                         break;
-                }
-
-
-                if (element.tagName.includes('VR-CONNECTION')) {
-                    newElement.source = {};
-                    newElement.target = {};
-                    newElement.source[tagType[tagFrom]] = [];
-                    newElement.source[tagType[tagFrom]][0] = element.from;
-                    newElement.target[tagType[tagTo]] = [];
-                    newElement.target[tagType[tagTo]] [0] = element.to;
-                } else {
-                    newElement.inputs = {};
-                    newElement.outputs = {};
                 }
 
 
