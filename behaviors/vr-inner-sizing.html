@@ -14,11 +14,12 @@
             this._sizeInnerElements(this.width, this.height);
         },
 
-        registerInnerSizingElement: function (element, min, max, percentage) {
+        registerInnerSizingElement: function (element, position, min, max, percentage) {
             this.innerSizingElements.push({
                 element: element,
                 calculation: VrSizeDatastruct(min, max, percentage),
-                size: null
+                size: null,
+                position: position
             });
         },
 
@@ -74,8 +75,8 @@
 
             function updateElements(sizes, y = 0) {
                 sizes.forEach(function (value) {
-                    setProperties(value.element, y, value.size);
-                    y -= value.size.height;
+                    setProperties(value.element, value.position.y * width, value.size);
+                    //y -= value.size.height;
                 });
             }
 
