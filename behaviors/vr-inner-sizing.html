@@ -75,7 +75,7 @@
 
             function updateElements(sizes, y = 0) {
                 sizes.forEach(function (value) {
-                    setProperties(value.element, value.position.y * width, value.size);
+                    setProperties(value.element, value.position.y * height, value.size);
                     //y -= value.size.height;
                 });
             }
