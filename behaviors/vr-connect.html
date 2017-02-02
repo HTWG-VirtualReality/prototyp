@@ -186,11 +186,10 @@
             })[0];
         },
 
-        // Override this function in generated behavior
         // returns array that contains strings of the connection names
-        getConnectionTypes: function() { return []; },
+        getEntries: function() { return document.querySelector("vr-scene").getConnectionEntries(); },
 
         // Override this function in generated behavior
-        pushNewConnection: function(type, connection, id) { /*nothing*/ }
+        pushNewConnection: function(type, connection, id) { document.querySelector("vr-scene").pushNewConnection(type, connection, id); }
     }];
 </script>

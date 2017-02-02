@@ -3,28 +3,7 @@
 
 <script>
     window.VrBehavior = window.VrBehavior || {};
-    VrBehavior.LoadElements = [VrBehavior.ThreeJS, {
-        connectionMap: {
-            association: function () {
-                return new VrElement.ConnectionAssociation();
-            },
-            inheritance: function () {
-                return new VrElement.ConnectionInheritance();
-            },
-            realization: function () {
-                return new VrElement.ConnectionRealization();
-            },
-            baseclassrealization: function () {
-                return new VrElement.ConnectionRealization();
-            },
-            aggregation: function () {
-                return new VrElement.ConnectionAggregation();
-            },
-            component: function () {
-                return new VrElement.ConnectionComponent();
-            }
-        },
-
+    VrBehavior.LoadElements = {
         attached: function () {
             var self = this;
             var token = null;
@@ -77,7 +56,7 @@
                 var connections = [];
                 model.cells.forEach(function (element) {
                     if (typeof element.mClass !== 'undefined') {
-                        self.pushNewElement(element.id, lowerFirstLetter(element.mClass), element.position, element.size);
+                        self.pushNewElement(element.id, element.type.replace("zeta.", ""), element.position, element.size);
                     } else {
                         connections.push(element);
                     }
@@ -85,7 +64,7 @@
 
                 // create connections after classes
                 connections.forEach(function (element) {
-                    self.pushNewConnection(element.subtype.toLowerCase(), {
+                    self.pushNewConnection(element.subtype, {
                         from: element.source.id,
                         to: element.target.id,
                         id: element.id
@@ -129,19 +108,6 @@
             element.addEventListener('iron-ajax-error', attributes.failure);
 
             element.generateRequest();
-        },
-
-        pushNewConnection: function (type, connection) {
-            var self = this;
-            if (type in this.connectionMap) {
-                var element = this.connectionMap[type]();
-                element.from = connection.from;
-                element.to = connection.to;
-                element.id = connection.id;
-                Polymer.dom(self.root).appendChild(element);
-            } else {
-                console.error("No valid connection found!");
-            }
         }
-    }];
+    };
 </script>
