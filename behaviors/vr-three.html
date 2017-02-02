@@ -29,6 +29,10 @@
             }).forEach(function(node) {
                 self.getThreeJS().add(node.getThreeJS());
             }.bind(this));
+        },
+
+        getAssetsPath: function() {
+            return (window.VR_ASSETS_PATH) ? window.VR_ASSETS_PATH : '';
         }
     };
 </script>
