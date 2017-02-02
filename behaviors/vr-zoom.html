@@ -1,13 +1,24 @@
 <script>
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.Zoom = {
+        properties: {
+            maxZoom: {
+              type: Number,
+              value: 1000
+            }
+        },
+
         ready: function() {
-            var dom = this.renderer.domElement;
-            var speed = 5;
-            var element = this.camera;
+            var self = this;
+            var dom = self.renderer.domElement;
+            var speed = 20;
+            var element = self.camera;
 
             dom.addEventListener('wheel', function (e) {
-                element.position.setZ(element.position.z + e.deltaY * speed);
+                var z = element.position.z + ((e.deltaY < 0) ? -speed : speed);
+                if (Math.abs(z) < self.maxZoom) {
+                  element.position.setZ(z);
+                }
             });
         }
     };
