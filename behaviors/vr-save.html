@@ -70,7 +70,6 @@
                 return old;
             }
 
-            // SORRY From ZETA!!!
             function _addModel(model, element) {
                 var obj = {};
                 obj.type = '';
@@ -80,7 +79,6 @@
                 obj.attrs = {};
                 obj.embeds = '';
                 obj.z = Math.floor(Math.random() * (31));
-
 
                 if (element.tagName.includes('VR-CONNECTION')) {
                     var tagFrom = document.getElementById(element.from).tagName;
@@ -93,25 +91,40 @@
                     obj.placings = [];
                     obj.labels = [];
                     obj.styleSet = true;
-                    obj.attrs = {};
-                    /******** CSS from ZETA - TODO generate ****************/
-                    obj.attrs.fill = {};
-                    obj.attrs.fill[0] = '#';
-                    for (var i = 1; i <= 6; i++) {
-                        obj.attrs.fill[i] = 'f';
-                    }
-                    obj.attrs.stroke = {};
-                    obj.attrs.stroke[0] = '#';
-                    for (var j = 1; j <= 6; j++) {
-                        obj.attrs.stroke[j] = '0';
-                    }
-                    var linestyle = {};
-                    linestyle['fill-opacity'] = 1;
-                    linestyle['stroke'] = '#000000';
-                    linestyle['stroke-width'] = 1;
 
-                    obj.attrs['stroke-dasharray'] = {};
-                    obj.attrs['stroke-dasharray'][0] = '0';
+                    switch (element.tagName) {
+                        case 'VR-CONNECTION-AGGREGATION':
+                            obj.type = 'zeta.MLink';
+                            obj.subtype = 'aggregation';
+                            obj.mReference = "Aggregation";
+                            obj.attrs = getConnectionStyle(obj.subtype);
+                            break;
+                        case 'VR-CONNECTION-INHERITANCE':
+                            obj.type = 'zeta.MLink';
+                            obj.subtype = 'inheritance';
+                            obj.mReference = "Inheritance";
+                            obj.attrs = getConnectionStyle(obj.subtype);
+                            break;
+                        case 'VR-CONNECTION-REALIZATION':
+                            obj.type = 'zeta.MLink';
+                            if (tagFrom == "VR-KLASSE") {
+                                obj.subtype = 'realization';
+                                obj.mReference = "BaseClassRealization";
+
+                            } else {
+                                obj.subtype = 'realization';
+                                obj.mReference = "Realization";
+                            }
+                            obj.attrs = getConnectionStyle(obj.subtype);
+                            break;
+                        case 'VR-CONNECTION-COMPONENT':
+                            obj.type = 'zeta.MLink';
+                            obj.subtype = 'component';
+                            obj.mReference = "Component";
+                            obj.attrs = getConnectionStyle(obj.subtype);
+                            break;
+                    }
+
                 } else {
                     // class
                     obj['init-size'] = {};
@@ -129,85 +142,54 @@
                     obj.resize.vertical = true;
                     obj.resize.propotional = true;
 
+                    obj['init-size'].width = element.width;
+                    obj['init-size'].height = element.height;
+                    obj.size.width = element.width;
+                    obj.size.height = element.height;
 
-                    if (element.tagName === 'VR-PLACE') {
-                        obj.type = 'zeta.place';
-                        obj.initSize.width = 60;
-                        obj['init-size'].height = 60;
-                        obj.size.width = 60;
-                        obj.size.height = 60;
-                        obj.nodeName = 'placeNode';
-                        obj.mClass = 'Place';
-                        obj.z = 1;
-                        obj.attrs = getShapeStyle("place");
-                    } else if (element.tagName === 'VR-TRANSITION') {
-                        obj.type = 'zeta.transition';
-                        obj['init-size'].width = 100;
-                        obj['init-size'].height = 200;
-                        obj.size.width = 100;
-                        obj.size.height = 200;
-                        obj.nodeName = 'transitionNode';
-                        obj.mClass = 'Transition';
-                        obj.z = 3;
-                        obj.attrs = getShapeStyle("transition");
-                    } else {
-                        obj['init-size'].width = element.width;
-                        obj['init-size'].height = element.height;
-                        obj.size.width = element.width;
-                        obj.size.height = element.height;
-
-                        if (element.tagName === 'VR-KLASSE') {
+                    switch (element.tagName) {
+                        case 'VR-PLACE':
+                            obj.type = 'zeta.place';
+                            obj.initSize.width = 60;
+                            obj['init-size'].height = 60;
+                            obj.size.width = 60;
+                            obj.size.height = 60;
+                            obj.nodeName = 'placeNode';
+                            obj.mClass = 'Place';
+                            obj.z = 1;
+                            obj.attrs = getShapeStyle("place");
+                            break;
+                        case 'VR-TRANSITION':
+                            obj.type = 'zeta.transition';
+                            obj['init-size'].width = 100;
+                            obj['init-size'].height = 200;
+                            obj.size.width = 100;
+                            obj.size.height = 200;
+                            obj.nodeName = 'transitionNode';
+                            obj.mClass = 'Transition';
+                            obj.z = 3;
+                            obj.attrs = getShapeStyle("transition");
+                            break;
+                        case 'VR-KLASSE':
                             obj.type = 'zeta.klasse';
                             obj.nodeName = 'classNode';
                             obj.mClass = 'Klasse';
                             obj.attrs = getShapeStyle("klasse");
-                        } else if (element.tagName === 'VR-ABSTRACTKLASSE') {
+                            break;
+                        case 'VR-ABSTRACTKLASSE':
                             obj.type = 'zeta.abstractKlasse';
                             obj.nodeName = 'abClassNode';
                             obj.mClass = 'AbstractKlasse';
                             obj.attrs = getShapeStyle("abstractKlasse");
-                        } else if (element.tagName === 'VR-INTERFACE') {
+                            break;
+                        case 'VR-INTERFACE':
                             obj.type = 'zeta.interface';
                             obj.nodeName = 'inClassNode';
                             obj.mClass = 'InterfaceKlasse';
                             obj.attrs = getShapeStyle("interface");
-                        }
+                            break;
                     }
                 }
-
-                switch (element.tagName) {
-                    case 'VR-CONNECTION-AGGREGATION':
-                        obj.type = 'zeta.MLink';
-                        obj.subtype = 'aggregation';
-                        obj.mReference = "Aggregation";
-                        obj.attrs = getConnectionStyle(obj.subtype);
-                        break;
-                    case 'VR-CONNECTION-INHERITANCE':
-                        obj.type = 'zeta.MLink';
-                        obj.subtype = 'inheritance';
-                        obj.mReference = "Inheritance";
-                        obj.attrs = getConnectionStyle(obj.subtype);
-                        break;
-                    case 'VR-CONNECTION-REALIZATION':
-                        obj.type = 'zeta.MLink';
-                        if(tagFrom == "VR-KLASSE") {
-                            obj.subtype = 'realization';
-                            obj.mReference = "BaseClassRealization";
-
-                        } else {
-                            obj.subtype = 'realization';
-                            obj.mReference = "Realization";
-                        }
-                        obj.attrs = getConnectionStyle(obj.subtype);
-                        break;
-                    case 'VR-CONNECTION-COMPONENT':
-                        obj.type = 'zeta.MLink';
-                        obj.subtype = 'component';
-                        obj.mReference = "Component";
-                        obj.attrs = getConnectionStyle(obj.subtype)
-                        break;
-                }
-
 
                 model.cells.push(obj);
                 return model;
@@ -251,13 +233,13 @@
                         newElement.mClass = 'Transition';
                         break;
                     case 'VR-KLASSE':
-                        newElement.mClass = 'Klasse'
+                        newElement.mClass = 'Klasse';
                         break;
                     case 'VR-ABSTRACTKLASSE':
-                        newElement.mClass = 'AbstractKlasse'
+                        newElement.mClass = 'AbstractKlasse';
                         break;
                     case 'VR-INTERFACE':
-                        newElement.mClass = 'InterfaceKlasse'
+                        newElement.mClass = 'InterfaceKlasse';
                         break;
                     case 'VR-CONNECTION-AGGREGATION':
                         newElement.mReference = 'Aggregation';
@@ -266,7 +248,7 @@
                         newElement.mReference = 'Inheritance';
                         break;
                     case 'VR-CONNECTION-REALIZATION':
-                        if(tagFrom == "VR-KLASSE") {
+                        if (tagFrom == "VR-KLASSE") {
                             newElement.mReference = 'BaseClassRealization';
                         } else {
                             newElement.mReference = 'Realization';
@@ -310,9 +292,6 @@
                         model.cells.splice(j, 1);
                     }
                 }
-
-                console.log(elements);
-
 
                 for (var u = 0; u < elements.elements.length; u++) {
                     if (elements.elements[u].mReference !== undefined) {
@@ -377,5 +356,5 @@
             }
         }
 
-    }];
+    }]
 </script>
