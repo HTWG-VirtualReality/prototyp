@@ -19,6 +19,12 @@
             },
             maxMoveVertical: {
                 type: Number
+            },
+            minMoveHorizontal: {
+                type: Number
+            },
+            maxMoveHorizontal: {
+                type: Number
             }
         },
 
@@ -77,10 +83,7 @@
                 }
             }
             function updateElementPosition(xDiff, yDiff) {
-                if (self.moveHorizontal) {
-                    self.xPos += xDiff;
-                }
-
+                self.xPos = getNewAxisValue(self.xPos, xDiff, self.moveHorizontal, self.minMoveHorizontal, self.maxMoveHorizontal);
                 self.yPos = getNewAxisValue(self.yPos, yDiff, self.moveVertical, self.minMoveVertical, self.maxMoveVertical);
             }
 
@@ -89,10 +92,18 @@
                 if (!enabled) {
                   return current;
                 }
-                if (typeof min !== 'undefined' && newValue < min) {
+
+                var minDefined = typeof min !== 'undefined';
+                var maxDefined = typeof max !== 'undefined';
+                if (minDefined && maxDefined && min > max) {
+                    console.warn("Min > max. Ignore both on moving element");
+                    return current;
+                }
+
+                if (minDefined && newValue < min) {
                     return min;
                 }
-                if (typeof max !== 'undefined' && newValue > max) {
+                if (maxDefined && newValue > max) {
                     return max;
                 }
                 return newValue;
