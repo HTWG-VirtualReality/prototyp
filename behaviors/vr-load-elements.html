@@ -59,6 +59,7 @@
                 var connections = [];
                 model.cells.forEach(function (element) {
                     if (typeof element.mClass !== 'undefined') {
+                        element.position.y = -element.position.y;
                         self.pushNewElement(element.id, element.type.replace("zeta.", ""), element.position, element.size);
                     } else {
                         connections.push(element);
