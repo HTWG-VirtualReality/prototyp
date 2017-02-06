@@ -28,8 +28,9 @@
             dynamicTexture.texture.minFilter = THREE.NearestFilter;
             dynamicTexture.clear('white').drawTextCooked({
                 text: text,
-                font: "64px Verdana",
-                center: textCenter
+                font: "200px Verdana",
+                center: textCenter,
+                lineHeight: 100
             });
 
             this.frontSide.forEach(function(material) {
