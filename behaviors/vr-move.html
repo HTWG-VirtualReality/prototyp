@@ -13,6 +13,12 @@
             moveHorizontal: {
                 type: Boolean,
                 value: false
+            },
+            minMoveVertical: {
+                type: Number
+            },
+            maxMoveVertical: {
+                type: Number
             }
         },
 
@@ -74,9 +80,22 @@
                 if (self.moveHorizontal) {
                     self.xPos += xDiff;
                 }
-                if (self.moveVertical) {
-                    self.yPos += yDiff;
+
+                self.yPos = getNewAxisValue(self.yPos, yDiff, self.moveVertical, self.minMoveVertical, self.maxMoveVertical);
+            }
+
+            function getNewAxisValue(current, diff, enabled, min, max) {
+                var newValue = current + diff;
+                if (!enabled) {
+                  return current;
                 }
+                if (typeof min !== 'undefined' && newValue < min) {
+                    return min;
+                }
+                if (typeof max !== 'undefined' && newValue > max) {
+                    return max;
+                }
+                return newValue;
             }
 
             var self = this;
