@@ -50,7 +50,7 @@
         _createCamera: function () {
             var camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 1, 1000);
             camera.add(new THREE.PointLight(0xffffff));
-            camera.position.setZ(navigator.userAgent.match(/iPhone/i) ? 230: 300);
+            camera.position.setZ(navigator.userAgent.match(/iPhone/i) ? 230: 450);
             return camera;
         },
 
