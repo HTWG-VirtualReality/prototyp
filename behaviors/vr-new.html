@@ -12,17 +12,21 @@
             var dom = self.renderer.domElement;
             var group;
             var position;
-            var counter = 0;
 
             function getPositionInThreeScene(event) {
-                var object = self.group;
-                var scale = self.camera.position.z/500;
-                var centerX = event.clientX - Math.floor(window.innerWidth/2);
-                var centerY = Math.floor(window.innerHeight/2) - event.clientY;
+                var object = self.camera;
+                var scale = self.camera.position.z/196.5;
+                var cursor = {
+                  x: event.clientX - Math.floor(window.innerWidth/2),
+                  y: Math.floor(window.innerHeight/2) - event.clientY
+                };
                 return {
-                    x: Math.round(centerX * scale) - Math.round(object.position.x),
-                    y: Math.round(centerY * scale) - Math.round(object.position.y),
-                    scale: Math.round(scale*100)/100
+                    scale: Math.round(scale*100)/100,
+                    cursor: cursor,
+                    scene: {
+                      x: object.position.x + Math.round(cursor.x * scale),
+                      y: object.position.y + Math.round(cursor.y * scale)
+                    }
                 };
             }
 
@@ -56,8 +60,8 @@
                 }
 
                 position = getPositionInThreeScene(event);
-                group.position.setX(position.x);
-                group.position.setY(position.y);
+                group.position.setX(position.scene.x);
+                group.position.setY(position.scene.y);
 
                 self.group.add(group);
             }
@@ -82,7 +86,7 @@
                 group.on('mousedown', function(e) {
                     e.origDomEvent.stopImmediatePropagation();
                     e.stopPropagation();
-                    self.pushNewElement(guid(), text, position, null);
+                    self.pushNewElement(guid(), text, position.scene, null);
                     onMouseUp(null);
                 });
                 return group;
