@@ -50,8 +50,11 @@
             }
 
             function _onModelSuccess(event) {
-                // get ui-state
-                var model = JSON.parse(event.detail.xhr.response.model.uiState);
+                try {
+                    var model = JSON.parse(event.detail.xhr.response.model.uiState);
+                } catch(err) {
+                    return;
+                }
 
                 var connections = [];
                 model.cells.forEach(function (element) {
