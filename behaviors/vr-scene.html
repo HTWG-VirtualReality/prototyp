@@ -2,6 +2,17 @@
     window.VrBehavior = window.VrBehavior || {};
     VrBehavior.Scene = {
 
+        properties: {
+            startX: {
+                type: Number,
+                value: 0
+            },
+            startY: {
+                type: Number,
+                value: 0
+            }
+        },
+
         camera: Object,
 
         created: function () {
@@ -45,6 +56,10 @@
 
         ready: function () {
             var self = this;
+
+            self.camera.position.setX(self.startX);
+            self.camera.position.setY(self.startY);
+
             Polymer.dom(self.root).appendChild(self.renderer.domElement);
             Polymer.dom(self.root).observeNodes(function(nodes) {
                 nodes.addedNodes.forEach(function (node) {
